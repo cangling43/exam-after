@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.com.testol.dao.TestPaperMapper">
+
+
+
+
+    <select id="getTestPaperByStu" resultMap="testPaper_classes">
+        SELECT c.*,tp.*,s.s_name,cu.u_name as cu_name,tt.*,t.*,tc.*,
+        <if test="u_id != -1">
+            ug.*,ut.*,u.u_name as user_name,
+        </if>
+             tp.create_date as tp_create_date,c.create_date as c_create_date
+        FROM testpaper_classes tc
+             join classes c on c.c_id=tc.c_id
+             join testpaper tp on tp.tp_id=tc.tp_id
+             join users cu on cu.u_id=c.creator_id
+             join subjects s on tp.subject_id=s.s_id
+             join testpaper_topic tt on tt.tp_id=tp.tp_id
+             join topic t on t.t_id=tt.t_id
+             <if test="u_id != -1">
+                 join users u on u.u_id=${u_id}
+                 join user_grade ug on ug.u_id=${u_id} and ug.tp_id=tc.tp_id and ug.c_id=tc.c_id
+                 join user_topic ut on ut.u_id=${u_id} and ut.tp_id=tc.tp_id and ut.t_id=t.t_id
+             </if>
+        WHERE tc.tp_id=${tp_id} and tc.c_id=${c_id}
+    </select>
+
+    <select id="getTestPaperByTp_id" resultMap="testPaper">
+        SELECT tp.*, t.*, s.s_name,
+             tp.create_date as tp_create_date
+        FROM testpaper tp join testpaper_topic tt on tt.tp_id=tp.tp_id
+            join topic t on tt.t_id=t.t_id
+            join subjects s on tp.subject_id=s.s_id
+        WHERE tp.tp_id=#{tp_id}
+    </select>
+
+
+
+    <select id="getTestPaperByU_id" resultType="testPaper">
+        SELECT *,tp_name as name
+        FROM testpaper
+        WHERE creator_id=#{u_id}
+        order by create_date
+    </select>
+
+    <insert id="createTestPaper" parameterType="TestPaper" useGeneratedKeys="true" keyProperty="tp_id">
+        insert into testpaper(tp_name, creator_id, time, create_date, subject_id, topic_num, total_score, pass_mark, permit_copy, disrupt_order, repeat_test, auto_mack)
+            value(#{name},#{creator_id},#{time},#{create_date},#{subject_id},#{topic_num},#{total_score},#{pass_mark},#{permit_copy},#{disrupt_order},#{repeat_test},#{auto_mack})
+    </insert>
+
+
+    <resultMap id="testPaper_classes" type="TestPaper_classes">
+        <id property="tc_id" column="tc_id"/>
+        <result property="tp_id" column="tp_id"/>
+        <result property="c_id" column="c_id"/>
+        <result property="release_time" column="release_time"/>
+        <result property="start_date" column="start_date"/>
+        <result property="deadline" column="deadline"/>
+        <result property="publishAnswer" column="publish_answer"/>
+        <result property="publishScore" column="publish_score"/>
+        <result property="status" column="tc_status"/>
+        <association property="testPaper" javaType="TestPaper">
+            <result property="tp_id" column="tp_id"/>
+            <result property="number" column="number"/>
+            <result property="name" column="tp_name"/>
+            <result property="creator_id" column="creator_id"/>
+            <result property="time" column="time"/>
+            <result property="create_date" column="tp_create_date"/>
+            <result property="subject_id" column="subject_id"/>
+            <result property="topic_num" column="topic_num"/>
+            <result property="total_score" column="total_score"/>
+            <result property="pass_mark" column="pass_mark"/>
+            <result property="permit_copy" column="permit_copy"/>
+            <result property="disrupt_order" column="disrupt_order"/>
+            <result property="repeat_test" column="repeat_test"/>
+            <result property="auto_mack" column="auto_mack"/>
+            <result property="subject" column="s_name"/>
+            <association property="userGrade" javaType="UserGrade">
+                <result property="u_id" column="u_id"/>
+                <result property="c_id" column="c_id"/>
+                <result property="tp_id" column="tp_id"/>
+                <result property="userName" column="user_name"/>
+                <result property="grade" column="grade"/>
+                <result property="gradeAuto" column="gradeAuto"/>
+                <result property="date" column="answer_date"/>
+                <result property="answerTime" column="answer_time"/>
+                <result property="status" column="ug_status"/>
+            </association>
+            <collection property="topic" ofType="Topic">
+                <result property="t_id" column="t_id"/>
+                <result property="u_id" column="creator_id"/>
+                <result property="subject_id" column="subject_id"/>
+                <result property="question" column="question"/>
+                <result property="choice" column="choice"/>
+                <result property="photo" column="photo"/>
+                <result property="topic_type" column="topic_type"/>
+                <result property="correct_answer" column="correct_answer"/>
+                <result property="score" column="t_score"/>
+                <result property="difficulty" column="difficulty"/>
+                <result property="analysis" column="analysis"/>
+            </collection>
+            <collection property="userTopic" ofType="User_topic">
+                <result property="ut_id" column="ut_id"/>
+                <result property="u_id" column="u_id"/>
+                <result property="t_id" column="t_id"/>
+                <result property="tp_id" column="tp_id"/>
+                <result property="user_answer" column="user_answer"/>
+                <result property="score" column="ut_score"/>
+                <result property="status" column="ut_status"/>
+            </collection>
+        </association>
+        <association property="classes" javaType="Classes">
+            <result property="c_id" column="c_id"/>
+            <result property="number" column="number"/>
+            <result property="name" column="c_name"/>
+            <result property="introduction" column="introduction"/>
+            <result property="creator_id" column="creator_id"/>
+            <result property="people_num" column="people_num"/>
+            <result property="joinWay" column="joinWay"/>
+            <result property="create_date" column="c_create_date"/>
+            <result property="creatorName" column="cu_name"/>
+        </association>
+    </resultMap>
+
+    <resultMap id="testPaper" type="TestPaper">
+        <id property="tp_id" column="tp_id"/>
+        <result property="number" column="number"/>
+        <result property="name" column="tp_name"/>
+        <result property="creator_id" column="creator_id"/>
+        <result property="time" column="time"/>
+        <result property="create_date" column="tp_create_date"/>
+        <result property="subject_id" column="subject_id"/>
+        <result property="subject" column="s_name"/>
+        <result property="topic_num" column="topic_num"/>
+        <result property="total_score" column="total_score"/>
+        <result property="pass_mark" column="pass_mark"/>
+        <result property="permit_copy" column="permit_copy"/>
+        <result property="disrupt_order" column="disrupt_order"/>
+        <result property="repeat_test" column="repeat_test"/>
+        <result property="auto_mack" column="auto_mack"/>
+        <collection property="topic" ofType="Topic">
+            <result property="t_id" column="t_id"/>
+            <result property="u_id" column="u_id"/>
+            <result property="subject_id" column="subject_id"/>
+            <result property="question" column="question"/>
+            <result property="choice" column="choice"/>
+            <result property="photo" column="photo"/>
+            <result property="topic_type" column="topic_type"/>
+            <result property="user_answer" column="user_answer"/>
+            <result property="correct_answer" column="correct_answer"/>
+            <result property="score" column="t_score"/>
+            <result property="difficulty" column="difficulty"/>
+            <result property="analysis" column="analysis"/>
+        </collection>
+    </resultMap>
+
+</mapper>

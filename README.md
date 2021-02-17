@@ -1,25 +1,25 @@
 # 线上考试后端系统
 
-#### 介绍
+### 介绍
 用java spring boot + mybatis + mysql打造的线上考试后端系统
 
-#### 软件架构
+### 软件架构
 软件架构说明
 
 
-#### 安装教程
+### 安装教程
 
 1.  xxxx
 2.  xxxx
 3.  xxxx
 
-#### 使用说明
+### 使用说明
 
 1.  xxxx
 2.  xxxx
 3.  xxxx
 
-#### 参与贡献
+### 参与贡献
 
 1.  Fork 本仓库
 2.  新建 Feat_xxx 分支
@@ -27,11 +27,22 @@
 4.  新建 Pull Request
 
 
-#### 特技
+### 请求状态码与msg
 
-1.  使用 Readme\_XXX.md 来支持不同的语言，例如 Readme\_en.md, Readme\_zh.md
-2.  Gitee 官方博客 [blog.gitee.com](https://blog.gitee.com)
-3.  你可以 [https://gitee.com/explore](https://gitee.com/explore) 这个地址来了解 Gitee 上的优秀开源项目
-4.  [GVP](https://gitee.com/gvp) 全称是 Gitee 最有价值开源项目，是综合评定出的优秀开源项目
-5.  Gitee 官方提供的使用手册 [https://gitee.com/help](https://gitee.com/help)
-6.  Gitee 封面人物是一档用来展示 Gitee 会员风采的栏目 [https://gitee.com/gitee-stars/](https://gitee.com/gitee-stars/)
++ 100: 请求失败
++ 200: 请求成功
++ 300: token验证失败,请先登录
++ 400: 权利不足,用户身份不正确 
+
++ 1001:该邮箱地址已被使用
++ 1002:该手机号码已被使用
+
++ 2001: 该班级不存在
++ 2002: 已加入该班级
++ 2003: 您不是该班级管理员
++ 2004: 您不是该班级的学生
+
++ 3001: 您没有权利查看该试卷(身份不正确)
++ 3002: 您没有权利更改该试卷(身份不正确)
++ 3003: 您不是该班级的学生
+
