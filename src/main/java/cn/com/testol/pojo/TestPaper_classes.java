@@ -1,11 +1,14 @@
 package cn.com.testol.pojo;
 
+import lombok.Data;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 
 @Entity
+@Data
 public class TestPaper_classes {
     @Id
     private int tc_id;
@@ -27,92 +30,4 @@ public class TestPaper_classes {
     private TestPaper testPaper;
 
 
-    public int getStatus() {
-        return status;
-    }
-
-    public void setStatus(int status) {
-        this.status = status;
-    }
-
-    public int getTc_id() {
-        return tc_id;
-    }
-
-    public void setTc_id(int tc_id) {
-        this.tc_id = tc_id;
-    }
-
-
-    public int getPublishAnswer() {
-        return publishAnswer;
-    }
-
-    public void setPublishAnswer(int publishAnswer) {
-        this.publishAnswer = publishAnswer;
-    }
-
-    public int getPublishScore() {
-        return publishScore;
-    }
-
-    public void setPublishScore(int publishScore) {
-        this.publishScore = publishScore;
-    }
-
-    public Classes getClasses() {
-        return classes;
-    }
-
-    public void setClasses(Classes classes) {
-        this.classes = classes;
-    }
-
-    public TestPaper getTestPaper() {
-        return testPaper;
-    }
-
-    public void setTestPaper(TestPaper testPaper) {
-        this.testPaper = testPaper;
-    }
-
-    public int getTp_id() {
-        return tp_id;
-    }
-
-    public void setTp_id(int tp_id) {
-        this.tp_id = tp_id;
-    }
-
-    public int getC_id() {
-        return c_id;
-    }
-
-    public void setC_id(int c_id) {
-        this.c_id = c_id;
-    }
-
-    public String getRelease_time() {
-        return release_time;
-    }
-
-    public void setRelease_time(String release_time) {
-        this.release_time = release_time;
-    }
-
-    public String getStart_date() {
-        return start_date;
-    }
-
-    public void setStart_date(String start_date) {
-        this.start_date = start_date;
-    }
-
-    public String getDeadline() {
-        return deadline;
-    }
-
-    public void setDeadline(String deadline) {
-        this.deadline = deadline;
-    }
 }

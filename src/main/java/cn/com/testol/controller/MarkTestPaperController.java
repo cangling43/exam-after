@@ -1,7 +1,12 @@
 package cn.com.testol.controller;
 
+import cn.com.testol.DTO.UserGradeDTO;
+import cn.com.testol.dao.ClassesDao;
 import cn.com.testol.dao.TopicMapper;
+import cn.com.testol.dao.UserGradeDao;
 import cn.com.testol.dao.User_ClassesMapper;
+import cn.com.testol.entity.Classes;
+import cn.com.testol.entity.UserGrade;
 import cn.com.testol.pojo.TestPaper;
 import cn.com.testol.pojo.TestPaper_classes;
 import cn.com.testol.pojo.Topic;
@@ -12,9 +17,9 @@ import cn.com.testol.utils.JwtUtil;
 import cn.com.testol.utils.Msg;
 import cn.com.testol.utils.ResultUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
@@ -26,8 +31,37 @@ public class MarkTestPaperController {
     @Autowired
     private User_ClassesMapper user_classesMapper;
 
+
+    @GetMapping("/getUserGradeList")
+    public Msg getUserGradeList(HttpServletRequest request,Integer classesId,Integer examId){
+        String token =  request.getHeader("token");
+        if(!JwtUtil.getUserStatus(token).equals("teacher")){
+            return ResultUtil.error(400,"用户身份不正确");
+        }
+
+        int teacher_id=Integer.parseInt(JwtUtil.getUserId(token));
+
+        return markTestPaperService.selectByClassesId(classesId,examId,teacher_id);
+
+    }
+
+    @GetMapping("/getStuExamInfo")
+    public Msg getStuExamInfo(HttpServletRequest request,Integer classesId,Integer examId,Integer userId){
+        return markTestPaperService.selestStuExamInfo(classesId,examId,userId);
+    }
+
+    @PutMapping("/tchMarkExam")
+    public Msg tchMarkExam(HttpServletRequest request, @RequestBody UserGradeDTO userGradeDTO){
+        String token =  request.getHeader("token");
+        //获取token中的id
+        int teacher_id=Integer.parseInt(JwtUtil.getUserId(token));
+
+        return markTestPaperService.tchMarkExam(userGradeDTO,teacher_id);
+    }
+
+
     //通过试卷id,班级id获取试卷信息(学生角色)
-    @RequestMapping("/getTestPaperMark")
+    @GetMapping("/getTestPaperMark")
     public Msg getTestPaper(String token,int tp_id ,int c_id,int u_id){
 
         //获取token中的id

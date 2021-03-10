@@ -24,4 +24,12 @@ public class ResultUtil {
         return msg;
     }
 
+    public static Msg error(Integer code,String resultmsg,String data){
+        Msg msg=new Msg();
+        msg.setCode(code);
+        msg.setMsg(resultmsg);
+        msg.setData(data);
+        return msg;
+    }
+
 }

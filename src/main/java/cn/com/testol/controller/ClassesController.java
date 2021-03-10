@@ -1,109 +1,99 @@
 package cn.com.testol.controller;
 
 
+import cn.com.testol.DTO.ClassesUserDTO;
+import cn.com.testol.dao.ClassesDao;
+import cn.com.testol.dao.UserClassesDao;
+import cn.com.testol.entity.Classes;
+import cn.com.testol.entity.UserClasses;
+import cn.com.testol.pojo.TestPaper_classes;
 import cn.com.testol.utils.JwtUtil;
 import cn.com.testol.utils.ResultUtil;
-import cn.com.testol.pojo.Classes;
 import cn.com.testol.utils.Msg;
-import cn.com.testol.pojo.User_classes;
 import cn.com.testol.service.ClassesService;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @RestController
-@CrossOrigin()
+//@CrossOrigin()
 public class ClassesController {
     @Autowired
     private ClassesService classesService;
-    private List<Map<String, Object>> data;
+    @Autowired
+    private ClassesDao classesDao;
 
     /*
-    * 通过用户id查找班级
-    * */
-    @RequestMapping("/queryClassesByU_id")
-    public Msg queryClassesByU_id(String token){
-        //获取token中的id
-        int u_id=Integer.parseInt(JwtUtil.getUserId(token));
-
-        List<User_classes> userClassesList=classesService.queryClassesByU_id(u_id);
-        return ResultUtil.success(userClassesList);
-    }
-
-    /*
-     * 通过班级id查找班级
+     * 查找班级
      * */
-    @RequestMapping("/queryClassesByC_id")
-    public Msg queryClassesByC_id(int c_id){
-        User_classes userClasses=classesService.queryClassesByC_id(c_id);
-
-        if(userClasses == null){
-            return ResultUtil.error(2001,"该班级不存在");
-        }
-
-        return ResultUtil.success(userClasses);
+    @ApiOperation(value = "查找班级")
+    @GetMapping("/queryClasses")
+    public Msg queryClasses(Integer classesId){
+        return classesService.queryClassesByC_id(classesId);
     }
 
+    /*
+     * 查找班级列表
+     * */
+    @ApiOperation(value = "查找班级列表")
+    @GetMapping("/queryClassesList")
+    public Msg queryClassesList(HttpServletRequest request,@RequestParam(required = false) Integer examId){
+        if (examId != null){
+            return classesService.queryClassesByExamId(examId);
+        }
 
-    @RequestMapping(value = "/joinClasses", method= RequestMethod.POST )
-    public Msg joinClasses(String token,int c_id ,String date) {
+        String token =  request.getHeader("token");
+        //获取token中的id
+        int u_id=Integer.parseInt(JwtUtil.getUserId(token));
 
+        return classesService.queryClassesByU_id(u_id);
+}
+
+    @ApiOperation(value = "加入班级")
+    @GetMapping(value = "/joinClasses")
+    public Msg joinClasses(HttpServletRequest request,int c_id ) {
+
+        String token =  request.getHeader("token");
+        //获取token中的id
+        int u_id=Integer.parseInt(JwtUtil.getUserId(token));
+
+        return classesService.joinClasses(u_id,c_id,"student",new Date());
+
+    }
+
+    @ApiOperation(value = "退出班级")
+    @DeleteMapping(value = "/outClasses")
+    public Msg outClasses(HttpServletRequest request,int c_id){
+        String token =  request.getHeader("token");
 
         //获取token中的id
         int u_id=Integer.parseInt(JwtUtil.getUserId(token));
 
-        Classes classes=classesService.queryClassesByC_id(c_id).getClasses();
-        if(classes==null){
-            return ResultUtil.error(2001,"该班级不存在");
-        }
+        return classesService.outClasses(u_id,c_id);
 
-        int result=classesService.joinClasses(u_id,c_id,"student",date);
-        if(result==-1){
-            return ResultUtil.error(2002,"已加入该班级");
-        }
-        if(result>0){
-            return ResultUtil.success();
-        }else{
-            return ResultUtil.error(100,"请求失败");
-        }
     }
 
-    @RequestMapping(value = "/outClasses", method= RequestMethod.POST )
-    public Msg outClasses(String token,int c_id){
-
-
-        //获取token中的id
-        int u_id=Integer.parseInt(JwtUtil.getUserId(token));
-
-        int result=classesService.outClasses(u_id,c_id);
-        if(result>0){
-            return ResultUtil.success();
-        }else{
-            return ResultUtil.error(100,"请求失败");
-        }
-    }
-
-    @RequestMapping(value = "/outClassesByteacher", method= RequestMethod.POST )
-    public Msg outClassesByteacher(String token,int u_id,int c_id){
-
+    @ApiOperation(value = "踢出班级（老师）")
+    @DeleteMapping(value = "/outClassesByTeacher")
+    public Msg outClassesByteacher(HttpServletRequest request,int u_id,int c_id){
+        String token =  request.getHeader("token");
         if(!JwtUtil.getUserStatus(token).equals("teacher")){
             return ResultUtil.error(400,"用户身份不正确");
         }
 
         //获取token中的id
         int t_id=Integer.parseInt(JwtUtil.getUserId(token));
-        Classes classes=classesService.queryClassesByC_id(c_id).getClasses();
-        if(t_id != classes.getCreator_id()){
+        Classes classes=classesDao.selectByPrimaryKey(c_id);
+        if(t_id != classes.getCreatorId()){
             return ResultUtil.error(400,"您不是该班级管理员");
         }
 
-        int result=classesService.outClasses(u_id,c_id);
-        if(result>0){
-            return ResultUtil.success();
-        }else{
-            return ResultUtil.error(100,"请求失败");
-        }
+        return classesService.outClasses(u_id,c_id);
     }
 
     /*
@@ -113,9 +103,10 @@ public class ClassesController {
         创建人id          creator_id
         班级允许加入方式    jionWay
          */
-    @RequestMapping(value = "/createClasses" , method= RequestMethod.POST)
-    public Msg createClasses(String name, String token, String joinWay ,String date){
-
+    @ApiOperation(value = "创建班级")
+    @PostMapping(value = "/createClasses")
+    public Msg createClasses( HttpServletRequest request,@RequestBody Classes classes) throws ParseException {
+        String token =  request.getHeader("token");
         if(!JwtUtil.getUserStatus(token).equals("teacher")){
             return ResultUtil.error(400,"用户身份不正确");
         }
@@ -123,19 +114,7 @@ public class ClassesController {
         //获取token中的id
         int u_id=Integer.parseInt(JwtUtil.getUserId(token));
 
-        Classes classes=new Classes();
-        classes.setName(name);
-        classes.setIntroduction("");
-        classes.setCreator_id(u_id);
-        classes.setJoinWay(joinWay);
-        classes.setCreate_date(date);
-        classes.setPeople_num(1);
-        int result= classesService.createClasses(classes , u_id);
-        if(result>0){
-            return ResultUtil.success();
-        }else{
-            return ResultUtil.error(100,"请求失败");
-        }
+        return classesService.createClasses(classes,u_id);
 
     }
 
@@ -146,34 +125,27 @@ public class ClassesController {
        班级简介          introduction
        班级允许加入方式    jionWay
         */
-    @RequestMapping(value = "/updateClasses" , method= RequestMethod.POST)
-    public Msg updateClasses(String token,String name,String introduction,String joinWay,int people_num,int c_id){
-
+    @ApiOperation(value = "修改班级信息")
+    @PutMapping(value = "/updateClasses" )
+    public Msg updateClasses(HttpServletRequest request,@RequestBody Classes classes){
+        String token =  request.getHeader("token");
         if(!JwtUtil.getUserStatus(token).equals("teacher")){
             return ResultUtil.error(400,"用户身份不正确");
         }
         //获取token中的id
-        int t_id=Integer.parseInt(JwtUtil.getUserId(token));
-        Classes classes=classesService.queryClassesByC_id(c_id).getClasses();
-        if(t_id != classes.getCreator_id()){
-            return ResultUtil.error(400,"您不是该班级管理员");
-        }
+        Integer userId=Integer.parseInt(JwtUtil.getUserId(token));
 
-        int result= classesService.updateClasses(name,introduction,joinWay ,people_num,c_id);
-        if(result>0){
-            return ResultUtil.success();
-        }else{
-            return ResultUtil.error(100,"请求失败");
-        }
+        return classesService.updateClasses(classes,userId);
     }
 
     /*
    删除班级 createClasses
        班级id      id
         */
-    @RequestMapping(value = "/deleteClasses" , method= RequestMethod.POST)
-    public Msg deleteClasses(String token,int id){
-
+    @ApiOperation(value = "删除班级")
+    @DeleteMapping(value = "/deleteClasses" )
+    public Msg deleteClasses(HttpServletRequest request,int id){
+        String token =  request.getHeader("token");
         if(!JwtUtil.getUserStatus(token).equals("teacher")){
             return ResultUtil.error(400,"用户身份不正确");
         }
@@ -185,4 +157,5 @@ public class ClassesController {
             return ResultUtil.error(100,"请求失败");
         }
     }
+
 }

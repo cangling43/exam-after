@@ -1,14 +1,20 @@
 package cn.com.testol.service.impl;
 
-import cn.com.testol.pojo.User;
-import cn.com.testol.pojo.User_classes;
+import cn.com.testol.DTO.UserClassesDTO;
+import cn.com.testol.dao.UserDao;
+import cn.com.testol.dao.UserPasswordDao;
+import cn.com.testol.entity.User;
+import cn.com.testol.entity.UserClasses;
+import cn.com.testol.entity.UserPassword;
 import cn.com.testol.service.UserService;
-import cn.com.testol.dao.UserMapper;
+import cn.com.testol.utils.Msg;
+import cn.com.testol.utils.ResultUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -16,21 +22,24 @@ import java.util.List;
 public class UserServiceImpl implements UserService{
 
     @Autowired
-    private UserMapper userMapper;
+    private UserDao userDao;
+    @Autowired
+    private UserPasswordDao userPasswordDao;
 
 
     @Override
     public User login(String name, String password) {
-        User user=userMapper.getUserByEmail(name);
+        User user=userDao.selectByEmail(name);
         if (user==null){
-            user=userMapper.getUserByPhone(name);
+            user=userDao.selectByPhone(name);
         }
         if (user==null){
             return null;
         }
-        User isUser=userMapper.loginByEmail(user.getU_id(),name,password);
+        System.out.println(user);
+        User isUser=userDao.loginByEmail(user.getUserId(),name,password);
         if(isUser==null){
-            isUser=userMapper.loginByPhone(user.getU_id(),name,password);
+            isUser=userDao.loginByPhone(user.getUserId(),name,password);
         }else{
             return isUser;
         }
@@ -40,74 +49,97 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public User getUserById(int u_id) {
-        User user=userMapper.getUserById(u_id);
+        User user=userDao.selectByPrimaryKey(u_id);
         //处理班级编号
-        String id=user.getU_id()+"";
+        String id=user.getUserId()+"";
         while (id.length()<5){
             id="0"+id;
         }
-        user.setNumber(id);
         return user;
     }
 
-    @Override
-    public User getUserByEmail(String email) {
-        return userMapper.getUserByEmail(email);
-    }
+
+
+
 
     @Override
-    public User getUserByPhone(String phone) {
-        return userMapper.getUserByPhone(phone);
-    }
+    public List<UserClassesDTO> queryUserByC_id(int c_id) {
+        List<UserClassesDTO> userList=userDao.selectByC_id(c_id);
+        for(UserClassesDTO u_c:userList){
 
-    @Override
-    public List<User_classes> queryUserByC_id(int c_id) {
-        List<User_classes> userList=userMapper.queryUserByC_id(c_id);
-        for(User_classes u_c:userList){
-            //处理班级编号
-//            String id=u.getU_id()+"";
-//            while (id.length()<5){
-//                id="0"+id;
-//            }
-//            u.setNumber(id);
-
-            switch (u_c.getStatus()){
-                case "creator": u_c.setStatus("创建者");break;
-                case "admin": u_c.setStatus("管理员");break;
-                case "student": u_c.setStatus("学生");break;
+            switch (u_c.getPosition()){
+                case "creator": u_c.setPosition("创建者");break;
+                case "admin": u_c.setPosition("管理员");break;
+                case "student": u_c.setPosition("学生");break;
             }
         }
         return userList;
     }
 
     @Override
-    public int addUser(User user,String password) {
-        int result=0;
-        int id=-1;
+    public Msg addUser(User user, String password) {
         try{
-            userMapper.addUserInfo(user);
-            id=user.getU_id();
-            if(id==-1){
-//                System.out.println("回滚");
-                TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-            }else {
-                result=userMapper.addUserPassword(id,password);
+            if(userDao.selectByEmail(user.getEmail())!=null){
+                return ResultUtil.error(1001,"该邮箱地址已被使用");
             }
+            if(userDao.selectByPhone(user.getPhone())!=null && !user.getPhone().equals("")){
+                return ResultUtil.error(1002,"该手机号码已被使用");
+            }
+
+            user.setCreateDate(new Date());
+            user.setUpdateDate(new Date());
+            user.setRole("student");
+            userDao.insert(user);
+
+            userPasswordDao.insert(new UserPassword(user.getUserId() ,password));
+            return ResultUtil.success();
         }catch (Exception e){
             System.out.println(e);
             //强制手动事务回滚
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            return ResultUtil.error(100,"请求失败",e.toString());
         }
-        return result;
     }
 
     @Override
-    public int updateUser(int id, String name, String sex, String phone, String email, String photo, String status, String work) {
-        return userMapper.updateUser(id,name,sex,phone,email,photo,status,work);
+    public Msg getRole(Integer userId) {
+        User user = userDao.selectByPrimaryKey(userId);
+        if (user.getRole().equals("student")){
+
+        }
+        if (user.getRole().equals("teacher")){
+
+        }
+        return null;
+    }
+
+    @Override
+    public Msg changeRole(Integer userId) {
+        try{
+            User user = userDao.selectByPrimaryKey(userId);
+            if(user.getRole().equals("student")){
+                user.setRole("teacher");
+            }else {
+                user.setRole("student");
+            }
+            userDao.updateByPrimaryKeySelective(user); 
+            return ResultUtil.success();
+        }catch (Exception e){
+            System.out.println(e);
+            //强制手动事务回滚
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            return ResultUtil.error(100,"请求失败",e.toString());
+        }
+    }
+
+    @Override
+    public int updateUser(User user) {
+        user.setUpdateDate(new Date());
+        return userDao.updateByPrimaryKeySelective(user);
     }
 
     @Override
     public int deleteUser(int id) {
-        return userMapper.deleteUser(id);
+        return userDao.deleteByPrimaryKey(id);
     }
 }

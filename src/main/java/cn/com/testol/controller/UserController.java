@@ -1,14 +1,24 @@
 package cn.com.testol.controller;
 
+import cn.com.testol.DTO.LoginDTO;
+import cn.com.testol.DTO.RegisterDTO;
+import cn.com.testol.DTO.UserClassesDTO;
+import cn.com.testol.dao.UserDao;
 import cn.com.testol.utils.JwtUtil;
 import cn.com.testol.utils.ResultUtil;
 import cn.com.testol.utils.Msg;
-import cn.com.testol.pojo.User;
-import cn.com.testol.pojo.User_classes;
+import cn.com.testol.entity.User;
+import cn.com.testol.entity.UserClasses;
 import cn.com.testol.service.UserService;
+import io.swagger.annotations.ApiOperation;
+import lombok.Data;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 
@@ -16,14 +26,17 @@ import java.util.*;
 public class UserController {
     @Autowired
     private UserService userService;
+    @Autowired
+    private UserDao userDao;
 
-
-    @RequestMapping("/getUserById")
-    public Msg getUserById( String token){
+    @ApiOperation(value = "获取用户信息")
+    @GetMapping("/getUserById")
+    public Msg getUserById(HttpServletRequest request){
+        String token =  request.getHeader("token");
         //获取token中的id
         int u_id=Integer.parseInt(JwtUtil.getUserId(token));
 
-        User user = userService.getUserById(u_id);
+        User user = userDao.selectByPrimaryKey(u_id);
 
         if(user != null){
             return ResultUtil.success(user);
@@ -32,21 +45,19 @@ public class UserController {
         }
     }
 
-
-
-
-    @RequestMapping(value="/login", method= RequestMethod.POST )
-    public Msg login(@RequestParam String name, String password){
+    @ApiOperation(value = "登录")
+    @PostMapping(value="/login")
+    public Msg login(@RequestBody LoginDTO loginDTO){
 //        System.out.println(name+password);
-        User user = userService.login(name,password);
+        User user = userService.login(loginDTO.getName(),loginDTO.getPassword());
 
         if (user!=null){
-            String token= JwtUtil.sign(user.getName(),user.getU_id()+"",user.getStatus());
+            String token= JwtUtil.sign(user.getUserName(),user.getUserId()+"",user.getRole());
             if(token!=null){
                 HashMap<String,Object> hm = new HashMap<String,Object>();
                 hm.put("token",token);
-                hm.put("status",user.getStatus());
-                hm.put("name",user.getName());
+                hm.put("status",user.getRole());
+                hm.put("name",user.getUserName());
                 return ResultUtil.success(hm);
             }
         }
@@ -55,49 +66,28 @@ public class UserController {
 
     }
 
-    @RequestMapping(value = "/register", method= RequestMethod.POST )
-    public Msg register( String name,String email,String phone,String password, String date){
-        HashMap<String,Object> hm = new HashMap<String,Object>();
-        System.out.println(name);
-        if(userService.getUserByEmail(email)!=null){
-            return ResultUtil.error(1001,"该邮箱地址已被使用");
-        }
-        if(phone.equals("")){
-            System.out.println("00"+phone);
-        }
-        if(userService.getUserByPhone(phone)!=null && !phone.equals("")){
-            return ResultUtil.error(1002,"该手机号码已被使用");
-        }
-
+    @ApiOperation(value = "注册")
+    @PostMapping(value = "/register")
+    public Msg register(@RequestBody RegisterDTO registerDTO) throws ParseException {
         User user=new User();
-        user.setName(name);
-        user.setCreate_date(date);
-        user.setEmail(email);
-        user.setPhone(phone);
+        BeanUtils.copyProperties(registerDTO,user);
 
-        int result=userService.addUser(user,password);
-//        int result=1;
-
-        if(result>0){
-            return ResultUtil.success();
-        }else{
-            return ResultUtil.error(100,"请求失败");
-        }
+        return userService.addUser(user,registerDTO.getPassword());
     }
 
 
 
-
-    @RequestMapping("/queryUserByC_id")
-    public Msg queryUserByC_id(String token,int c_id){
+    @ApiOperation(value = "获取用户列表")
+    @GetMapping("/queryUserByC_id")
+    public Msg queryUserByC_id(HttpServletRequest request,int c_id){
+        String token =  request.getHeader("token");
         //获取token中的id
         int u_id=Integer.parseInt(JwtUtil.getUserId(token));
 
-        List<User_classes> userList=userService.queryUserByC_id(c_id);
+        List<UserClassesDTO> userList=userService.queryUserByC_id(c_id);
         Boolean inClasses=false;
-        for(User_classes u_c:userList){
-            User u = u_c.getUser();
-            if(u.getU_id()==u_id){
+        for(UserClassesDTO u_c:userList){
+            if(u_c.getUserId()==u_id){
                 inClasses=true;
                 break;
             }
@@ -106,7 +96,7 @@ public class UserController {
             return ResultUtil.error(2004,"您不是该班级的学生");
         }
 
-        if(userList.size()>0){
+        if(userList.size() >= 0){
             return ResultUtil.success(userList);
         }else{
             return ResultUtil.error(100,"请求失败");
@@ -114,9 +104,10 @@ public class UserController {
     }
 
 
-    @RequestMapping(value = "/updateUser", method= RequestMethod.POST )
-    public Msg updateUser(int id, String name, String sex, String phone, String email, String photo, String status, String work){
-        int result=userService.updateUser(id,name,sex,phone,email,photo,status,work);
+    @ApiOperation(value = "修改用户信息")
+    @PutMapping(value = "/updateUser")
+    public Msg updateUser(User user){
+        int result=userService.updateUser(user);
         if(result>0){
             return ResultUtil.success();
         }else{
@@ -124,7 +115,26 @@ public class UserController {
         }
     }
 
-    @RequestMapping(value = "/deleteUser", method= RequestMethod.POST )
+    @ApiOperation(value = "获取用户权限")
+    @GetMapping(value = "getRole")
+    public Msg getRole(HttpServletRequest request){
+        String token =  request.getHeader("token");
+        //获取token中的id
+        int u_id=Integer.parseInt(JwtUtil.getUserId(token));
+        return userService.getRole(u_id);
+    }
+
+    @ApiOperation(value = "获取用户权限")
+    @PutMapping(value = "changeRole")
+    public Msg changeRole(HttpServletRequest request){
+        String token =  request.getHeader("token");
+        //获取token中的id
+        int u_id=Integer.parseInt(JwtUtil.getUserId(token));
+
+        return userService.changeRole(u_id);
+    }
+
+    @DeleteMapping(value = "/deleteUser")
     public String deleteUser(int id){
         int result=userService.deleteUser(id);
         if(result==1){

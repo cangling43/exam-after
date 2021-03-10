@@ -1,32 +1,37 @@
 package cn.com.testol.service;
 
-import cn.com.testol.pojo.Classes;
-import cn.com.testol.pojo.User_classes;
+import cn.com.testol.entity.Classes;
+import cn.com.testol.utils.Msg;
 
-import java.util.List;
+import java.util.Date;
 
-public interface ClassesService {
+public interface ClassesService  {
 
     //根据教师查找班级
-    public List<User_classes> queryClassesByU_id(int u_id);
+    public Msg queryClassesByU_id(Integer u_id);
 
     //用户加入班级
-    public int joinClasses(int u_id, int c_id, String status, String date);
+    public Msg joinClasses(int u_id, int c_id, String status, Date date);
 
     //用户退出班级
-    public int outClasses(int u_id, int c_id);
+    public Msg outClasses(int u_id, int c_id);
 
     //根据班级id查找班级
-    public User_classes queryClassesByC_id(int c_id);
+    public Msg queryClassesByC_id(int c_id);
+
+    public Msg queryClassesByExamId(Integer examId);
 
     //创建班级
-    public int createClasses(Classes classes ,int u_id);
+    public Msg createClasses(Classes classes,Integer userId);
 
     //修改班级信息
-    public int updateClasses(String name,String introduction,String joinWay,int people_num,int id);
+    public Msg updateClasses(Classes classes,Integer userId);
 
     //删除班级
     public int deleteClasses(int id);
+
+
+    Boolean updateClassesName(String name ,Integer classesId);
 
 
 

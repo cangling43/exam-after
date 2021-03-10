@@ -1,14 +1,14 @@
 package cn.com.testol.pojo;
 
 //import lombok.AllArgsConstructor;
-//import lombok.Data;
+import lombok.Data;
 //import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
-//@Data
+@Data
 //@AllArgsConstructor
 //@NoArgsConstructor
 @Entity
@@ -27,67 +27,5 @@ public class User_topic {
 //    private String correct_answer;//正确答案
 
 
-    public int getC_id() {
-        return c_id;
-    }
 
-    public void setC_id(int c_id) {
-        this.c_id = c_id;
-    }
-
-    public int getUt_id() {
-        return ut_id;
-    }
-
-    public void setUt_id(int ut_id) {
-        this.ut_id = ut_id;
-    }
-
-    public int getU_id() {
-        return u_id;
-    }
-
-    public void setU_id(int u_id) {
-        this.u_id = u_id;
-    }
-
-    public int getT_id() {
-        return t_id;
-    }
-
-    public void setT_id(int t_id) {
-        this.t_id = t_id;
-    }
-
-    public int getTp_id() {
-        return tp_id;
-    }
-
-    public void setTp_id(int tp_id) {
-        this.tp_id = tp_id;
-    }
-
-    public String getUser_answer() {
-        return user_answer;
-    }
-
-    public void setUser_answer(String user_answer) {
-        this.user_answer = user_answer;
-    }
-
-    public double getScore() {
-        return score;
-    }
-
-    public void setScore(double score) {
-        this.score = score;
-    }
-
-    public int getStatus() {
-        return status;
-    }
-
-    public void setStatus(int status) {
-        this.status = status;
-    }
 }

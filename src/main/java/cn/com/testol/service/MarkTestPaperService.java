@@ -1,11 +1,16 @@
 package cn.com.testol.service;
 
-import cn.com.testol.pojo.SubmitTestPaper;
-import cn.com.testol.pojo.UserGrade;
-import cn.com.testol.pojo.User_topic;
+import cn.com.testol.DTO.StuSubmitExamDTO;
+import cn.com.testol.DTO.UserGradeDTO;
+import cn.com.testol.utils.Msg;
 
 public interface MarkTestPaperService {
-    public int submitTestPaper(SubmitTestPaper submitTestPaper);
+    public int submitTestPaper(StuSubmitExamDTO stuSubmitExamDTO,Integer userId);
 
+    public Msg selectByClassesId(Integer classesId,Integer examId,Integer userId);
 
+    public Msg selestStuExamInfo(Integer classesId, Integer examId, Integer userId);
+
+    //教师批改试卷
+    public Msg tchMarkExam(UserGradeDTO userGradeDTO, Integer userId);
 }

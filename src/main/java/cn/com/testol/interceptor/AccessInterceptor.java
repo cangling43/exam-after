@@ -17,36 +17,34 @@ public class AccessInterceptor implements HandlerInterceptor {
         //response.setCharacterEncoding("UTF-8");
         //response.setContentType("application/json; charset=utf-8");
         response.setHeader("Access-Control-Allow-Credentials","true");
-        response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
-        response.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept,Token");
+        response.setHeader("Access-Control-Allow-Origin", "http://localhost:8080");
+        response.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept,token");
         response.setHeader("Access-Control-Allow-Methods", "GET, HEAD, POST, PUT, DELETE, TRACE, OPTIONS, PATCH");
         response.setHeader("Access-Control-Expose-Headers", "Token");
 
+
 //        验证token
-        String token = request.getParameter("token");
-        if(!StringUtils.isBlank(token)){
-            boolean result = JwtUtil.verify(token);
-            if (result) {
-                return true;
-            }else{
-//                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                response.setCharacterEncoding("UTF-8");
-                response.setContentType("application/json; charset=utf-8");
-                JSONObject res = new JSONObject();
-                res.put("code","300");
-                res.put("msg","token验证失败,请先登录");
-                PrintWriter out = null ;
-                out = response.getWriter();
-                out.write(res.toString());
-                out.flush();
-                out.close();
-                return false;
-            }
-        }else {
+        String token = request.getHeader("token");
+        boolean result = JwtUtil.verify(token);
+        if (result) {
             return true;
+        }else{
+
+//          response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setCharacterEncoding("UTF-8");
+            response.setContentType("application/json; charset=utf-8");
+            JSONObject res = new JSONObject();
+            res.put("code","300");
+            res.put("msg","token验证失败,请先登录");
+            PrintWriter out = null ;
+            out = response.getWriter();
+            out.write(res.toString());
+            out.flush();
+            out.close();
+            return false;
         }
 
-
-
     }
+
+
 }

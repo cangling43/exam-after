@@ -6,6 +6,7 @@ import cn.com.testol.dao.TestPaper_TopicMapper;
 import cn.com.testol.dao.TopicMapper;
 import cn.com.testol.pojo.*;
 import cn.com.testol.service.TestPaperService;
+import cn.com.testol.utils.Msg;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -86,13 +87,6 @@ public class TestPaperServiceImpl implements TestPaperService {
     @Override
     public int updateTestPaper(TestPaper testPaper, List<Topic> topicList) {
         try{
-            //删除题目
-            //删除试卷_题目关联记录
-            //修改试卷信息
-            //添加题目
-            //添加试卷_题目关联记录
-
-
             //获取试卷_题目记录
             List<TestPaper_topic> testPaper_topicList=testPaper_topicMapper.getTestPaper_topicByTp_id(testPaper.getTp_id());
             //获取旧的试卷id集合
@@ -126,6 +120,8 @@ public class TestPaperServiceImpl implements TestPaperService {
             }
             //修改试卷信息
             testPaperMapper.updateTestPaper(testPaper);
+
+            /**/
             return 1;
         }catch (Exception e){
             System.out.println(e);

@@ -1,88 +1,190 @@
 package cn.com.testol.service.impl;
 
 
-import cn.com.testol.utils.JwtUtil;
-import cn.com.testol.dao.MarkTestPaperMapper;
-import cn.com.testol.dao.TestPaperMapper;
-import cn.com.testol.dao.TopicMapper;
-import cn.com.testol.pojo.*;
+import cn.com.testol.DTO.MarkExamInfoDTO;
+import cn.com.testol.DTO.StuSubmitExamDTO;
+import cn.com.testol.DTO.UserGradeDTO;
+import cn.com.testol.dao.*;
+import cn.com.testol.entity.*;
 import cn.com.testol.service.MarkTestPaperService;
+import cn.com.testol.utils.Msg;
+import cn.com.testol.utils.ResultUtil;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
+
+import java.util.Date;
+import java.util.List;
 
 @Service
 @Transactional  //事务的注解
 public class MarkTestPaperServiceImpl implements MarkTestPaperService {
     @Autowired
-    private TopicMapper topicMapper;
+    private TopicDao topicDao;
     @Autowired
-    private MarkTestPaperMapper markTestPaperMapper;
+    private UserTopicDao userTopicDao;
     @Autowired
-    private TestPaperMapper testPaperMapper;
+    private UserGradeDao userGradeDao;
+    @Autowired
+    private ExamDao examDao;
+    @Autowired
+    private ClassesDao classesDao;
+    @Autowired
+    private UserDao userDao;
 
     @Override
-    public int submitTestPaper(SubmitTestPaper submitTestPaper) {
-
-        int u_id=Integer.parseInt(JwtUtil.getUserId(submitTestPaper.getToken()));
-        //设置u_id
-        for(User_topic ut:submitTestPaper.getUserTopics()){
-            ut.setU_id(u_id);
-        }
-
-        UserGrade userGrade=new UserGrade();
-        userGrade.setU_id(u_id);
-        userGrade.setC_id(submitTestPaper.getC_id());
-        userGrade.setTp_id(submitTestPaper.getUserTopics().get(0).getTp_id());
-        userGrade.setDate(submitTestPaper.getDate());
-        userGrade.setAnswerTime(submitTestPaper.getTime());
-        userGrade.setStatus(0);
-
-        TestPaper testPaper = testPaperMapper.getTestPaperByTp_id(submitTestPaper.getUserTopics().get(0).getTp_id());
+    public int submitTestPaper(StuSubmitExamDTO stuSubmitExamDTO,Integer userId) {
+        try{
+            UserGrade userGrade=new UserGrade();
+            BeanUtils.copyProperties(stuSubmitExamDTO,userGrade);
+            userGrade.setAnswerDate(new Date());
+            userGrade.setUserId(userId);
+            userGrade.setMarkStatus(0);
+            userGrade.setExamStatus(1);
 
             double grade = 0;
-        try{
+
             //总分
-            for (User_topic ut:submitTestPaper.getUserTopics()){
+            for (UserTopic ut:stuSubmitExamDTO.getUserTopicList()){
 
-                Topic topic = topicMapper.getTopicByt_id(ut.getT_id());
-                System.out.println(topic.toString());
+                Topic topic = topicDao.selectByPrimaryKey(ut.getTopicId());
 
+                /*判断回答是否正确*/
+                //填空题
+                if(topic.getTopicType() == 3) {
+                    String[] correctAnswerArr = topic.getCorrectAnswer().split("\n");
+                    String[] userAnswerArr = ut.getUserAnswer().split("\n");
+                    double topicGrade = 0;
+                    for (String ca : correctAnswerArr) {
+                        for (String ua : userAnswerArr) {
+                            if (ca.equals(ua)) {
 
+                                topicGrade = topicGrade + (int) (topic.getScore() / correctAnswerArr.length);
+                            }
+                        }
+                    }
+                    ut.setUserScore(topicGrade);
+                    grade = grade + topicGrade;
+                }
+                //简答题
+                else if(topic.getTopicType() == 4){
+                    String[] correctAnswerArr = topic.getCorrectAnswer().split("\n");
+                    double topicGrade = 0;
+                    for (String ca : correctAnswerArr) {
+                        if(ut.getUserAnswer().contains(ca)){
+                            topicGrade = topicGrade +  (int) (topic.getScore() / correctAnswerArr.length);
+                        }
+                    }
+                    ut.setUserScore(topicGrade);
+                    grade = grade + topicGrade;
 
-
-
-                System.out.println("111");
-                //判断回答是否正确
-                if(topic.getCorrect_answer().equals(ut.getUser_answer())){
+                //其他题型
+                }else if(topic.getCorrectAnswer().equals(ut.getUserAnswer())){
                     //评判分数
-                    ut.setScore(topic.getScore());
+                    ut.setUserScore(topic.getScore());
                     //计算总分
                     grade = grade + topic.getScore();
                 }else{
-                    ut.setScore(0);
+                    ut.setUserScore(0.0);
                 }
-                //设置为未批改状态
-                ut.setStatus(0);
-                markTestPaperMapper.submitTestPaper(ut);
-            }
 
+
+                //设置为未批改状态
+                ut.setTopicStatus("0");
+                ut.setUserId(userId);
+                userTopicDao.insert(ut);
+            }
             userGrade.setGradeAuto(grade);
-            if (testPaper.getAuto_mack() == 1){
+            System.out.println(userGrade);
+
+            Exam exam = examDao.selectByPrimaryKey(stuSubmitExamDTO.getExamId());
+            if (exam.getAutoMack() == 1){
                 userGrade.setGrade(grade);
             }
 
-            markTestPaperMapper.markTestPaper(userGrade);
+            userGradeDao.insert(userGrade);
             return 1;
         }catch (Exception e){
             System.out.println(e);
             //强制手动事务回滚
+
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
         }
 
         return 0;
     }
 
+    @Override
+    public Msg selectByClassesId(Integer classesId, Integer examId, Integer userId) {
+        try {
+            Classes classes=classesDao.selectByPrimaryKey(classesId);
+            if(userId != classes.getCreatorId()){
+                return ResultUtil.error(400,"您不是该班级管理员");
+            }
+
+            List<UserGrade> userGradeList = userGradeDao.selectByClassesId(classesId,examId );
+            //删除创建者数据
+//            for(UserGrade ug:userGradeList){
+//                if(ug.getUserId() == userId){
+//                    userGradeList.remove(ug);
+//                }
+//            }
+            for(int i=0;i<userGradeList.size();i++){
+                if(userGradeList.get(i).getUserId() == userId){
+                    userGradeList.remove(i);
+                }
+            }
+            return ResultUtil.success(userGradeList);
+
+        }catch (Exception e){
+            System.out.println(e);
+            //强制手动事务回滚
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            return ResultUtil.error(100,"请求失败",e.toString());
+        }
+    }
+
+    @Override
+    public Msg selestStuExamInfo(Integer classesId, Integer examId, Integer userId) {
+        try {
+            MarkExamInfoDTO markExamInfoDTO = examDao.selestStuExamInfo(classesId,examId,userId);
+            return ResultUtil.success(markExamInfoDTO);
+        }catch (Exception e){
+            System.out.println(e);
+            //强制手动事务回滚
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            return ResultUtil.error(100,"请求失败",e.toString());
+        }
+    }
+
+    @Override
+    public Msg tchMarkExam(UserGradeDTO userGradeDTO, Integer userId) {
+        try {
+            Exam exam = examDao.selectByPrimaryKey(userGradeDTO.getExamId());
+            if(exam.getCreatorId() != userId){
+                return ResultUtil.error(3004,"您没有权利批改该试卷(身份不正确)");
+            }
+
+            UserGrade userGrade = new UserGrade();
+            BeanUtils.copyProperties(userGradeDTO,userGrade);
+            userGrade.setMarkStatus(1);
+            userGrade.setMarkDate(new Date());
+            userGradeDao.updateByForeignKeySelective(userGrade);
+
+            for(UserTopic ut:userGradeDTO.getUserTopicList()){
+                ut.setTopicStatus("1");
+                userTopicDao.updateByForeignKeySelective(ut);
+            }
+            return ResultUtil.success();
+        }catch (Exception e){
+            System.out.println(e);
+            //强制手动事务回滚
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            return ResultUtil.error(100,"请求失败",e.toString());
+        }
+    }
 
 }
