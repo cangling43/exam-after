@@ -9,6 +9,11 @@
 - 前端采用vue框架，搭配vue-cli、axios、vuex、element-ui组件库。
 - 后端采用springBoot框架、jwt、swagger、持久层mybatis，mysql数据库。
 
+#### 环境运行
+- node.js v14.6.0
+- jdk 1.8
+- mysql 8.0.22
+
 #### 源码地址
 | 前端网址  |  后端网址 |
 |---|---|
