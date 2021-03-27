@@ -60,6 +60,11 @@ public class UserClassesDTO {
     private String photo;
 
     /**
+     * 头像图片名称
+     */
+    private String photoName;
+
+    /**
      * 身份   creator:创建者  student:学生  admin:管理员
      */
     private String position;

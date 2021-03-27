@@ -20,14 +20,17 @@ public class MvcConfig implements WebMvcConfigurer {
                     .addPathPatterns("/**")
                     .excludePathPatterns("/login/**")
                     .excludePathPatterns("/register/**")
+                    .excludePathPatterns("/images/**")
+                .excludePathPatterns("/error")
+                .excludePathPatterns("/")
                     .excludePathPatterns("/swagger-resources/**", "/webjars/**", "/v2/**", "/swagger-ui.html/**")
                     ;
-
+        registry.addInterceptor(new AccessInterceptor()).excludePathPatterns("/images/**");
     }
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/images/**").addResourceLocations("classpath:/static/images/");
+        registry.addResourceHandler("/images/**").addResourceLocations("file:D:/Myfile/Graduation_design/online-examination-system-server/src/main/resources/static/images/");
     }
 
     @Override

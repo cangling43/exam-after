@@ -29,8 +29,6 @@ public class ExamServiceImpl implements ExamService {
     private ExamTopicDao examTopicDao;
     @Autowired
     private ExamClassesDao examClassesDao;
-    @Autowired
-    private UserGradeDao userGradeDao;
 
     @Override
     public Msg deleteByPrimaryKey(Integer examId) {
@@ -127,13 +125,7 @@ public class ExamServiceImpl implements ExamService {
             BeanUtils.copyProperties(examTopicTchDTO,exam);
             examDao.updateByPrimaryKeySelective(exam);
 
-            //修改其他表的试卷名称
-            Boolean updateSuccess =  updateExamName(exam.getExamName(),exam.getExamId());
-            if(updateSuccess){
-                return ResultUtil.success();
-            }else{
-                return ResultUtil.error(100,"请求失败");
-            }
+            return ResultUtil.success();
         }catch (Exception e){
             return ResultUtil.error(100,e.toString());
         }
@@ -214,16 +206,5 @@ public class ExamServiceImpl implements ExamService {
         }
     }
 
-    public Boolean updateExamName(String name, Integer examId){
-        try{
-            examClassesDao.updateExamame(name,examId);
-            userGradeDao.updateExamame(name,examId);
-            return true;
-        }catch (Exception e){
-            System.out.println(e);
-            //强制手动事务回滚
-            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-            return false;
-        }
-    }
+
 }

@@ -106,7 +106,7 @@ public class UserController {
 
     @ApiOperation(value = "修改用户信息")
     @PutMapping(value = "/updateUser")
-    public Msg updateUser(User user){
+    public Msg updateUser(@RequestBody User user){
         int result=userService.updateUser(user);
         if(result>0){
             return ResultUtil.success();

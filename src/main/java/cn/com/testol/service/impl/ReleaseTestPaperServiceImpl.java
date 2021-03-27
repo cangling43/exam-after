@@ -23,29 +23,7 @@ import java.util.List;
 public class ReleaseTestPaperServiceImpl implements ReleaseTestPaperService {
     @Autowired
     private ExamClassesDao examClassesDao;
-    @Autowired
-    private ClassesDao classesDao;
 
-//    @Override
-//    public List<TestPaper_classes> getClassesByTp_id(int tp_id) {
-//        return releaseTestPaperMapper.getClassesByTp_id(tp_id);
-//    }
-//
-//    @Override
-//    public List<TestPaper_classes> getTestpapertByC_id(int c_id,int u_id) {
-//        List<TestPaper_classes> testPaperClassesList = releaseTestPaperMapper.getTestpapertByC_id(c_id,u_id);
-//        for(TestPaper_classes tc:testPaperClassesList){
-//            if(tc.getTestPaper().getUserGrade().getId() == 0){
-//                tc.getTestPaper().setUserGrade(null);
-//                continue;
-//            }
-//            if(tc.getPublishScore() == 0){
-//                tc.getTestPaper().getUserGrade().setGrade(-1);
-//                tc.getTestPaper().getUserGrade().setGradeAuto(-1);
-//            }
-//        }
-//        return testPaperClassesList;
-//    }
 
     @Override
     public Msg releaseTest(ReleasExamDTO releasExamDTO) {
@@ -74,24 +52,17 @@ public class ReleaseTestPaperServiceImpl implements ReleaseTestPaperService {
             ExamClasses examClasses = new ExamClasses();
             BeanUtils.copyProperties(releasExamDTO,examClasses);
 
-            examClasses.setClassesName(releasExamDTO.getClassesName());
             examClasses.setStatus(0);
             examClasses.setReleaseTime(new Date());
             examClasses.setPublishAnswer(0);
             examClasses.setPublishScore(0);
 
-            Classes classes = new Classes();
             for (Integer i:addRecord){
                 examClasses.setClassesId(i);
-                classes = classesDao.selectByPrimaryKey(i);
-                examClasses.setClassesName(classes.getClassesName());
-                System.out.println(examClasses);
                 examClassesDao.insert(examClasses);
             }
             for (Integer i:updateRecord){
                 examClasses.setClassesId(i);
-                classes = classesDao.selectByPrimaryKey(i);
-                examClasses.setClassesName(classes.getClassesName());
                 examClassesDao.updateByPrimaryKeySelective(examClasses);
             }
             return ResultUtil.success();

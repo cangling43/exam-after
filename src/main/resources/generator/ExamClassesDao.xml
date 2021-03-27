@@ -15,7 +15,7 @@
     <result column="status" jdbcType="INTEGER" property="status" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, exam_id, classes_id, exam_name, classes_name, release_time, start_date, deadline, 
+    id, exam_id, classes_id, release_time, start_date, deadline,
     publish_answer, publish_score, `status`
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
@@ -26,15 +26,19 @@
   </select>
   <select id="selectByExamId" resultMap="BaseResultMap">
     select
-    <include refid="Base_Column_List" />
-    from exam_classes
-    where exam_id = #{examId,jdbcType=INTEGER}
+    ec.* ,c.classes_name ,e.exam_id
+    from exam_classes ec
+    join classes c on c.classes_id = ec.classes_id
+    join exam e on e.exam_id = ec.exam_id
+    where ec.exam_id = #{examId,jdbcType=INTEGER}
   </select>
     <select id="selectRecord" resultMap="BaseResultMap">
       select
-      <include refid="Base_Column_List" />
-      from exam_classes
-      where exam_id = #{examId,jdbcType=INTEGER} and classes_id = #{classesId,jdbcType=INTEGER}
+      ec.* ,c.classes_name ,e.exam_id
+      from exam_classes ec
+      join classes c on c.classes_id = ec.classes_id
+      join exam e on e.exam_id = ec.exam_id
+      where ec.exam_id = #{examId,jdbcType=INTEGER} and ec.classes_id = #{classesId,jdbcType=INTEGER}
     </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from exam_classes
@@ -45,12 +49,10 @@
     where exam_id = #{examId,jdbcType=INTEGER} and classes_id = #{classesId,jdbcType=INTEGER}
   </delete>
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="cn.com.testol.entity.ExamClasses" useGeneratedKeys="true">
-    insert into exam_classes (exam_id, classes_id, exam_name, 
-      classes_name, release_time, start_date, 
+    insert into exam_classes (exam_id, classes_id, release_time, start_date,
       deadline, publish_answer, publish_score, 
       `status`)
-    values (#{examId,jdbcType=INTEGER}, #{classesId,jdbcType=INTEGER}, #{examName,jdbcType=VARCHAR}, 
-      #{classesName,jdbcType=VARCHAR}, #{releaseTime,jdbcType=TIMESTAMP}, #{startDate,jdbcType=TIMESTAMP}, 
+    values (#{examId,jdbcType=INTEGER}, #{classesId,jdbcType=INTEGER}, #{releaseTime,jdbcType=TIMESTAMP}, #{startDate,jdbcType=TIMESTAMP},
       #{deadline,jdbcType=TIMESTAMP}, #{publishAnswer,jdbcType=INTEGER}, #{publishScore,jdbcType=INTEGER}, 
       #{status,jdbcType=INTEGER})
   </insert>
@@ -62,12 +64,6 @@
       </if>
       <if test="classesId != null">
         classes_id,
-      </if>
-      <if test="examName != null">
-        exam_name,
-      </if>
-      <if test="classesName != null">
-        classes_name,
       </if>
       <if test="releaseTime != null">
         release_time,
@@ -94,12 +90,6 @@
       </if>
       <if test="classesId != null">
         #{classesId,jdbcType=INTEGER},
-      </if>
-      <if test="examName != null">
-        #{examName,jdbcType=VARCHAR},
-      </if>
-      <if test="classesName != null">
-        #{classesName,jdbcType=VARCHAR},
       </if>
       <if test="releaseTime != null">
         #{releaseTime,jdbcType=TIMESTAMP},
@@ -130,12 +120,6 @@
       <if test="classesId != null">
         classes_id = #{classesId,jdbcType=INTEGER},
       </if>
-      <if test="examName != null">
-        exam_name = #{examName,jdbcType=VARCHAR},
-      </if>
-      <if test="classesName != null">
-        classes_name = #{classesName,jdbcType=VARCHAR},
-      </if>
       <if test="releaseTime != null">
         release_time = #{releaseTime,jdbcType=TIMESTAMP},
       </if>
@@ -161,8 +145,6 @@
     update exam_classes
     set exam_id = #{examId,jdbcType=INTEGER},
       classes_id = #{classesId,jdbcType=INTEGER},
-      exam_name = #{examName,jdbcType=VARCHAR},
-      classes_name = #{classesName,jdbcType=VARCHAR},
       release_time = #{releaseTime,jdbcType=TIMESTAMP},
       start_date = #{startDate,jdbcType=TIMESTAMP},
       deadline = #{deadline,jdbcType=TIMESTAMP},
@@ -179,12 +161,6 @@
       </if>
       <if test="classesId != null">
         classes_id = #{classesId,jdbcType=INTEGER},
-      </if>
-      <if test="examName != null">
-        exam_name = #{examName,jdbcType=VARCHAR},
-      </if>
-      <if test="classesName != null">
-        classes_name = #{classesName,jdbcType=VARCHAR},
       </if>
       <if test="releaseTime != null">
         release_time = #{releaseTime,jdbcType=TIMESTAMP},
@@ -206,15 +182,5 @@
       </if>
     </set>
     where exam_id = #{examId,jdbcType=INTEGER} and classes_id = #{classesId,jdbcType=INTEGER}
-  </update>
-    <update id="updateClassesName">
-      update exam_classes
-      set classes_name = #{name,jdbcType=INTEGER}
-      where classes_id = #{classesId,jdbcType=INTEGER}
-    </update>
-  <update id="updateExamame">
-          update exam_classes
-      set exam_name = #{name,jdbcType=INTEGER}
-      where exam_id = #{examId,jdbcType=INTEGER}
   </update>
 </mapper>

@@ -29,8 +29,6 @@ public class ClassesServiceImpl implements ClassesService {
     private ClassesDao classesDao;
     @Autowired
     private ExamClassesDao examClassesDao;
-    @Autowired
-    private UserGradeDao userGradeDao;
 
     //根据用户ID查找班级
     @Override
@@ -173,12 +171,7 @@ public class ClassesServiceImpl implements ClassesService {
             System.out.println(classes);
             classesDao.updateByPrimaryKeySelective(classes);
 
-            Boolean updateSuccess =  updateClassesName(classes.getClassesName(),classes.getClassesId());
-            if(updateSuccess){
-                return ResultUtil.success();
-            }else{
-                return ResultUtil.error(100,"请求失败");
-            }
+            return ResultUtil.success();
         }catch (Exception e){
             System.out.println(e);
             //强制手动事务回滚
@@ -195,20 +188,5 @@ public class ClassesServiceImpl implements ClassesService {
 
         return classesDao.deleteByPrimaryKey(id);
     }
-
-    @Override
-    public Boolean updateClassesName(String name, Integer classesId) {
-        try{
-            examClassesDao.updateClassesName(name,classesId);
-            userGradeDao.updateClassesName(name,classesId);
-            return true;
-        }catch (Exception e){
-            System.out.println(e);
-            //强制手动事务回滚
-            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-            return false;
-        }
-    }
-
 
 }

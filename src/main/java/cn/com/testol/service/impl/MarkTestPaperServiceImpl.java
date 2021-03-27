@@ -58,14 +58,20 @@ public class MarkTestPaperServiceImpl implements MarkTestPaperService {
                     String[] correctAnswerArr = topic.getCorrectAnswer().split("\n");
                     String[] userAnswerArr = ut.getUserAnswer().split("\n");
                     double topicGrade = 0;
-                    for (String ca : correctAnswerArr) {
-                        for (String ua : userAnswerArr) {
-                            if (ca.equals(ua)) {
-
-                                topicGrade = topicGrade + (int) (topic.getScore() / correctAnswerArr.length);
-                            }
+//                    for (String ca : correctAnswerArr) {
+//                        for (String ua : userAnswerArr) {
+//                            if (ca.equals(ua)) {
+//
+//                                topicGrade = topicGrade + (int) (topic.getScore() / correctAnswerArr.length);
+//                            }
+//                        }
+//                    }
+                    for(int i=0;i<correctAnswerArr.length;i++){
+                        if(correctAnswerArr[0].equals(userAnswerArr[i])){
+                            topicGrade = topicGrade + (int) (topic.getScore() / correctAnswerArr.length);
                         }
                     }
+
                     ut.setUserScore(topicGrade);
                     grade = grade + topicGrade;
                 }

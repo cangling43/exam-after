@@ -65,5 +65,10 @@ public class User implements Serializable {
      */
     private String photo;
 
+    /**
+     * 头像图片名称
+     */
+    private String photoName;
+
     private static final long serialVersionUID = 1L;
 }

@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -23,43 +24,6 @@ public class ReleaseTestPaperController {
     @Autowired
     private ExamClassesDao examClassesDao;
 
-//    @RequestMapping("/getClassesByTp_id")
-//    public Msg getClassesByTp_id(int tp_id){
-//        List<TestPaper_classes> testPaperClassesList=releaseTestPaperService.getClassesByTp_id(tp_id);
-//        if(testPaperClassesList != null){
-//            return ResultUtil.success(testPaperClassesList);
-//        }else {
-//            return ResultUtil.error(100,"请求失败");
-//        }
-//    }
-//
-//    @RequestMapping("/getTestpapertByC_id")
-//    public Msg getTestpapertByC_id(String token,int c_id){
-//        //获取token中的id
-//        int u_id=Integer.parseInt(JwtUtil.getUserId(token));
-//        List<TestPaper_classes> testPaperClassesList=releaseTestPaperService.getTestpapertByC_id(c_id,u_id);
-//        if(testPaperClassesList!=null){
-//            return ResultUtil.success(testPaperClassesList);
-//        }else {
-//            return ResultUtil.error(100,"请求失败");
-//        }
-//    }
-
-//    @PostMapping(value = "/releaseTest")
-//    public Msg releaseTest(String token,int tp_id, int[] c_id,String release_time,String start_date,String deadline){
-//
-//        if(!JwtUtil.getUserStatus(token).equals("teacher")){
-//            return ResultUtil.error(400,"用户身份不正确");
-//        }
-//
-//
-//        int result=releaseTestPaperService.releaseTest(tp_id, c_id, release_time, start_date, deadline);
-//        if(result>0){
-//            return ResultUtil.success();
-//        }else{
-//            return ResultUtil.error(100,"请求失败");
-//        }
-//    }
     @ApiOperation(value = "获取发布考试信息")
     @GetMapping(value = "/getReleaseInfo")
     public Msg getReleaseInfo(HttpServletRequest request,Integer classesId,Integer examId){
@@ -92,7 +56,7 @@ public class ReleaseTestPaperController {
             return ResultUtil.error(400,"用户身份不正确");
         }
 
-
+        examClasses.setReleaseTime(new Date());
         int result=examClassesDao.updateRecord(examClasses);
         if(result>0){
             return ResultUtil.success();

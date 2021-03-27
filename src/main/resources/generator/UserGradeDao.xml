@@ -15,11 +15,11 @@
     <result column="answer_time" jdbcType="INTEGER" property="answerTime" />
     <result column="mark_status" jdbcType="INTEGER" property="markStatus" />
     <result column="exam_status" jdbcType="INTEGER" property="examStatus" />
-    <result column="mark_date" jdbcType="INTEGER" property="markDate" />
+    <result column="mark_date" jdbcType="TIMESTAMP" property="markDate" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, user_id, classes_id, exam_id, user_name, classes_name, exam_name, grade, grade_auto, 
-    answer_date, answer_time, mark_status, exam_status ,mark_date
+    id, user_id, classes_id, exam_id, grade, grade_auto, answer_date, answer_time, mark_status, 
+    exam_status, mark_date
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -27,31 +27,29 @@
     from user_grade
     where id = #{id,jdbcType=INTEGER}
   </select>
-    <select id="selectByClassesId" resultMap="BaseResultMap">
-      select
-      u.*,c.*,e.exam_name,ug.*
+  <select id="selectByClassesId" resultMap="BaseResultMap">
+    select
+      u.user_id,u.user_name,c.classes_name,e.exam_name,ug.*
       from user u
       join exam e on e.exam_id = #{examId,jdbcType=INTEGER}
       join classes c on c.classes_id = #{classesId,jdbcType=INTEGER}
       join user_classes uc on uc.user_id = u.user_id
       left join user_grade ug on ug.user_id = uc.user_id  and ug.exam_id = e.exam_id and ug.classes_id = c.classes_id
       where uc.classes_id = #{classesId,jdbcType=INTEGER}
-    </select>
-    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from user_grade
     where id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="cn.com.testol.entity.UserGrade" useGeneratedKeys="true">
     insert into user_grade (user_id, classes_id, exam_id, 
-      user_name, classes_name, exam_name, 
       grade, grade_auto, answer_date, 
-      answer_time, mark_status, exam_status ,mark_date
-      )
+      answer_time, mark_status, exam_status, 
+      mark_date)
     values (#{userId,jdbcType=INTEGER}, #{classesId,jdbcType=INTEGER}, #{examId,jdbcType=INTEGER}, 
-      #{userName,jdbcType=VARCHAR}, #{classesName,jdbcType=VARCHAR}, #{examName,jdbcType=VARCHAR}, 
       #{grade,jdbcType=DOUBLE}, #{gradeAuto,jdbcType=DOUBLE}, #{answerDate,jdbcType=TIMESTAMP}, 
-      #{answerTime,jdbcType=INTEGER}, #{markStatus,jdbcType=INTEGER}, #{examStatus,jdbcType=INTEGER} , #{markDate,jdbcType=INTEGER}
-      )
+      #{answerTime,jdbcType=INTEGER}, #{markStatus,jdbcType=INTEGER}, #{examStatus,jdbcType=INTEGER}, 
+      #{markDate,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="cn.com.testol.entity.UserGrade" useGeneratedKeys="true">
     insert into user_grade
@@ -64,15 +62,6 @@
       </if>
       <if test="examId != null">
         exam_id,
-      </if>
-      <if test="userName != null">
-        user_name,
-      </if>
-      <if test="classesName != null">
-        classes_name,
-      </if>
-      <if test="examName != null">
-        exam_name,
       </if>
       <if test="grade != null">
         grade,
@@ -106,15 +95,6 @@
       <if test="examId != null">
         #{examId,jdbcType=INTEGER},
       </if>
-      <if test="userName != null">
-        #{userName,jdbcType=VARCHAR},
-      </if>
-      <if test="classesName != null">
-        #{classesName,jdbcType=VARCHAR},
-      </if>
-      <if test="examName != null">
-        #{examName,jdbcType=VARCHAR},
-      </if>
       <if test="grade != null">
         #{grade,jdbcType=DOUBLE},
       </if>
@@ -134,22 +114,27 @@
         #{examStatus,jdbcType=INTEGER},
       </if>
       <if test="markDate != null">
-        #{markDate,jdbcType=INTEGER}
+        #{markDate,jdbcType=TIMESTAMP},
       </if>
     </trim>
   </insert>
-  <update id="updateByForeignKeySelective" parameterType="cn.com.testol.entity.UserGrade">
+  <update id="updateByPrimaryKey" parameterType="cn.com.testol.entity.UserGrade">
+    update user_grade
+    set user_id = #{userId,jdbcType=INTEGER},
+      classes_id = #{classesId,jdbcType=INTEGER},
+      exam_id = #{examId,jdbcType=INTEGER},
+      grade = #{grade,jdbcType=DOUBLE},
+      grade_auto = #{gradeAuto,jdbcType=DOUBLE},
+      answer_date = #{answerDate,jdbcType=TIMESTAMP},
+      answer_time = #{answerTime,jdbcType=INTEGER},
+      mark_status = #{markStatus,jdbcType=INTEGER},
+      exam_status = #{examStatus,jdbcType=INTEGER},
+      mark_date = #{markDate,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByForeignKeySelective">
     update user_grade
     <set>
-      <if test="userName != null">
-        user_name = #{userName,jdbcType=VARCHAR},
-      </if>
-      <if test="classesName != null">
-        classes_name = #{classesName,jdbcType=VARCHAR},
-      </if>
-      <if test="examName != null">
-        exam_name = #{examName,jdbcType=VARCHAR},
-      </if>
       <if test="grade != null">
         grade = #{grade,jdbcType=DOUBLE},
       </if>
@@ -173,32 +158,5 @@
       </if>
     </set>
     where user_id = #{userId,jdbcType=INTEGER} and classes_id = #{classesId,jdbcType=INTEGER} and exam_id = #{examId,jdbcType=INTEGER}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="cn.com.testol.entity.UserGrade">
-    update user_grade
-    set user_id = #{userId,jdbcType=INTEGER},
-      classes_id = #{classesId,jdbcType=INTEGER},
-      exam_id = #{examId,jdbcType=INTEGER},
-      user_name = #{userName,jdbcType=VARCHAR},
-      classes_name = #{classesName,jdbcType=VARCHAR},
-      exam_name = #{examName,jdbcType=VARCHAR},
-      grade = #{grade,jdbcType=DOUBLE},
-      grade_auto = #{gradeAuto,jdbcType=DOUBLE},
-      answer_date = #{answerDate,jdbcType=TIMESTAMP},
-      answer_time = #{answerTime,jdbcType=INTEGER},
-      mark_status = #{markStatus,jdbcType=INTEGER},
-      exam_status = #{examStatus,jdbcType=INTEGER},
-      mark_date = #{markDate,jdbcType=INTEGER}
-    where id = #{id,jdbcType=INTEGER}
-  </update>
-  <update id="updateClassesName">
-    update user_grade
-      set classes_name = #{name,jdbcType=INTEGER}
-      where classes_id = #{classesId,jdbcType=INTEGER}
-  </update>
-  <update id="updateExamame">
-    update user_grade
-      set exam_name = #{name,jdbcType=INTEGER}
-      where exam_id = #{examId,jdbcType=INTEGER}
   </update>
 </mapper>

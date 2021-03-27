@@ -9,7 +9,7 @@ import lombok.Data;
 
 /**
  * user_grade
- * @author 
+ * @author
  */
 @ApiModel(value="cn.com.testol.entity.UserGrade")
 @Data

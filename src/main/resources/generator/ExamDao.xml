@@ -5,7 +5,6 @@
     <id column="exam_id" jdbcType="INTEGER" property="examId" />
     <result column="exam_name" jdbcType="VARCHAR" property="examName" />
     <result column="creator_id" jdbcType="INTEGER" property="creatorId" />
-    <result column="creator_name" jdbcType="VARCHAR" property="creatorName" />
     <result column="time" jdbcType="INTEGER" property="time" />
     <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
     <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
@@ -208,7 +207,7 @@
   </resultMap>
 
   <sql id="Base_Column_List">
-    exam_id, exam_name, creator_id, creator_name, `time`, create_date, update_date, subject_id, 
+    exam_id, exam_name, creator_id, `time`, create_date, update_date, subject_id,
     subject_name, topic_num, total_score, pass_mark, permit_copy, disrupt_order, repeat_test, 
     auto_mack
   </sql>
@@ -220,17 +219,19 @@
   </select>
   <select id="tchSelectByPrimaryKey" resultMap="ExamTopicTchDTO">
     select
-    e.* , t.*
+    e.* , t.* , u.user_name as creator_name
     from exam e
     join exam_topic et on e.exam_id = et.exam_id
     join topic t on t.topic_id = et.topic_id
+    join user u on u.user_id = e.creator_id
     where e.exam_id = #{examId,jdbcType=INTEGER}
   </select>
   <select id="stuSelectByPrimaryKey" resultMap="ExamTopicStuDTO">
     select
-    e.* , t.* , ec.* ,ug.* ,ut.*
+    e.* , t.* , ec.* ,ug.* ,ut.*, u.user_name as creator_name
     from exam e
     join exam_topic et on e.exam_id = et.exam_id
+    join user u on u.user_id = e.creator_id
     join topic t on t.topic_id = et.topic_id
     join exam_classes ec on ec.exam_id = e.exam_id and ec.classes_id = #{classesId,jdbcType=INTEGER}
     left join user_grade ug on ug.user_id=${userId} and ug.exam_id=ec.exam_id and ug.classes_id=ec.classes_id
@@ -267,13 +268,13 @@
     where exam_id = #{examId,jdbcType=INTEGER}
   </delete>
   <insert id="insert" keyColumn="exam_id" keyProperty="examId" parameterType="cn.com.testol.entity.Exam" useGeneratedKeys="true">
-    insert into exam (exam_name, creator_id, creator_name, 
+    insert into exam (exam_name, creator_id,
       `time`, create_date, update_date, 
       subject_id, subject_name, topic_num, 
       total_score, pass_mark, permit_copy, 
       disrupt_order, repeat_test, auto_mack
       )
-    values (#{examName,jdbcType=VARCHAR}, #{creatorId,jdbcType=INTEGER}, #{creatorName,jdbcType=VARCHAR}, 
+    values (#{examName,jdbcType=VARCHAR}, #{creatorId,jdbcType=INTEGER},
       #{time,jdbcType=INTEGER}, #{createDate,jdbcType=TIMESTAMP}, #{updateDate,jdbcType=TIMESTAMP}, 
       #{subjectId,jdbcType=INTEGER}, #{subjectName,jdbcType=VARCHAR}, #{topicNum,jdbcType=INTEGER}, 
       #{totalScore,jdbcType=FLOAT}, #{passMark,jdbcType=FLOAT}, #{permitCopy,jdbcType=INTEGER}, 
@@ -288,9 +289,6 @@
       </if>
       <if test="creatorId != null">
         creator_id,
-      </if>
-      <if test="creatorName != null">
-        creator_name,
       </if>
       <if test="time != null">
         `time`,
@@ -335,9 +333,6 @@
       </if>
       <if test="creatorId != null">
         #{creatorId,jdbcType=INTEGER},
-      </if>
-      <if test="creatorName != null">
-        #{creatorName,jdbcType=VARCHAR},
       </if>
       <if test="time != null">
         #{time,jdbcType=INTEGER},
@@ -386,9 +381,6 @@
       <if test="creatorId != null">
         creator_id = #{creatorId,jdbcType=INTEGER},
       </if>
-      <if test="creatorName != null">
-        creator_name = #{creatorName,jdbcType=VARCHAR},
-      </if>
       <if test="time != null">
         `time` = #{time,jdbcType=INTEGER},
       </if>
@@ -432,7 +424,6 @@
     update exam
     set exam_name = #{examName,jdbcType=VARCHAR},
       creator_id = #{creatorId,jdbcType=INTEGER},
-      creator_name = #{creatorName,jdbcType=VARCHAR},
       `time` = #{time,jdbcType=INTEGER},
       create_date = #{createDate,jdbcType=TIMESTAMP},
       update_date = #{updateDate,jdbcType=TIMESTAMP},

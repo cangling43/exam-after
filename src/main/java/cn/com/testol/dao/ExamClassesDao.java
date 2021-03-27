@@ -21,10 +21,6 @@ public interface ExamClassesDao {
 
     int updateByPrimaryKey(ExamClasses record);
 
-    int updateClassesName(String name,Integer classesId);
-
-    int updateExamame(String name,Integer examId);
-
     List<ExamClasses> selectByExamId(Integer examId);
 
     int deleteRecord(int examId,int classesId);

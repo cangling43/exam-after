@@ -31,8 +31,4 @@ public interface ClassesService  {
     public int deleteClasses(int id);
 
 
-    Boolean updateClassesName(String name ,Integer classesId);
-
-
-
 }

@@ -43,20 +43,22 @@
     <result column="status" jdbcType="INTEGER" property="status" />
   </resultMap>
   <sql id="Base_Column_List">
-    classes_id, classes_name, update_date, create_date, introduction, people_num, creator_name, 
+    classes_id, classes_name, update_date, create_date, introduction, people_num,
     creator_id, joinWay
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
-    <include refid="Base_Column_List" />
-    from classes
+    c.* , u.user_name as creator_name
+    from classes c
+    join user u on u.user_id = c.creator_id
     where classes_id = #{classesId,jdbcType=INTEGER}
   </select>
   <select id="selectByUserId" resultMap="ClassesUserDTO">
     select
-    c.*,u_c.position , u_c.enter_date
+    c.*,u_c.position , u_c.enter_date , u.user_name as creator_name
     from  classes c
     join user_classes u_c on u_c.classes_id = c.classes_id
+    join user u on u.user_id = c.creator_id
     where  u_c.user_id=#{userId}
     order by u_c.enter_date desc
   </select>
@@ -73,10 +75,10 @@
   </delete>
   <insert id="insert" keyColumn="classes_id" keyProperty="classesId" parameterType="cn.com.testol.entity.Classes" useGeneratedKeys="true">
     insert into classes (classes_name, update_date, create_date, 
-      introduction, people_num, creator_name, 
+      introduction, people_num,
       creator_id, joinWay)
     values (#{classesName,jdbcType=VARCHAR}, #{updateDate,jdbcType=TIMESTAMP}, #{createDate,jdbcType=TIMESTAMP}, 
-      #{introduction,jdbcType=VARCHAR}, #{peopleNum,jdbcType=INTEGER}, #{creatorName,jdbcType=VARCHAR}, 
+      #{introduction,jdbcType=VARCHAR}, #{peopleNum,jdbcType=INTEGER},
       #{creatorId,jdbcType=INTEGER}, #{joinway,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" keyColumn="classes_id" keyProperty="classesId" parameterType="cn.com.testol.entity.Classes" useGeneratedKeys="true">
@@ -96,9 +98,6 @@
       </if>
       <if test="peopleNum != null">
         people_num,
-      </if>
-      <if test="creatorName != null">
-        creator_name,
       </if>
       <if test="creatorId != null">
         creator_id,
@@ -122,9 +121,6 @@
       </if>
       <if test="peopleNum != null">
         #{peopleNum,jdbcType=INTEGER},
-      </if>
-      <if test="creatorName != null">
-        #{creatorName,jdbcType=VARCHAR},
       </if>
       <if test="creatorId != null">
         #{creatorId,jdbcType=INTEGER},
@@ -152,9 +148,6 @@
       <if test="peopleNum != null">
         people_num = #{peopleNum,jdbcType=INTEGER},
       </if>
-      <if test="creatorName != null">
-        creator_name = #{creatorName,jdbcType=VARCHAR},
-      </if>
       <if test="creatorId != null">
         creator_id = #{creatorId,jdbcType=INTEGER},
       </if>
@@ -171,7 +164,6 @@
       create_date = #{createDate,jdbcType=TIMESTAMP},
       introduction = #{introduction,jdbcType=VARCHAR},
       people_num = #{peopleNum,jdbcType=INTEGER},
-      creator_name = #{creatorName,jdbcType=VARCHAR},
       creator_id = #{creatorId,jdbcType=INTEGER},
       joinWay = #{joinway,jdbcType=VARCHAR}
     where classes_id = #{classesId,jdbcType=INTEGER}

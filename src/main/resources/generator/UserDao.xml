@@ -12,6 +12,7 @@
     <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
     <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
     <result column="photo" jdbcType="VARCHAR" property="photo" />
+    <result column="photo_name" jdbcType="VARCHAR" property="photoName" />
   </resultMap>
   <resultMap id="UserClassesDTO" type="cn.com.testol.DTO.UserClassesDTO">
     <id column="user_id" jdbcType="INTEGER" property="userId" />
@@ -24,12 +25,13 @@
     <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
     <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
     <result column="photo" jdbcType="VARCHAR" property="photo" />
+    <result column="photo_name" jdbcType="VARCHAR" property="photoName" />
     <result column="position" jdbcType="VARCHAR" property="position" />
     <result column="enter_date" jdbcType="TIMESTAMP" property="enterDate" />
   </resultMap>
   <sql id="Base_Column_List">
     user_id, user_name, sex, phone, email, `role`, `work`, update_date, create_date, 
-    photo
+    photo,photo_name
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -70,11 +72,11 @@
   <insert id="insert" keyColumn="user_id" keyProperty="userId" parameterType="cn.com.testol.entity.User" useGeneratedKeys="true">
     insert into user (user_name, sex, phone, 
       email, `role`, `work`, 
-      update_date, create_date, photo
+      update_date, create_date, photo, photo_name
       )
     values (#{userName,jdbcType=VARCHAR}, #{sex,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, 
       #{email,jdbcType=VARCHAR}, #{role,jdbcType=VARCHAR}, #{work,jdbcType=VARCHAR}, 
-      #{updateDate,jdbcType=TIMESTAMP}, #{createDate,jdbcType=TIMESTAMP}, #{photo,jdbcType=VARCHAR}
+      #{updateDate,jdbcType=TIMESTAMP}, #{createDate,jdbcType=TIMESTAMP}, #{photo,jdbcType=VARCHAR},#{photoName,jdbcType=VARCHAR}
       )
   </insert>
   <insert id="insertSelective" keyColumn="user_id" keyProperty="userId" parameterType="cn.com.testol.entity.User" useGeneratedKeys="true">
@@ -107,6 +109,9 @@
       <if test="photo != null">
         photo,
       </if>
+      <if test="photoName != null">
+        photo_name,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="userName != null">
@@ -135,6 +140,9 @@
       </if>
       <if test="photo != null">
         #{photo,jdbcType=VARCHAR},
+      </if>
+      <if test="photoName != null">
+        #{photoName,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -168,6 +176,9 @@
       <if test="photo != null">
         photo = #{photo,jdbcType=VARCHAR},
       </if>
+      <if test="photoName != null">
+        photo_name = #{photoName,jdbcType=VARCHAR},
+      </if>
     </set>
     where user_id = #{userId,jdbcType=INTEGER}
   </update>
@@ -181,7 +192,8 @@
       `work` = #{work,jdbcType=VARCHAR},
       update_date = #{updateDate,jdbcType=TIMESTAMP},
       create_date = #{createDate,jdbcType=TIMESTAMP},
-      photo = #{photo,jdbcType=VARCHAR}
+      photo = #{photo,jdbcType=VARCHAR},
+      photo_name = #{photoName,jdbcType=VARCHAR}
     where user_id = #{userId,jdbcType=INTEGER}
   </update>
 </mapper>
