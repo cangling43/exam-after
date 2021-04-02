@@ -1,6 +1,6 @@
 package cn.com.testol.service;
 
-import cn.com.testol.pojo.Topic;
+import cn.com.testol.entity.Topic;
 
 public interface TopicService {
 

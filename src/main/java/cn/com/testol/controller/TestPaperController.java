@@ -6,7 +6,6 @@ import cn.com.testol.service.ExamService;
 import cn.com.testol.utils.JwtUtil;
 import cn.com.testol.utils.Msg;
 import cn.com.testol.utils.ResultUtil;
-import cn.com.testol.pojo.*;
 import cn.com.testol.service.MarkTestPaperService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -114,34 +113,8 @@ public class TestPaperController {
         String token =  request.getHeader("token");
         int u_id=Integer.parseInt(JwtUtil.getUserId(token));
 
-        int result=markTestPaperService.submitTestPaper(stuSubmitExamDTO,u_id);
-        if(result>0){
-            return ResultUtil.success();
-        }else{
-            return ResultUtil.error(100,"请求失败");
-        }
+        return markTestPaperService.submitTestPaper(stuSubmitExamDTO,u_id);
     }
 
-    //批改试卷(教师角色)
-    @ApiOperation(value = "批改试卷(教师角色)")
-    @PostMapping(value = "/markTestPaper" )
-    public Msg markTestPaper(@RequestBody RequestTestPaper requestTestPaper,HttpServletRequest request){
-        //获取token
-        String token =  request.getHeader("token");
 
-
-        if(!JwtUtil.getUserStatus(token).equals("teacher")){
-            return ResultUtil.error(400,"用户身份不正确");
-        }
-
-        //获取token中的id
-        int u_id=Integer.parseInt(JwtUtil.getUserId(token));
-
-        TestPaper testPaper=requestTestPaper.getTestPaper();
-
-        
-
-        return ResultUtil.success();
-
-    }
 }

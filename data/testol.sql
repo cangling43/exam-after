@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 80022
 File Encoding         : 65001
 
-Date: 2021-03-27 14:46:26
+Date: 2021-04-02 11:54:36
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -31,7 +31,7 @@ CREATE TABLE `classes` (
   PRIMARY KEY (`classes_id`),
   KEY `FK` (`creator_id`),
   CONSTRAINT `FK` FOREIGN KEY (`creator_id`) REFERENCES `user` (`user_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of classes
@@ -60,6 +60,7 @@ INSERT INTO `classes` VALUES ('22', '修改班级名称1', '2021-03-07 23:42:52'
 INSERT INTO `classes` VALUES ('23', '检查创建班级名称', '2021-03-10 16:20:10', '2021-03-10 16:20:10', '安抚大使', '1', '1', 'all');
 INSERT INTO `classes` VALUES ('24', '岁的法国', '2021-03-10 16:22:12', '2021-03-10 16:22:12', '啊沙发上', '1', '1', 'all');
 INSERT INTO `classes` VALUES ('25', '演示创建的班级11111', '2021-03-11 10:04:56', '2021-03-11 10:04:56', '的方式敢死队风格', '3', '1', 'all');
+INSERT INTO `classes` VALUES ('26', '测试12', '2021-04-02 09:16:32', '2021-04-02 09:16:32', '奥迪', '5', '1', 'all');
 
 -- ----------------------------
 -- Table structure for exam
@@ -81,21 +82,23 @@ CREATE TABLE `exam` (
   `disrupt_order` int unsigned DEFAULT '0' COMMENT '是否打乱题目顺序 0:不打乱(默认) 1:打乱顺序',
   `repeat_test` int unsigned DEFAULT '1' COMMENT '允许考生考试次数 默认1',
   `auto_mack` int unsigned DEFAULT '1' COMMENT '是否自动评分 0:否   1:是(默认)',
+  `required` int DEFAULT '0' COMMENT '0: 非必填   1:必填',
   PRIMARY KEY (`exam_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of exam
 -- ----------------------------
-INSERT INTO `exam` VALUES ('1', 'test', '1', '60', '2021-01-05 21:17:08', null, '1', null, '6', '100', '60', '0', '1', '3', '1');
-INSERT INTO `exam` VALUES ('4', '填空题与简答题的自动评分', '1', '120', '2021-01-24 21:54:20', null, '1', null, '10', '120', '60', '0', '0', '1', '1');
-INSERT INTO `exam` VALUES ('7', '新建的试卷', '1', '80', '2021-01-05 21:58:47', null, '1', null, '6', '100', '60', '0', '0', '1', '0');
-INSERT INTO `exam` VALUES ('10', '验证题目乱序功能', '1', '60', '2021-01-28 16:22:03', null, '1', null, '10', '100', '0', '0', '1', '1', '0');
-INSERT INTO `exam` VALUES ('11', '测试成绩试卷成功后自动跳转url', '1', '60', '2021-01-28 15:05:33', null, '1', null, '1', '100', '0', '0', '0', '1', '0');
-INSERT INTO `exam` VALUES ('12', '测试成绩试卷成功后自动跳转url2', '1', '60', '2021-01-28 15:10:21', null, '1', null, '1', '50', '0', '0', '1', '1', '1');
-INSERT INTO `exam` VALUES ('13', '点击编辑试卷名称', '1', '60', '2021-03-08 15:29:05', '2021-03-08 15:29:05', null, null, '16', '0', null, '0', '0', '1', '0');
-INSERT INTO `exam` VALUES ('14', '修改试卷名称', '1', '60', '2021-03-08 15:45:56', '2021-03-08 15:45:56', null, null, '2', '110', '0', '1', '0', '1', '1');
-INSERT INTO `exam` VALUES ('15', '不想加班拉', '1', '10', '2021-03-11 10:12:43', '2021-03-11 10:12:43', null, null, '9', '120', '100', '0', '1', '1', '1');
+INSERT INTO `exam` VALUES ('1', 'test', '1', '60', '2021-01-05 21:17:08', null, '1', null, '6', '100', '60', '0', '1', '3', '1', '0');
+INSERT INTO `exam` VALUES ('4', '填空题与简答题的自动评分', '1', '120', '2021-01-24 21:54:20', null, '1', null, '10', '120', '60', '0', '0', '1', '1', '0');
+INSERT INTO `exam` VALUES ('7', '新建的试卷', '1', '80', '2021-01-05 21:58:47', null, '1', null, '6', '100', '60', '0', '0', '1', '0', '0');
+INSERT INTO `exam` VALUES ('10', '验证题目乱序功能', '1', '60', '2021-01-28 16:22:03', null, '1', null, '10', '100', '0', '0', '1', '1', '0', '0');
+INSERT INTO `exam` VALUES ('11', '测试成绩试卷成功后自动跳转url', '1', '60', '2021-01-28 15:05:33', null, '1', null, '1', '100', '0', '0', '0', '1', '0', '0');
+INSERT INTO `exam` VALUES ('12', '测试成绩试卷成功后自动跳转url2', '1', '60', '2021-01-28 15:10:21', null, '1', null, '1', '50', '0', '0', '1', '1', '1', '0');
+INSERT INTO `exam` VALUES ('13', '点击编辑试卷名称', '1', '60', '2021-03-08 15:29:05', '2021-03-08 15:29:05', null, null, '16', '0', null, '0', '0', '1', '0', '0');
+INSERT INTO `exam` VALUES ('14', '修改试卷名称', '1', '60', '2021-03-08 15:45:56', '2021-03-08 15:45:56', null, null, '2', '110', '0', '1', '0', '1', '1', '0');
+INSERT INTO `exam` VALUES ('15', '不想加班拉', '1', '10', '2021-03-11 10:12:43', '2021-03-11 10:12:43', null, null, '9', '120', '100', '0', '1', '1', '1', '0');
+INSERT INTO `exam` VALUES ('19', '测试试卷', '1', '60', '2021-04-02 09:27:17', '2021-04-02 09:33:20', null, null, '5', '50', '30', '0', '0', '1', '1', '0');
 
 -- ----------------------------
 -- Table structure for exam_classes
@@ -112,7 +115,7 @@ CREATE TABLE `exam_classes` (
   `publish_score` int(10) unsigned zerofill DEFAULT '0000000000' COMMENT '是否公布分数   0:不公布   1:公布',
   `status` int DEFAULT '0' COMMENT '状态 0:待批改 1:批改完成',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of exam_classes
@@ -136,6 +139,7 @@ INSERT INTO `exam_classes` VALUES ('21', '12', '21', '2021-03-10 11:13:15', '202
 INSERT INTO `exam_classes` VALUES ('22', '15', '25', '2021-03-20 18:41:16', '2021-03-03 00:00:00', '2021-03-19 00:00:00', '0000000000', '0000000000', '0');
 INSERT INTO `exam_classes` VALUES ('23', '15', '1', '2021-03-18 20:58:26', '2021-03-03 00:00:00', '2021-04-20 00:00:00', '0000000000', '0000000000', '0');
 INSERT INTO `exam_classes` VALUES ('24', '1', '25', '2021-03-20 18:55:53', '2021-03-10 00:00:00', '2021-03-17 00:00:00', '0000000000', '0000000000', '0');
+INSERT INTO `exam_classes` VALUES ('25', '19', '26', '2021-04-02 11:21:27', '2021-04-01 00:00:00', '2021-05-14 00:00:00', '0000000001', '0000000001', '0');
 
 -- ----------------------------
 -- Table structure for exam_topic
@@ -147,7 +151,7 @@ CREATE TABLE `exam_topic` (
   `topic_id` int NOT NULL COMMENT '题目id',
   `topic_type` int NOT NULL COMMENT '题目类型  0:单选题 1:多选题 2:判断题 3:填空题 4:简答题',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=57 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=64 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of exam_topic
@@ -197,6 +201,11 @@ INSERT INTO `exam_topic` VALUES ('53', '15', '53', '2');
 INSERT INTO `exam_topic` VALUES ('54', '15', '54', '3');
 INSERT INTO `exam_topic` VALUES ('55', '15', '55', '4');
 INSERT INTO `exam_topic` VALUES ('56', '15', '56', '1');
+INSERT INTO `exam_topic` VALUES ('57', '19', '57', '0');
+INSERT INTO `exam_topic` VALUES ('58', '19', '58', '1');
+INSERT INTO `exam_topic` VALUES ('59', '19', '59', '2');
+INSERT INTO `exam_topic` VALUES ('60', '19', '60', '3');
+INSERT INTO `exam_topic` VALUES ('61', '19', '61', '4');
 
 -- ----------------------------
 -- Table structure for subjects
@@ -217,110 +226,6 @@ CREATE TABLE `subjects` (
 -- ----------------------------
 INSERT INTO `subjects` VALUES ('1', 'java', '1', '2020-11-28', null, null);
 INSERT INTO `subjects` VALUES ('2', 'mysql', '1', '2020-11-29', null, null);
-
--- ----------------------------
--- Table structure for testpaper
--- ----------------------------
-DROP TABLE IF EXISTS `testpaper`;
-CREATE TABLE `testpaper` (
-  `tp_id` int NOT NULL AUTO_INCREMENT,
-  `tp_name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL,
-  `creator_id` int unsigned DEFAULT NULL,
-  `time` int unsigned DEFAULT NULL,
-  `create_date` varchar(255) DEFAULT NULL,
-  `subject_id` int unsigned DEFAULT NULL,
-  `topic_num` int unsigned DEFAULT '0',
-  `total_score` float unsigned DEFAULT '0',
-  `pass_mark` float unsigned DEFAULT '0',
-  `permit_copy` int unsigned DEFAULT '1',
-  `disrupt_order` int unsigned DEFAULT '0',
-  `repeat_test` int unsigned DEFAULT '1',
-  `auto_mack` int unsigned DEFAULT '1',
-  PRIMARY KEY (`tp_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of testpaper
--- ----------------------------
-INSERT INTO `testpaper` VALUES ('1', 'test', '1', '10', '2021-01-05 21:17:08', '1', '5', '100', '60', '0', '0', '1', '1');
-INSERT INTO `testpaper` VALUES ('4', '我创建的第一张试卷', '1', '120', '2021-01-24 21:54:20', '1', '7', '70', '30', '0', '1', '1', '0');
-INSERT INTO `testpaper` VALUES ('7', '新建的试卷', '1', '80', '2021-01-05 21:58:47', '1', '6', '100', '60', '0', '0', '1', '0');
-INSERT INTO `testpaper` VALUES ('10', '验证题目乱序功能', '1', '60', '2021-01-28 16:22:03', '1', '10', '100', '0', '0', '1', '1', '0');
-INSERT INTO `testpaper` VALUES ('11', '测试成绩试卷成功后自动跳转url', '1', '60', '2021-01-28 15:05:33', '1', '1', '100', '0', '0', '0', '1', '0');
-INSERT INTO `testpaper` VALUES ('12', '测试成绩试卷成功后自动跳转url2', '1', '60', '2021-01-28 15:10:21', '1', '1', '50', '0', '0', '1', '1', '1');
-
--- ----------------------------
--- Table structure for testpaper_classes
--- ----------------------------
-DROP TABLE IF EXISTS `testpaper_classes`;
-CREATE TABLE `testpaper_classes` (
-  `tc_id` int NOT NULL AUTO_INCREMENT,
-  `tp_id` int NOT NULL,
-  `c_id` int NOT NULL,
-  `release_time` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
-  `start_date` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
-  `deadline` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
-  `publish_answer` int DEFAULT '0',
-  `publish_score` int DEFAULT '0',
-  `tc_status` int DEFAULT '0',
-  PRIMARY KEY (`tc_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of testpaper_classes
--- ----------------------------
-INSERT INTO `testpaper_classes` VALUES ('1', '1', '1', '2020-12-30 23:23:54', '2020-12-10 00:00:00', '2021-01-29 00:00:00', '0', '0', '0');
-INSERT INTO `testpaper_classes` VALUES ('4', '4', '1', '2020-12-11 20:35:56', '2020-12-03 00:00:00', '2020-12-11 00:00:00', '1', '1', '0');
-INSERT INTO `testpaper_classes` VALUES ('5', '4', '13', '2020-12-16 21:40:33', '2020-12-16 00:00:00', '2021-01-21 00:00:00', '0', '1', '0');
-INSERT INTO `testpaper_classes` VALUES ('7', '7', '15', '2021-01-05 22:00:14', '2021-01-05 00:00:00', '2021-01-06 00:00:00', '0', '0', '0');
-INSERT INTO `testpaper_classes` VALUES ('8', '10', '1', '2021-01-28 14:22:49', '2021-01-28 00:00:00', '2022-03-11 00:00:00', '0', '0', '0');
-INSERT INTO `testpaper_classes` VALUES ('9', '1', '14', '2021-02-17 19:33:06', '2021-02-04 00:00:00', '2022-03-17 00:00:00', '0', '0', '0');
-INSERT INTO `testpaper_classes` VALUES ('10', '7', '1', '2021-02-19 21:13:00', '2021-02-02 00:00:00', '2021-02-11 00:00:00', '0', '0', '0');
-
--- ----------------------------
--- Table structure for testpaper_topic
--- ----------------------------
-DROP TABLE IF EXISTS `testpaper_topic`;
-CREATE TABLE `testpaper_topic` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `tp_id` int NOT NULL,
-  `t_id` int NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of testpaper_topic
--- ----------------------------
-INSERT INTO `testpaper_topic` VALUES ('1', '1', '1');
-INSERT INTO `testpaper_topic` VALUES ('3', '4', '3');
-INSERT INTO `testpaper_topic` VALUES ('4', '4', '4');
-INSERT INTO `testpaper_topic` VALUES ('5', '4', '5');
-INSERT INTO `testpaper_topic` VALUES ('6', '4', '6');
-INSERT INTO `testpaper_topic` VALUES ('7', '4', '7');
-INSERT INTO `testpaper_topic` VALUES ('11', '4', '11');
-INSERT INTO `testpaper_topic` VALUES ('12', '4', '12');
-INSERT INTO `testpaper_topic` VALUES ('18', '1', '18');
-INSERT INTO `testpaper_topic` VALUES ('19', '1', '19');
-INSERT INTO `testpaper_topic` VALUES ('20', '1', '20');
-INSERT INTO `testpaper_topic` VALUES ('21', '1', '21');
-INSERT INTO `testpaper_topic` VALUES ('22', '7', '22');
-INSERT INTO `testpaper_topic` VALUES ('23', '7', '23');
-INSERT INTO `testpaper_topic` VALUES ('24', '7', '24');
-INSERT INTO `testpaper_topic` VALUES ('25', '7', '25');
-INSERT INTO `testpaper_topic` VALUES ('26', '7', '26');
-INSERT INTO `testpaper_topic` VALUES ('27', '7', '27');
-INSERT INTO `testpaper_topic` VALUES ('28', '10', '28');
-INSERT INTO `testpaper_topic` VALUES ('29', '10', '29');
-INSERT INTO `testpaper_topic` VALUES ('30', '10', '30');
-INSERT INTO `testpaper_topic` VALUES ('31', '10', '31');
-INSERT INTO `testpaper_topic` VALUES ('32', '10', '32');
-INSERT INTO `testpaper_topic` VALUES ('33', '10', '33');
-INSERT INTO `testpaper_topic` VALUES ('34', '10', '34');
-INSERT INTO `testpaper_topic` VALUES ('35', '10', '35');
-INSERT INTO `testpaper_topic` VALUES ('36', '10', '36');
-INSERT INTO `testpaper_topic` VALUES ('37', '10', '37');
-INSERT INTO `testpaper_topic` VALUES ('38', '11', '38');
-INSERT INTO `testpaper_topic` VALUES ('39', '12', '39');
 
 -- ----------------------------
 -- Table structure for topic
@@ -344,7 +249,7 @@ CREATE TABLE `topic` (
   PRIMARY KEY (`topic_id`),
   KEY `suoyin2` (`creator_id`) USING BTREE,
   CONSTRAINT `FK11` FOREIGN KEY (`creator_id`) REFERENCES `user` (`user_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE=InnoDB AUTO_INCREMENT=57 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=64 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of topic
@@ -400,6 +305,13 @@ INSERT INTO `topic` VALUES ('53', '1', null, null, '这是我新建的题目', '
 INSERT INTO `topic` VALUES ('54', '1', null, null, '这是我___新建的题目___', '选项1\n选项2\n选项3\n选项4', null, '3', '对对对\n冲冲冲', '10', '中等', '这是答案分析', '2021-03-11 10:12:43', '2021-03-11 10:12:43');
 INSERT INTO `topic` VALUES ('55', '1', null, null, '这是我新建的题目', '选项1\n选项2\n选项3\n选项4', null, '4', '123\n456', '10', '中等', '这是答案分析', '2021-03-11 10:12:43', '2021-03-11 10:12:43');
 INSERT INTO `topic` VALUES ('56', '1', null, null, '这是修改试卷的题目', '选项1\n选项2\n选项3\n选项4', null, '1', '', '10', '中等', '这是答案分析', '2021-03-11 10:14:35', '2021-03-11 10:14:35');
+INSERT INTO `topic` VALUES ('57', '1', null, null, '这是我新建的题目', '选项1\n选项2\n选项3\n选项4', null, '0', '选项1', '10', '中等', '这是答案分析', '2021-04-02 09:27:17', '2021-04-02 09:27:17');
+INSERT INTO `topic` VALUES ('58', '1', null, null, '这是我新建的题目', '选项1\n选项2\n选项3\n选项4', null, '1', '选项2\n选项3', '10', '中等', '这是答案分析', '2021-04-02 09:27:17', '2021-04-02 09:27:17');
+INSERT INTO `topic` VALUES ('59', '1', null, null, '这是我新建的题目', '选项1\n选项2\n选项3\n选项4', null, '2', 'true', '10', '中等', '这是答案分析', '2021-04-02 09:27:17', '2021-04-02 09:27:17');
+INSERT INTO `topic` VALUES ('60', '1', null, null, '这是我___新建的题目___', '选项1\n选项2\n选项3\n选项4', null, '3', '111\n222', '10', '中等', '这是答案分析', '2021-04-02 09:27:17', '2021-04-02 09:27:17');
+INSERT INTO `topic` VALUES ('61', '1', null, null, '这是我新建的题目', '选项1\n选项2\n选项3\n选项4', null, '4', '123\n456', '10', '中等', '这是答案分析', '2021-04-02 09:27:17', '2021-04-02 09:27:17');
+INSERT INTO `topic` VALUES ('62', '1', null, null, '这是我新建的题目', '选项1\n选项2\n选项3\n选项4', null, '0', '', '10', '中等', '这是答案分析', '2021-04-02 09:33:04', '2021-04-02 09:33:04');
+INSERT INTO `topic` VALUES ('63', '1', null, null, '这是我新建的题目', '选项1\n选项2\n选项3\n选项4', null, '0', '选项1', '10', '中等', '这是答案分析', '2021-04-02 09:33:09', '2021-04-02 09:33:09');
 
 -- ----------------------------
 -- Table structure for user
@@ -424,9 +336,9 @@ CREATE TABLE `user` (
 -- ----------------------------
 -- Records of user
 -- ----------------------------
-INSERT INTO `user` VALUES ('1', 'admin', '男', '13000000000', '762489117@qq.com', 'teacher', '教师', '2021-03-27 14:37:56', '2020-11-16 15:51:00', '70c5954aa34d4595a7b85ba5ff329d4d.jpg', 'fbab4835a816e500f49fda12633f9873.jpg');
+INSERT INTO `user` VALUES ('1', 'admin', '男', '13000000000', '762489117@qq.com', 'teacher', '教师', '2021-03-31 11:13:33', '2020-11-16 15:51:00', 'ce192d33d67149c1967658eb94778e64.jpg', 'fbab4835a816e500f49fda12633f9873.jpg');
 INSERT INTO `user` VALUES ('2', '李子建abc', '男', '13000000002', '1@qq.com', 'student', null, null, '2020-11-16 15:51:00', null, null);
-INSERT INTO `user` VALUES ('3', '1111', '女', '13000000001', '2@qq.com', 'teacher', '', null, '2020-11-16 15:51:00', null, null);
+INSERT INTO `user` VALUES ('3', '1111', '女', '13000000001', '2@qq.com', 'student', '', null, '2020-11-16 15:51:00', null, null);
 INSERT INTO `user` VALUES ('5', 'aaa1', '男', null, '11@qq.com', 'student', '', null, '2020-11-27 13:11:49', null, null);
 INSERT INTO `user` VALUES ('7', 'tatata', '男', '', '3@qq.com', 'student', '', null, '2020-12-02 18:57:33', null, null);
 INSERT INTO `user` VALUES ('11', '李子健11', '男', '13000000009', '123@qq.com', 'student', '', null, '2021-01-05 20:20:24', null, null);
@@ -444,7 +356,7 @@ CREATE TABLE `user_classes` (
   `position` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '身份   creator:创建者  student:学生  admin:管理员',
   `enter_date` datetime DEFAULT NULL COMMENT '加入时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=53 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=58 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of user_classes
@@ -485,6 +397,10 @@ INSERT INTO `user_classes` VALUES ('48', '1', '23', 'creator', '2021-03-10 16:20
 INSERT INTO `user_classes` VALUES ('49', '1', '24', 'creator', '2021-03-10 16:22:12');
 INSERT INTO `user_classes` VALUES ('50', '1', '25', 'creator', '2021-03-11 10:04:56');
 INSERT INTO `user_classes` VALUES ('52', '14', '25', 'student', '2021-03-11 10:27:12');
+INSERT INTO `user_classes` VALUES ('53', '1', '26', 'creator', '2021-04-02 09:16:32');
+INSERT INTO `user_classes` VALUES ('55', '2', '26', 'student', '2021-04-02 09:35:06');
+INSERT INTO `user_classes` VALUES ('56', '5', '26', 'student', '2021-04-02 10:38:49');
+INSERT INTO `user_classes` VALUES ('57', '3', '26', 'student', '2021-04-02 11:44:10');
 
 -- ----------------------------
 -- Table structure for user_grade
@@ -503,7 +419,7 @@ CREATE TABLE `user_grade` (
   `exam_status` int DEFAULT '0' COMMENT '试卷状态 0:未完成  1:已完成',
   `mark_date` datetime DEFAULT NULL COMMENT '批改日期',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of user_grade
@@ -525,6 +441,9 @@ INSERT INTO `user_grade` VALUES ('14', '2', '20', '4', '20', '20', '2021-03-10 1
 INSERT INTO `user_grade` VALUES ('15', '14', '25', '15', '57', '50', '2021-03-11 10:31:05', '90', '1', '1', '2021-03-11 10:40:36');
 INSERT INTO `user_grade` VALUES ('16', '1', '25', '15', '50', '50', '2021-03-11 10:39:42', '601', '0', '1', null);
 INSERT INTO `user_grade` VALUES ('17', '2', '1', '15', '40', '40', '2021-03-18 20:59:15', '18', '0', '1', null);
+INSERT INTO `user_grade` VALUES ('18', '2', '26', '19', '25', '25', '2021-04-02 10:32:48', '74', '0', '1', null);
+INSERT INTO `user_grade` VALUES ('19', '5', '26', '19', '13', '20', '2021-04-02 10:42:19', '71', '1', '1', '2021-04-02 11:20:26');
+INSERT INTO `user_grade` VALUES ('20', '3', '26', '19', '35', '35', '2021-04-02 11:47:28', '54', '0', '1', null);
 
 -- ----------------------------
 -- Table structure for user_password
@@ -565,7 +484,7 @@ CREATE TABLE `user_topic` (
   `user_score` double DEFAULT NULL COMMENT '用户得分',
   `topic_status` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '0:待批改 1:批改完成',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=295 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=310 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of user_topic
@@ -721,3 +640,18 @@ INSERT INTO `user_topic` VALUES ('291', '2', '1', '15', '54', '冲冲冲\n阿迪
 INSERT INTO `user_topic` VALUES ('292', '2', '1', '15', '52', '选项2\n选项3', '0', '0');
 INSERT INTO `user_topic` VALUES ('293', '2', '1', '15', '48', '选项1', '20', '0');
 INSERT INTO `user_topic` VALUES ('294', '2', '1', '15', '56', '选项2\n选项3', '0', '0');
+INSERT INTO `user_topic` VALUES ('295', '2', '26', '19', '57', '选项1', '10', '0');
+INSERT INTO `user_topic` VALUES ('296', '2', '26', '19', '58', '选项2\n选项3', '10', '0');
+INSERT INTO `user_topic` VALUES ('297', '2', '26', '19', '59', 'false', '0', '0');
+INSERT INTO `user_topic` VALUES ('298', '2', '26', '19', '60', 'www\n222', '0', '0');
+INSERT INTO `user_topic` VALUES ('299', '2', '26', '19', '61', 'asd123aif', '5', '0');
+INSERT INTO `user_topic` VALUES ('300', '5', '26', '19', '57', '选项1', '10', '1');
+INSERT INTO `user_topic` VALUES ('301', '5', '26', '19', '58', '选项1\n选项2', '0', '1');
+INSERT INTO `user_topic` VALUES ('302', '5', '26', '19', '59', 'false', '0', '1');
+INSERT INTO `user_topic` VALUES ('303', '5', '26', '19', '60', 'qwe\n222', '1', '1');
+INSERT INTO `user_topic` VALUES ('304', '5', '26', '19', '61', 'asdf456fdg', '2', '1');
+INSERT INTO `user_topic` VALUES ('305', '3', '26', '19', '57', '选项1', '10', '0');
+INSERT INTO `user_topic` VALUES ('306', '3', '26', '19', '58', '选项1\n选项4', '0', '0');
+INSERT INTO `user_topic` VALUES ('307', '3', '26', '19', '59', 'true', '10', '0');
+INSERT INTO `user_topic` VALUES ('308', '3', '26', '19', '60', '123\n222', '5', '0');
+INSERT INTO `user_topic` VALUES ('309', '3', '26', '19', '61', 'asdif123456fdasdf', '10', '0');

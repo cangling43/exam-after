@@ -36,7 +36,7 @@ public class MarkTestPaperServiceImpl implements MarkTestPaperService {
     private UserDao userDao;
 
     @Override
-    public int submitTestPaper(StuSubmitExamDTO stuSubmitExamDTO,Integer userId) {
+    public Msg submitTestPaper(StuSubmitExamDTO stuSubmitExamDTO,Integer userId) {
         try{
             UserGrade userGrade=new UserGrade();
             BeanUtils.copyProperties(stuSubmitExamDTO,userGrade);
@@ -58,16 +58,8 @@ public class MarkTestPaperServiceImpl implements MarkTestPaperService {
                     String[] correctAnswerArr = topic.getCorrectAnswer().split("\n");
                     String[] userAnswerArr = ut.getUserAnswer().split("\n");
                     double topicGrade = 0;
-//                    for (String ca : correctAnswerArr) {
-//                        for (String ua : userAnswerArr) {
-//                            if (ca.equals(ua)) {
-//
-//                                topicGrade = topicGrade + (int) (topic.getScore() / correctAnswerArr.length);
-//                            }
-//                        }
-//                    }
                     for(int i=0;i<correctAnswerArr.length;i++){
-                        if(correctAnswerArr[0].equals(userAnswerArr[i])){
+                        if(correctAnswerArr[i].equals(userAnswerArr[i])){
                             topicGrade = topicGrade + (int) (topic.getScore() / correctAnswerArr.length);
                         }
                     }
@@ -112,15 +104,12 @@ public class MarkTestPaperServiceImpl implements MarkTestPaperService {
             }
 
             userGradeDao.insert(userGrade);
-            return 1;
+            return ResultUtil.success();
         }catch (Exception e){
-            System.out.println(e);
             //强制手动事务回滚
-
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            return ResultUtil.error(100,"请求失败",e.toString());
         }
-
-        return 0;
     }
 
     @Override

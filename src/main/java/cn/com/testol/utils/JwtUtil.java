@@ -15,7 +15,7 @@ import java.util.Map;
 public class JwtUtil {
     /**
      * 过期时间一天，
-     * TODO 正式运行时修改为15分钟
+     *
      */
     private static final long EXPIRE_TIME = 24 * 60 * 60 * 1000;
     /**
@@ -79,10 +79,7 @@ public class JwtUtil {
     }
 
     /**
-     * 生成签名,15min后过期
-     *
-     * @param username 用户名
-     * @return 加密的token
+     * 生成token
      */
     public static String sign(String username,String userId,String status) {
         try {

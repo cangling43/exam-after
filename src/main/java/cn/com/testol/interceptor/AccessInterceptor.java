@@ -23,14 +23,12 @@ public class AccessInterceptor implements HandlerInterceptor {
         response.setHeader("Access-Control-Expose-Headers", "Token");
 
 
-//        验证token
+        //验证token
         String token = request.getHeader("token");
         boolean result = JwtUtil.verify(token);
         if (result) {
             return true;
         }else{
-
-//          response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.setCharacterEncoding("UTF-8");
             response.setContentType("application/json; charset=utf-8");
             JSONObject res = new JSONObject();

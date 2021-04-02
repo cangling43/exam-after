@@ -228,12 +228,13 @@
   </select>
   <select id="stuSelectByPrimaryKey" resultMap="ExamTopicStuDTO">
     select
-    e.* , t.* , ec.* ,ug.* ,ut.*, u.user_name as creator_name
+    e.* , t.* , ec.* ,ug.* ,ut.*, u.user_name as creator_name ,c.classes_name
     from exam e
     join exam_topic et on e.exam_id = et.exam_id
     join user u on u.user_id = e.creator_id
     join topic t on t.topic_id = et.topic_id
     join exam_classes ec on ec.exam_id = e.exam_id and ec.classes_id = #{classesId,jdbcType=INTEGER}
+    join classes c on c.classes_id = ec.classes_id
     left join user_grade ug on ug.user_id=${userId} and ug.exam_id=ec.exam_id and ug.classes_id=ec.classes_id
     left join user_topic ut on ut.user_id=${userId} and ut.exam_id=ec.exam_id and ut.topic_id=t.topic_id and ut.classes_id = ec.classes_id
     where e.exam_id = #{examId,jdbcType=INTEGER}

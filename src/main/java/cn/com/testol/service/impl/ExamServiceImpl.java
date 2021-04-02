@@ -62,6 +62,8 @@ public class ExamServiceImpl implements ExamService {
 
             return ResultUtil.success(exam);
         }catch (Exception e){
+            //强制手动事务回滚
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return ResultUtil.error(100,e.toString());
         }
     }
@@ -72,8 +74,6 @@ public class ExamServiceImpl implements ExamService {
         try {
 
             if (examTopicTchDTO.getCreatorId() != userId){
-                System.out.println(examTopicTchDTO);
-                System.out.println(userId);
                 return ResultUtil.error(3002,"您没有权利更改该试卷");
             }
 
@@ -117,16 +117,19 @@ public class ExamServiceImpl implements ExamService {
             }
             //剩下没有匹配到的则删除
             for (Integer oldT_id:oldTopicIdList){
-                //topicMapper.deleteTopic(oldT_id);
                 examTopicDao.deleteRecord(examTopicTchDTO.getExamId(),oldT_id);
             }
+
             //修改试卷信息
             Exam exam = new Exam();
             BeanUtils.copyProperties(examTopicTchDTO,exam);
+            exam.setUpdateDate(new Date());
             examDao.updateByPrimaryKeySelective(exam);
 
             return ResultUtil.success();
         }catch (Exception e){
+            //强制手动事务回滚
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return ResultUtil.error(100,e.toString());
         }
     }
@@ -165,7 +168,7 @@ public class ExamServiceImpl implements ExamService {
 
         ExamClasses examClasses = examClassesDao.selectRecord(classesId,examId);
         //不公布答案
-        if(examClasses.getPublishAnswer() != 1){
+        if(examClasses.getPublishAnswer() != 1 || examTopicStuDTO.getUserGrade().getExamStatus() == null){
             for(TopicTchDTO t:examTopicStuDTO.getTopicTchDTOList()){
                 t.setAnalysis(null);
                 t.setCorrectAnswer(null);
@@ -184,7 +187,11 @@ public class ExamServiceImpl implements ExamService {
             }
         }
 
-
+        //学生未完成试卷
+        if(examTopicStuDTO.getUserGrade().getExamStatus() == null){
+            examTopicStuDTO.setUserGrade(null);
+            examTopicStuDTO.setUserTopicList(null);
+        }
 
         if(examTopicStuDTO == null) {
             return ResultUtil.error(100, "请求失败");

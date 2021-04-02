@@ -5,7 +5,7 @@ import cn.com.testol.DTO.UserGradeDTO;
 import cn.com.testol.utils.Msg;
 
 public interface MarkTestPaperService {
-    public int submitTestPaper(StuSubmitExamDTO stuSubmitExamDTO,Integer userId);
+    public Msg submitTestPaper(StuSubmitExamDTO stuSubmitExamDTO,Integer userId);
 
     public Msg selectByClassesId(Integer classesId,Integer examId,Integer userId);
 

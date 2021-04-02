@@ -124,7 +124,7 @@ public class UserController {
         return userService.getRole(u_id);
     }
 
-    @ApiOperation(value = "获取用户权限")
+    @ApiOperation(value = "切换用户角色")
     @PutMapping(value = "changeRole")
     public Msg changeRole(HttpServletRequest request){
         String token =  request.getHeader("token");

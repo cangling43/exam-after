@@ -6,7 +6,6 @@ import cn.com.testol.entity.ExamClasses;
 import cn.com.testol.utils.JwtUtil;
 import cn.com.testol.utils.ResultUtil;
 import cn.com.testol.utils.Msg;
-import cn.com.testol.pojo.TestPaper_classes;
 import cn.com.testol.service.ReleaseTestPaperService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.BeanUtils;

@@ -21,11 +21,8 @@ public class MvcConfig implements WebMvcConfigurer {
                     .excludePathPatterns("/login/**")
                     .excludePathPatterns("/register/**")
                     .excludePathPatterns("/images/**")
-                .excludePathPatterns("/error")
-                .excludePathPatterns("/")
                     .excludePathPatterns("/swagger-resources/**", "/webjars/**", "/v2/**", "/swagger-ui.html/**")
                     ;
-        registry.addInterceptor(new AccessInterceptor()).excludePathPatterns("/images/**");
     }
 
     @Override
@@ -36,7 +33,6 @@ public class MvcConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")// 允许跨域访问的路径
-                .allowedOrigins("http://localhost:8080")// 允许跨域访问的源
                 .allowedMethods("POST", "GET", "PUT", "OPTIONS", "DELETE")// 允许请求方法
                 .maxAge(168000)// 预检间隔时间
                 .allowedHeaders("*")// 允许头部设置

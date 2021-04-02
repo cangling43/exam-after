@@ -2,9 +2,7 @@ package cn.com.testol;
 
 import cn.com.testol.dao.ClassesDao;
 import cn.com.testol.dao.ExamDao;
-import cn.com.testol.dao.TestPaperMapper;
 import cn.com.testol.dao.UserDao;
-import cn.com.testol.pojo.TestPaper;
 import cn.com.testol.service.ClassesService;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
