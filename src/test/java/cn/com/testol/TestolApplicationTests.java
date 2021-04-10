@@ -24,7 +24,7 @@ class TestolApplicationTests {
 
     @Test
     void contextLoads() {
-        System.out.println(examDao.selectByCreatorId(1));
+        System.out.println(examDao.selectByCreatorId(1,""));
 //        System.out.println(userDao.selectByC_id(1));
     }
 

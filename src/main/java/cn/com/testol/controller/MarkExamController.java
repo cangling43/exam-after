@@ -1,7 +1,7 @@
 package cn.com.testol.controller;
 
 import cn.com.testol.DTO.UserGradeDTO;
-import cn.com.testol.service.MarkTestPaperService;
+import cn.com.testol.service.MarkExamService;
 import cn.com.testol.utils.JwtUtil;
 import cn.com.testol.utils.Msg;
 import cn.com.testol.utils.ResultUtil;
@@ -12,14 +12,14 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 
 @RestController
-public class MarkTestPaperController {
+public class MarkExamController {
     @Autowired
-    private MarkTestPaperService markTestPaperService;
+    private MarkExamService markExamService;
 
 
-
+    @ApiOperation(value = "获取班级考试下")
     @GetMapping("/getUserGradeList")
-    public Msg getUserGradeList(HttpServletRequest request,Integer classesId,Integer examId){
+    public Msg getUserGradeList(HttpServletRequest request,@RequestParam Integer classesId,@RequestParam Integer examId){
         String token =  request.getHeader("token");
         if(!JwtUtil.getUserStatus(token).equals("teacher")){
             return ResultUtil.error(400,"用户身份不正确");
@@ -27,13 +27,21 @@ public class MarkTestPaperController {
 
         int teacher_id=Integer.parseInt(JwtUtil.getUserId(token));
 
-        return markTestPaperService.selectByClassesId(classesId,examId,teacher_id);
+        return markExamService.selectByClassesId(classesId,examId,teacher_id);
 
     }
 
+    @ApiOperation(value = "获取学生答卷")
     @GetMapping("/getStuExamInfo")
     public Msg getStuExamInfo(HttpServletRequest request,Integer classesId,Integer examId,Integer userId){
-        return markTestPaperService.selestStuExamInfo(classesId,examId,userId);
+        String token =  request.getHeader("token");
+        if(!JwtUtil.getUserStatus(token).equals("teacher")){
+            return ResultUtil.error(400,"用户身份不正确");
+        }
+        int teacher_id=Integer.parseInt(JwtUtil.getUserId(token));
+
+
+        return markExamService.selestStuExamInfo(classesId,examId,userId);
     }
 
     @ApiOperation(value = "批改试卷(教师角色)")
@@ -43,7 +51,7 @@ public class MarkTestPaperController {
         //获取token中的id
         int teacher_id=Integer.parseInt(JwtUtil.getUserId(token));
 
-        return markTestPaperService.tchMarkExam(userGradeDTO,teacher_id);
+        return markExamService.tchMarkExam(userGradeDTO,teacher_id);
     }
 
 

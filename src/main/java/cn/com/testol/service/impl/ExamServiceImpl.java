@@ -135,8 +135,8 @@ public class ExamServiceImpl implements ExamService {
     }
 
     @Override
-    public Msg selectByCreatorId(Integer userId) {
-        List<Exam> examList = examDao.selectByCreatorId(userId);
+    public Msg selectByCreatorId(Integer userId, String keyword) {
+        List<Exam> examList = examDao.selectByCreatorId(userId,keyword);
         if(examList != null){
             return ResultUtil.success(examList);
         }else{
@@ -165,7 +165,9 @@ public class ExamServiceImpl implements ExamService {
         }
 
         ExamTopicStuDTO examTopicStuDTO = examDao.stuSelectByPrimaryKey(examId,classesId,userId);
-
+        if(examTopicStuDTO == null) {
+            return ResultUtil.error(100, "请求失败");
+        }
         ExamClasses examClasses = examClassesDao.selectRecord(classesId,examId);
         //不公布答案
         if(examClasses.getPublishAnswer() != 1 || examTopicStuDTO.getUserGrade().getExamStatus() == null){
@@ -186,17 +188,11 @@ public class ExamServiceImpl implements ExamService {
                 ut.setUserScore(null);
             }
         }
-
         //学生未完成试卷
         if(examTopicStuDTO.getUserGrade().getExamStatus() == null){
             examTopicStuDTO.setUserGrade(null);
             examTopicStuDTO.setUserTopicList(null);
         }
-
-        if(examTopicStuDTO == null) {
-            return ResultUtil.error(100, "请求失败");
-        }
-
         return ResultUtil.success(examTopicStuDTO);
     }
 

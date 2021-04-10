@@ -25,7 +25,7 @@ public interface ExamDao {
 
     int updateByPrimaryKey(Exam record);
 
-    List<Exam> selectByCreatorId(Integer userId);
+    List<Exam> selectByCreatorId(Integer userId, String keyword);
 
     List<ExamClassesDTO> selectByClassesId(Integer classesId,Integer userId);
 

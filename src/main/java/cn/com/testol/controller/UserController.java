@@ -5,6 +5,7 @@ import cn.com.testol.DTO.RegisterDTO;
 import cn.com.testol.DTO.UserClassesDTO;
 import cn.com.testol.dao.UserDao;
 import cn.com.testol.utils.JwtUtil;
+import cn.com.testol.utils.Page;
 import cn.com.testol.utils.ResultUtil;
 import cn.com.testol.utils.Msg;
 import cn.com.testol.entity.User;
@@ -79,7 +80,7 @@ public class UserController {
 
     @ApiOperation(value = "获取用户列表")
     @GetMapping("/queryUserByC_id")
-    public Msg queryUserByC_id(HttpServletRequest request,int c_id){
+    public Msg queryUserByC_id(HttpServletRequest request,@RequestParam int c_id,@RequestParam int pageSize,@RequestParam int currentPage){
         String token =  request.getHeader("token");
         //获取token中的id
         int u_id=Integer.parseInt(JwtUtil.getUserId(token));
@@ -96,8 +97,11 @@ public class UserController {
             return ResultUtil.error(2004,"您不是该班级的学生");
         }
 
+        Page page = new Page(pageSize,currentPage);
+        page.build(userList);
+
         if(userList.size() >= 0){
-            return ResultUtil.success(userList);
+            return ResultUtil.success(page);
         }else{
             return ResultUtil.error(100,"请求失败");
         }

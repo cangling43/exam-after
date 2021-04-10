@@ -8,7 +8,7 @@ import java.util.Date;
 public interface ClassesService  {
 
     //根据教师查找班级
-    public Msg queryClassesByU_id(Integer u_id);
+    public Msg queryClassesByU_id(Integer u_id,String keyword);
 
     //用户加入班级
     public Msg joinClasses(int u_id, int c_id, String status, Date date);
@@ -20,6 +20,8 @@ public interface ClassesService  {
     public Msg queryClassesByC_id(int c_id);
 
     public Msg queryClassesByExamId(Integer examId);
+
+    public Msg fuzzyQuery(String keyword);
 
     //创建班级
     public Msg createClasses(Classes classes,Integer userId);

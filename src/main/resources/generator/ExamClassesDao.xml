@@ -26,7 +26,7 @@
   </select>
   <select id="selectByExamId" resultMap="BaseResultMap">
     select
-    ec.* ,c.classes_name ,e.exam_id
+    ec.* ,c.classes_name ,e.exam_id, e.exam_name
     from exam_classes ec
     join classes c on c.classes_id = ec.classes_id
     join exam e on e.exam_id = ec.exam_id
@@ -34,7 +34,7 @@
   </select>
     <select id="selectRecord" resultMap="BaseResultMap">
       select
-      ec.* ,c.classes_name ,e.exam_id
+      ec.* ,c.classes_name ,e.exam_id, e.exam_name
       from exam_classes ec
       join classes c on c.classes_id = ec.classes_id
       join exam e on e.exam_id = ec.exam_id
@@ -156,12 +156,6 @@
   <update id="updateRecord" parameterType="cn.com.testol.entity.ExamClasses">
     update exam_classes
     <set>
-      <if test="examId != null">
-        exam_id = #{examId,jdbcType=INTEGER},
-      </if>
-      <if test="classesId != null">
-        classes_id = #{classesId,jdbcType=INTEGER},
-      </if>
       <if test="releaseTime != null">
         release_time = #{releaseTime,jdbcType=TIMESTAMP},
       </if>

@@ -3,9 +3,7 @@ package cn.com.testol.service.impl;
 import cn.com.testol.DTO.ClassesExamDTO;
 import cn.com.testol.DTO.ClassesUserDTO;
 import cn.com.testol.dao.ClassesDao;
-import cn.com.testol.dao.ExamClassesDao;
 import cn.com.testol.dao.UserClassesDao;
-import cn.com.testol.dao.UserGradeDao;
 import cn.com.testol.entity.Classes;
 import cn.com.testol.entity.UserClasses;
 import cn.com.testol.service.ClassesService;
@@ -27,14 +25,12 @@ public class ClassesServiceImpl implements ClassesService {
     private UserClassesDao userClassesDao;
     @Autowired
     private ClassesDao classesDao;
-    @Autowired
-    private ExamClassesDao examClassesDao;
 
     //根据用户ID查找班级
     @Override
-    public Msg queryClassesByU_id(Integer u_id) {
+    public Msg queryClassesByU_id(Integer u_id, String keyword) {
         try {
-            List<ClassesUserDTO> userClassesList = classesDao.selectByUserId(u_id);
+            List<ClassesUserDTO> userClassesList = classesDao.selectByUserId(u_id,keyword);
 
             for(ClassesUserDTO u_c : userClassesList){
 //            处理班级时间
@@ -139,6 +135,15 @@ public class ClassesServiceImpl implements ClassesService {
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return ResultUtil.error(100,"请求失败",e.toString());
         }
+    }
+
+    @Override
+    public Msg fuzzyQuery(String keyword) {
+        List<Classes> classesList = classesDao.fuzzyQuery(keyword);
+        if (classesList != null){
+            return ResultUtil.success(classesList);
+        }
+        return ResultUtil.error(100,"请求失败");
     }
 
 

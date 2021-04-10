@@ -1,12 +1,10 @@
 package cn.com.testol.controller;
 
 
-import cn.com.testol.DTO.ClassesUserDTO;
 import cn.com.testol.dao.ClassesDao;
-import cn.com.testol.dao.UserClassesDao;
 import cn.com.testol.entity.Classes;
-import cn.com.testol.entity.UserClasses;
 import cn.com.testol.utils.JwtUtil;
+import cn.com.testol.utils.Page;
 import cn.com.testol.utils.ResultUtil;
 import cn.com.testol.utils.Msg;
 import cn.com.testol.service.ClassesService;
@@ -16,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 @RestController
@@ -32,7 +29,7 @@ public class ClassesController {
      * */
     @ApiOperation(value = "查找班级")
     @GetMapping("/queryClasses")
-    public Msg queryClasses(Integer classesId){
+    public Msg queryClasses(@RequestParam Integer classesId){
         return classesService.queryClassesByC_id(classesId);
     }
 
@@ -41,7 +38,9 @@ public class ClassesController {
      * */
     @ApiOperation(value = "查找班级列表")
     @GetMapping("/queryClassesList")
-    public Msg queryClassesList(HttpServletRequest request,@RequestParam(required = false) Integer examId){
+    public Msg queryClassesList(HttpServletRequest request,@RequestParam(required = false) Integer examId,
+                                @RequestParam int pageSize,@RequestParam int currentPage,
+                                @RequestParam(required = false) String keyword){
         if (examId != null){
             return classesService.queryClassesByExamId(examId);
         }
@@ -50,12 +49,19 @@ public class ClassesController {
         //获取token中的id
         int u_id=Integer.parseInt(JwtUtil.getUserId(token));
 
-        return classesService.queryClassesByU_id(u_id);
+        if(keyword == null){
+            keyword = "";
+        }
+
+        Msg result = classesService.queryClassesByU_id(u_id,keyword);
+        Page page = new Page(pageSize,currentPage);
+        page.build((List) result.getData());
+        return ResultUtil.success(page);
 }
 
     @ApiOperation(value = "加入班级")
     @GetMapping(value = "/joinClasses")
-    public Msg joinClasses(HttpServletRequest request,int c_id ) {
+    public Msg joinClasses(HttpServletRequest request,@RequestParam int c_id ) {
 
         String token =  request.getHeader("token");
         //获取token中的id
@@ -67,7 +73,7 @@ public class ClassesController {
 
     @ApiOperation(value = "退出班级")
     @DeleteMapping(value = "/outClasses")
-    public Msg outClasses(HttpServletRequest request,int c_id){
+    public Msg outClasses(HttpServletRequest request,@RequestParam int c_id){
         String token =  request.getHeader("token");
 
         //获取token中的id
@@ -79,7 +85,7 @@ public class ClassesController {
 
     @ApiOperation(value = "踢出班级（老师）")
     @DeleteMapping(value = "/outClassesByTeacher")
-    public Msg outClassesByteacher(HttpServletRequest request,int u_id,int c_id){
+    public Msg outClassesByteacher(HttpServletRequest request,@RequestParam int u_id,@RequestParam int c_id){
         String token =  request.getHeader("token");
         if(!JwtUtil.getUserStatus(token).equals("teacher")){
             return ResultUtil.error(400,"用户身份不正确");
@@ -137,13 +143,21 @@ public class ClassesController {
         return classesService.updateClasses(classes,userId);
     }
 
+
+    @ApiOperation(value = "班级列表-模糊搜索")
+    @GetMapping(value = "/classes/fuzzyQuery" )
+    public Msg fuzzyQuery(@RequestParam String keyword){
+
+        return classesService.fuzzyQuery(keyword);
+    }
+
     /*
    删除班级 createClasses
        班级id      id
         */
     @ApiOperation(value = "删除班级")
     @DeleteMapping(value = "/deleteClasses" )
-    public Msg deleteClasses(HttpServletRequest request,int id){
+    public Msg deleteClasses(HttpServletRequest request,@RequestParam int id){
         String token =  request.getHeader("token");
         if(!JwtUtil.getUserStatus(token).equals("teacher")){
             return ResultUtil.error(400,"用户身份不正确");

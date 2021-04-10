@@ -3,9 +3,7 @@ package cn.com.testol.service;
 import cn.com.testol.DTO.ReleasExamDTO;
 import cn.com.testol.utils.Msg;
 
-import java.util.List;
-
-public interface ReleaseTestPaperService {
+public interface ReleaseExamService {
 
 //    public List<TestPaper_classes> getClassesByTp_id(int tp_id);
 //    //查询班级内的考试信息

@@ -6,12 +6,11 @@ import cn.com.testol.DTO.StuSubmitExamDTO;
 import cn.com.testol.DTO.UserGradeDTO;
 import cn.com.testol.dao.*;
 import cn.com.testol.entity.*;
-import cn.com.testol.service.MarkTestPaperService;
+import cn.com.testol.service.MarkExamService;
 import cn.com.testol.utils.Msg;
 import cn.com.testol.utils.ResultUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
@@ -21,7 +20,7 @@ import java.util.List;
 
 @Service
 @Transactional  //事务的注解
-public class MarkTestPaperServiceImpl implements MarkTestPaperService {
+public class MarkExamServiceImpl implements MarkExamService {
     @Autowired
     private TopicDao topicDao;
     @Autowired
@@ -122,11 +121,6 @@ public class MarkTestPaperServiceImpl implements MarkTestPaperService {
 
             List<UserGrade> userGradeList = userGradeDao.selectByClassesId(classesId,examId );
             //删除创建者数据
-//            for(UserGrade ug:userGradeList){
-//                if(ug.getUserId() == userId){
-//                    userGradeList.remove(ug);
-//                }
-//            }
             for(int i=0;i<userGradeList.size();i++){
                 if(userGradeList.get(i).getUserId() == userId){
                     userGradeList.remove(i);

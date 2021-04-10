@@ -2,7 +2,6 @@ package cn.com.testol.service;
 
 
 import cn.com.testol.DTO.ExamTopicTchDTO;
-import cn.com.testol.DTO.UserGradeDTO;
 import cn.com.testol.utils.Msg;
 
 public interface ExamService {
@@ -15,7 +14,7 @@ public interface ExamService {
     Msg updateByPrimaryKeySelective(ExamTopicTchDTO examTopicTchDTO,Integer userId);
 
     //查用户下创建的试卷
-    Msg selectByCreatorId(Integer userId);
+    Msg selectByCreatorId(Integer userId,String keyword);
 
     //查看试卷(老师)
     Msg tchSelectByPrimaryKey(Integer userId , Integer examId);

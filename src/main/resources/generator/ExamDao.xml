@@ -243,7 +243,8 @@
     select
     <include refid="Base_Column_List" />
     from exam
-    where creator_id = #{userId,jdbcType=INTEGER}
+    where creator_id = #{userId,jdbcType=INTEGER} and (exam_id like concat('%',#{keyword},'%') or exam_name like concat('%',#{keyword},'%'))
+    order by update_date desc
   </select>
     <select id="selectByClassesId" resultMap="ExamClassesDTO">
       select

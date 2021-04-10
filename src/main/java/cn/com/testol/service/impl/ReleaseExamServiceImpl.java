@@ -1,11 +1,9 @@
 package cn.com.testol.service.impl;
 
 import cn.com.testol.DTO.ReleasExamDTO;
-import cn.com.testol.dao.ClassesDao;
 import cn.com.testol.dao.ExamClassesDao;
-import cn.com.testol.entity.Classes;
 import cn.com.testol.entity.ExamClasses;
-import cn.com.testol.service.ReleaseTestPaperService;
+import cn.com.testol.service.ReleaseExamService;
 import cn.com.testol.utils.Msg;
 import cn.com.testol.utils.ResultUtil;
 import org.springframework.beans.BeanUtils;
@@ -20,7 +18,7 @@ import java.util.List;
 
 @Service
 @Transactional  //事务的注解
-public class ReleaseTestPaperServiceImpl implements ReleaseTestPaperService {
+public class ReleaseExamServiceImpl implements ReleaseExamService {
     @Autowired
     private ExamClassesDao examClassesDao;
 
@@ -54,8 +52,6 @@ public class ReleaseTestPaperServiceImpl implements ReleaseTestPaperService {
 
             examClasses.setStatus(0);
             examClasses.setReleaseTime(new Date());
-            examClasses.setPublishAnswer(0);
-            examClasses.setPublishScore(0);
 
             for (Integer i:addRecord){
                 examClasses.setClassesId(i);
@@ -63,7 +59,7 @@ public class ReleaseTestPaperServiceImpl implements ReleaseTestPaperService {
             }
             for (Integer i:updateRecord){
                 examClasses.setClassesId(i);
-                examClassesDao.updateByPrimaryKeySelective(examClasses);
+                examClassesDao.updateRecord(examClasses);
             }
             return ResultUtil.success();
         }catch (Exception e){

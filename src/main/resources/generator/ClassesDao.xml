@@ -59,7 +59,7 @@
     from  classes c
     join user_classes u_c on u_c.classes_id = c.classes_id
     join user u on u.user_id = c.creator_id
-    where  u_c.user_id=#{userId}
+    where  u_c.user_id=#{userId} and (c.classes_id like concat('%',#{keyword},'%') or c.classes_name like concat('%',#{keyword},'%'))
     order by u_c.enter_date desc
   </select>
     <select id="selectByExamId" resultMap="ClassesExamDTO">
@@ -68,6 +68,12 @@
       from classes c
       join exam_classes ec on ec.classes_id = c.classes_id
       where ec.exam_id = #{examId,jdbcType=INTEGER}
+    </select>
+    <select id="fuzzyQuery" resultMap="BaseResultMap">
+        select c.*, u.user_name as creator_name
+        from classes
+        join user u on u.user_id = c.creator_id
+        where classes_id like concat('%',#{keyword},'%') or classes_name like concat('%',#{keyword},'%')
     </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from classes

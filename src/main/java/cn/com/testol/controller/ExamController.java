@@ -2,32 +2,43 @@ package cn.com.testol.controller;
 
 import cn.com.testol.DTO.ExamTopicTchDTO;
 import cn.com.testol.DTO.StuSubmitExamDTO;
+import cn.com.testol.entity.Exam;
 import cn.com.testol.service.ExamService;
 import cn.com.testol.utils.JwtUtil;
 import cn.com.testol.utils.Msg;
+import cn.com.testol.utils.Page;
 import cn.com.testol.utils.ResultUtil;
-import cn.com.testol.service.MarkTestPaperService;
+import cn.com.testol.service.MarkExamService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+import java.util.Objects;
 
 @RestController
-public class TestPaperController {
+public class ExamController {
     @Autowired
     private ExamService examService;
     @Autowired
-    private MarkTestPaperService markTestPaperService;
+    private MarkExamService markExamService;
 
     @ApiOperation(value = "获取用户创建的试卷")
     @GetMapping("/getTestPaperByU_id")
-    public Msg getTestPaperByU_id(HttpServletRequest request){
+    public Msg getTestPaperByU_id(HttpServletRequest request,@RequestParam int pageSize,@RequestParam int currentPage,
+                                  @RequestParam(required = false) String keyword){
+        if(keyword == null){
+            keyword = "";
+        }
         String token =  request.getHeader("token");
-
         //获取token中的id
-        int u_id=Integer.parseInt(JwtUtil.getUserId(token));
-        return examService.selectByCreatorId(u_id);
+        int u_id=Integer.parseInt(Objects.requireNonNull(JwtUtil.getUserId(token)));
+
+        Msg result = examService.selectByCreatorId(u_id,keyword);
+        Page page = new Page(pageSize,currentPage);
+        page.build((List) result.getData());
+        return ResultUtil.success(page);
     }
 
 //    @ApiOperation(value = "获取用户创建的试卷")
@@ -42,18 +53,22 @@ public class TestPaperController {
 
     @ApiOperation(value = "获取班级下的试卷列表")
     @GetMapping("/getExamByClasses")
-    public Msg getExamByClassesId(HttpServletRequest request,Integer classesId){
+    public Msg getExamByClassesId(HttpServletRequest request,@RequestParam Integer classesId,@RequestParam int pageSize,@RequestParam int currentPage){
         String token =  request.getHeader("token");
 
         //获取token中的id
         int u_id=Integer.parseInt(JwtUtil.getUserId(token));
-        return examService.selectByClassesId(classesId, u_id);
+
+        Msg result = examService.selectByClassesId(classesId, u_id);
+        Page page = new Page(pageSize,currentPage);
+        page.build((List) result.getData());
+        return ResultUtil.success(page);
     }
 
     //通过试卷id获取试卷信息(教师角色)
     @ApiOperation(value = "获取试卷信息(教师角色)")
     @GetMapping("/getTestPaperByTp_id")
-    public Msg getTestPaperByTp_id(HttpServletRequest request,int examId){
+    public Msg getTestPaperByTp_id(HttpServletRequest request,@RequestParam int examId){
         String token =  request.getHeader("token");
         if(!JwtUtil.getUserStatus(token).equals("teacher")){
             return ResultUtil.error(400,"用户身份不正确");
@@ -65,7 +80,7 @@ public class TestPaperController {
     //通过试卷id,班级id获取试卷信息(学生角色)
     @ApiOperation(value = "获取试卷信息(学生角色)")
     @GetMapping("/getTestPaper")
-    public Msg getTestPaper(HttpServletRequest request,int examId ,int classesId){
+    public Msg getTestPaper(HttpServletRequest request,@RequestParam int examId ,@RequestParam int classesId){
         String token =  request.getHeader("token");
         int userId=Integer.parseInt(JwtUtil.getUserId(token));
         return examService.stuSelectByPrimaryKey(userId,classesId,examId);
@@ -113,7 +128,7 @@ public class TestPaperController {
         String token =  request.getHeader("token");
         int u_id=Integer.parseInt(JwtUtil.getUserId(token));
 
-        return markTestPaperService.submitTestPaper(stuSubmitExamDTO,u_id);
+        return markExamService.submitTestPaper(stuSubmitExamDTO,u_id);
     }
 
 

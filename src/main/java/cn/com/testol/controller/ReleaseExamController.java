@@ -6,20 +6,18 @@ import cn.com.testol.entity.ExamClasses;
 import cn.com.testol.utils.JwtUtil;
 import cn.com.testol.utils.ResultUtil;
 import cn.com.testol.utils.Msg;
-import cn.com.testol.service.ReleaseTestPaperService;
+import cn.com.testol.service.ReleaseExamService;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
-import java.util.List;
 
 @RestController
-public class ReleaseTestPaperController {
+public class ReleaseExamController {
     @Autowired
-    private ReleaseTestPaperService releaseTestPaperService;
+    private ReleaseExamService releaseExamService;
     @Autowired
     private ExamClassesDao examClassesDao;
 
@@ -28,7 +26,7 @@ public class ReleaseTestPaperController {
     public Msg getReleaseInfo(HttpServletRequest request,Integer classesId,Integer examId){
         String token =  request.getHeader("token");
 
-        return releaseTestPaperService.getReleaseInfo(classesId,examId);
+        return releaseExamService.getReleaseInfo(classesId,examId);
     }
 
     @ApiOperation(value = "发布考试")
@@ -42,7 +40,7 @@ public class ReleaseTestPaperController {
         }
 
 
-        return releaseTestPaperService.releaseTest(releasExamDTO);
+        return releaseExamService.releaseTest(releasExamDTO);
     }
 
     @ApiOperation(value = "修改试卷发布信息")
@@ -73,7 +71,7 @@ public class ReleaseTestPaperController {
             return ResultUtil.error(400,"用户身份不正确");
         }
 
-        int result=releaseTestPaperService.deleteRecord(tp_id, c_id);
+        int result= releaseExamService.deleteRecord(tp_id, c_id);
         if(result>0){
             return ResultUtil.success();
         }else{

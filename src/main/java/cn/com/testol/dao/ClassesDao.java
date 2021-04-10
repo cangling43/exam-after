@@ -23,9 +23,9 @@ public interface ClassesDao {
 
     int updateByPrimaryKey(Classes record);
 
+    List<Classes> fuzzyQuery(String keyword);
 
-
-    List<ClassesUserDTO> selectByUserId(Integer userId);
+    List<ClassesUserDTO> selectByUserId(Integer userId,String keyword);
 
     List<ClassesExamDTO> selectByExamId(Integer examId);
 

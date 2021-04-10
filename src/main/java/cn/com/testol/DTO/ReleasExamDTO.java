@@ -57,11 +57,11 @@ public class ReleasExamDTO {
      * 是否公布答案   0:不公布   1:公布答案
      */
     @ApiModelProperty(value="是否公布答案   0:不公布   1:公布答案")
-    private Integer publishAnswer;
+    private int publishAnswer;
 
     /**
      * 是否公布分数   0:不公布   1:公布
      */
     @ApiModelProperty(value="是否公布分数   0:不公布   1:公布")
-    private Integer publishScore;
+    private int publishScore;
 }
