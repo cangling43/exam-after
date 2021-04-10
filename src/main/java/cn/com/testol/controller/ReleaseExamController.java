@@ -23,7 +23,7 @@ public class ReleaseExamController {
 
     @ApiOperation(value = "获取发布考试信息")
     @GetMapping(value = "/getReleaseInfo")
-    public Msg getReleaseInfo(HttpServletRequest request,Integer classesId,Integer examId){
+    public Msg getReleaseInfo(HttpServletRequest request,@RequestParam Integer classesId,@RequestParam Integer examId){
         String token =  request.getHeader("token");
 
         return releaseExamService.getReleaseInfo(classesId,examId);
@@ -64,7 +64,7 @@ public class ReleaseExamController {
 
     @ApiOperation(value = "取消试卷发布")
     @DeleteMapping(value = "/cancelRelease")
-    public Msg cancelRelease(HttpServletRequest request,int tp_id,int c_id){
+    public Msg cancelRelease(HttpServletRequest request,@RequestParam int tp_id,@RequestParam int c_id){
         String token =  request.getHeader("token");
 
         if(!JwtUtil.getUserStatus(token).equals("teacher")){

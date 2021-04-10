@@ -33,7 +33,7 @@ public class MarkExamController {
 
     @ApiOperation(value = "获取学生答卷")
     @GetMapping("/getStuExamInfo")
-    public Msg getStuExamInfo(HttpServletRequest request,Integer classesId,Integer examId,Integer userId){
+    public Msg getStuExamInfo(HttpServletRequest request,@RequestParam Integer classesId,@RequestParam Integer examId,@RequestParam Integer userId){
         String token =  request.getHeader("token");
         if(!JwtUtil.getUserStatus(token).equals("teacher")){
             return ResultUtil.error(400,"用户身份不正确");

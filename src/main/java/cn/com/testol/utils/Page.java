@@ -34,6 +34,12 @@ public class Page<T> {
 
     public void build(List<T> content){
         this.total = content.size();
+        if(this.total == 0){
+            this.totalPage = 0;
+            this.currentPage = 1;
+            this.setContent(content);
+            return;
+        }
         this.totalPage = this.total%this.pageSize == 0 ? this.total/this.pageSize : this.total/this.pageSize+1;
         this.currentPage = this.currentPage > this.totalPage ? this.totalPage : this.currentPage;
         this.setContent(content.subList(this.pageSize*(this.currentPage-1),this.currentPage==this.totalPage?content.size():this.pageSize*this.currentPage));
