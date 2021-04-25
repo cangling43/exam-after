@@ -10,10 +10,31 @@ Target Server Type    : MYSQL
 Target Server Version : 80022
 File Encoding         : 65001
 
-Date: 2021-04-02 11:54:36
+Date: 2021-04-25 21:33:59
 */
 
 SET FOREIGN_KEY_CHECKS=0;
+
+-- ----------------------------
+-- Table structure for approval
+-- ----------------------------
+DROP TABLE IF EXISTS `approval`;
+CREATE TABLE `approval` (
+  `id` int NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `student_id` int NOT NULL COMMENT '申请人id',
+  `teacher_id` int NOT NULL COMMENT '教师id',
+  `classes_id` int NOT NULL COMMENT '班级id',
+  `apply_date` datetime DEFAULT NULL COMMENT '申请时间',
+  `status` int NOT NULL DEFAULT '0' COMMENT '状态0：审批中，1：同意，2：拒绝',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of approval
+-- ----------------------------
+INSERT INTO `approval` VALUES ('2', '2', '1', '27', '2021-04-24 21:13:41', '0');
+INSERT INTO `approval` VALUES ('7', '3', '1', '27', '2021-04-24 21:06:54', '0');
+INSERT INTO `approval` VALUES ('8', '7', '1', '27', '2021-04-24 21:07:27', '0');
 
 -- ----------------------------
 -- Table structure for classes
@@ -24,43 +45,45 @@ CREATE TABLE `classes` (
   `classes_name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '班级名称',
   `update_date` datetime DEFAULT NULL COMMENT '更新时间',
   `create_date` datetime DEFAULT NULL COMMENT '创建时间',
-  `introduction` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '班级简介',
+  `introduction` varchar(600) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '班级简介',
   `people_num` int DEFAULT NULL COMMENT '班级人数',
   `creator_id` int NOT NULL COMMENT '创建者id',
-  `joinWay` varchar(10) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT 'all' COMMENT '班级加入方式  0:不允许加入 1:允许任何人加入  2:需要管理员同意',
+  `joinWay` varchar(10) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT 'all' COMMENT '班级加入方式  no:不允许加入 all:允许任何人加入  apply:需要管理员同意',
   PRIMARY KEY (`classes_id`),
   KEY `FK` (`creator_id`),
   CONSTRAINT `FK` FOREIGN KEY (`creator_id`) REFERENCES `user` (`user_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of classes
 -- ----------------------------
-INSERT INTO `classes` VALUES ('1', 'test', null, '2020-11-07 13:47:01', '123456', '5', '1', 'all');
-INSERT INTO `classes` VALUES ('2', 'test1', null, '2020-11-07 13:46:56', '我修改成功的第一个班级', '3', '1', 'apply');
-INSERT INTO `classes` VALUES ('3', '122', null, '2020-11-07 15:56:47', '122', '1', '1', 'no');
-INSERT INTO `classes` VALUES ('4', '我创建的第一个班级', null, '2020-11-17 18:23:48', '', '0', '1', 'all');
+INSERT INTO `classes` VALUES ('1', 'test', null, '2020-11-07 13:47:01', '123456', '2', '1', 'all');
+INSERT INTO `classes` VALUES ('2', 'test1', null, '2020-11-07 13:46:56', '我修改成功的第一个班级', '2', '1', 'apply');
+INSERT INTO `classes` VALUES ('3', '122', null, '2020-11-07 15:56:47', '122', '0', '1', 'no');
+INSERT INTO `classes` VALUES ('4', '我创建的第一个班级', null, '2020-11-17 18:23:48', '', '1', '1', 'all');
 INSERT INTO `classes` VALUES ('6', 'java', null, '2020-11-17 19:12:25', '', '1', '1', 'all');
-INSERT INTO `classes` VALUES ('7', 'java_ee', null, '2020-11-17 19:17:05', '', '0', '1', 'all');
-INSERT INTO `classes` VALUES ('8', '关联成功的第一个班级', null, '2020-11-17 19:19:22', '', '0', '1', 'all');
-INSERT INTO `classes` VALUES ('9', '关联成功的第一个班级', null, '2020-11-17 19:23:24', '', '1', '1', 'all');
-INSERT INTO `classes` VALUES ('10', '关联成功的第一个班级', null, '2020-11-17 19:26:15', '', '0', '1', 'all');
-INSERT INTO `classes` VALUES ('11', '关联成功的第一个班级', null, '2020-11-17 19:28:23', 'abc\ndef', '3', '1', 'all');
-INSERT INTO `classes` VALUES ('12', '事务完成的第一个班级', null, '2020-11-18 17:33:00', '', '2', '1', 'all');
-INSERT INTO `classes` VALUES ('13', 'token成功的第一个班级', null, '2020-12-02 14:07:54', '无111', '2', '1', 'no');
-INSERT INTO `classes` VALUES ('14', '演示创建的班级', null, '2021-01-04 22:51:03', '无', '1', '1', 'all');
-INSERT INTO `classes` VALUES ('15', '禁止加入的班级', null, '2021-01-05 21:53:16', '无', '2', '1', 'no');
-INSERT INTO `classes` VALUES ('16', '11111', '2021-03-07 18:03:25', '2021-03-07 18:03:25', '', '0', '1', 'all');
-INSERT INTO `classes` VALUES ('17', '自动批改成功的班级', '2021-03-09 21:17:19', '2021-03-07 18:10:29', '阿斯蒂111', '4', '1', 'all');
-INSERT INTO `classes` VALUES ('18', 'sdfsd', '2021-03-07 18:10:59', '2021-03-07 18:10:59', '', '3', '1', 'all');
-INSERT INTO `classes` VALUES ('19', '1111222', '2021-03-07 19:40:56', '2021-03-07 19:20:07', 'ssss', '2', '1', '允许任何人加入');
-INSERT INTO `classes` VALUES ('20', '的发射点', '2021-03-07 23:17:25', '2021-03-07 23:17:25', null, '3', '1', 'all');
-INSERT INTO `classes` VALUES ('21', '1231321', '2021-03-07 23:41:15', '2021-03-07 23:41:15', '2认为人', '4', '1', 'all');
-INSERT INTO `classes` VALUES ('22', '修改班级名称1', '2021-03-07 23:42:52', '2021-03-07 23:42:52', '士大夫感到', '3', '1', 'all');
-INSERT INTO `classes` VALUES ('23', '检查创建班级名称', '2021-03-10 16:20:10', '2021-03-10 16:20:10', '安抚大使', '1', '1', 'all');
+INSERT INTO `classes` VALUES ('7', 'java_ee', null, '2020-11-17 19:17:05', '', '1', '1', 'all');
+INSERT INTO `classes` VALUES ('8', '关联成功的第一个班级', null, '2020-11-17 19:19:22', '', '1', '1', 'all');
+INSERT INTO `classes` VALUES ('9', '关联成功的第一个班级', null, '2020-11-17 19:23:24', '', '0', '1', 'all');
+INSERT INTO `classes` VALUES ('10', '关联成功的第一个班级', null, '2020-11-17 19:26:15', '', '1', '1', 'all');
+INSERT INTO `classes` VALUES ('11', '关联成功的第一个班级', null, '2020-11-17 19:28:23', 'abc\ndef', '2', '1', 'all');
+INSERT INTO `classes` VALUES ('12', '事务完成的第一个班级', null, '2020-11-18 17:33:00', '', '1', '1', 'all');
+INSERT INTO `classes` VALUES ('13', 'token成功的第一个班级', null, '2020-12-02 14:07:54', '无111', '1', '1', 'no');
+INSERT INTO `classes` VALUES ('14', '演示创建的班级', null, '2021-01-04 22:51:03', '无', '0', '1', 'all');
+INSERT INTO `classes` VALUES ('15', '禁止加入的班级', null, '2021-01-05 21:53:16', '无', '1', '1', 'no');
+INSERT INTO `classes` VALUES ('16', '11111', '2021-03-07 18:03:25', '2021-03-07 18:03:25', '', '1', '1', 'all');
+INSERT INTO `classes` VALUES ('17', '自动批改成功的班级', '2021-03-09 21:17:19', '2021-03-07 18:10:29', '阿斯蒂111', '2', '1', 'all');
+INSERT INTO `classes` VALUES ('18', 'sdfsd', '2021-03-07 18:10:59', '2021-03-07 18:10:59', '', '2', '1', 'all');
+INSERT INTO `classes` VALUES ('19', '1111222', '2021-03-07 19:40:56', '2021-03-07 19:20:07', 'ssss', '1', '1', '允许任何人加入');
+INSERT INTO `classes` VALUES ('20', '的发射点', '2021-03-07 23:17:25', '2021-03-07 23:17:25', null, '2', '1', 'all');
+INSERT INTO `classes` VALUES ('21', '1231321', '2021-03-07 23:41:15', '2021-03-07 23:41:15', '2认为人', '2', '1', 'all');
+INSERT INTO `classes` VALUES ('22', '修改班级名称1', '2021-03-07 23:42:52', '2021-03-07 23:42:52', '士大夫感到', '2', '1', 'all');
+INSERT INTO `classes` VALUES ('23', '检查创建班级名称', '2021-03-10 16:20:10', '2021-03-10 16:20:10', '安抚大使', '0', '1', 'all');
 INSERT INTO `classes` VALUES ('24', '岁的法国', '2021-03-10 16:22:12', '2021-03-10 16:22:12', '啊沙发上', '1', '1', 'all');
-INSERT INTO `classes` VALUES ('25', '演示创建的班级11111', '2021-03-11 10:04:56', '2021-03-11 10:04:56', '的方式敢死队风格', '3', '1', 'all');
-INSERT INTO `classes` VALUES ('26', '测试12', '2021-04-02 09:16:32', '2021-04-02 09:16:32', '奥迪', '5', '1', 'all');
+INSERT INTO `classes` VALUES ('25', '演示创建的', '2021-03-11 10:04:56', '2021-03-11 10:04:56', '的方式敢死队风格', '1', '1', 'all');
+INSERT INTO `classes` VALUES ('26', '测试12', '2021-04-02 09:16:32', '2021-04-02 09:16:32', '奥迪', '4', '1', 'all');
+INSERT INTO `classes` VALUES ('27', '组件', '2021-04-10 22:42:41', '2021-04-10 22:42:41', '这是组件创建的班级123123', '0', '1', 'apply');
+INSERT INTO `classes` VALUES ('28', '萨蒂符合', '2021-04-19 20:13:43', '2021-04-19 20:13:43', '阿斯蒂芬', '1', '1', 'no');
 
 -- ----------------------------
 -- Table structure for exam
@@ -79,26 +102,31 @@ CREATE TABLE `exam` (
   `total_score` float unsigned DEFAULT '0' COMMENT '总分',
   `pass_mark` float unsigned DEFAULT '0' COMMENT '及格分数',
   `permit_copy` int unsigned DEFAULT '1' COMMENT '是否允许复制  0:不允许  1:允许(默认)',
+  `switch_page` int DEFAULT '-1' COMMENT '允许页面切换次数  -1: 允许多次切换  5: 默认',
   `disrupt_order` int unsigned DEFAULT '0' COMMENT '是否打乱题目顺序 0:不打乱(默认) 1:打乱顺序',
   `repeat_test` int unsigned DEFAULT '1' COMMENT '允许考生考试次数 默认1',
   `auto_mack` int unsigned DEFAULT '1' COMMENT '是否自动评分 0:否   1:是(默认)',
-  `required` int DEFAULT '0' COMMENT '0: 非必填   1:必填',
   PRIMARY KEY (`exam_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of exam
 -- ----------------------------
-INSERT INTO `exam` VALUES ('1', 'test', '1', '60', '2021-01-05 21:17:08', null, '1', null, '6', '100', '60', '0', '1', '3', '1', '0');
-INSERT INTO `exam` VALUES ('4', '填空题与简答题的自动评分', '1', '120', '2021-01-24 21:54:20', null, '1', null, '10', '120', '60', '0', '0', '1', '1', '0');
-INSERT INTO `exam` VALUES ('7', '新建的试卷', '1', '80', '2021-01-05 21:58:47', null, '1', null, '6', '100', '60', '0', '0', '1', '0', '0');
-INSERT INTO `exam` VALUES ('10', '验证题目乱序功能', '1', '60', '2021-01-28 16:22:03', null, '1', null, '10', '100', '0', '0', '1', '1', '0', '0');
-INSERT INTO `exam` VALUES ('11', '测试成绩试卷成功后自动跳转url', '1', '60', '2021-01-28 15:05:33', null, '1', null, '1', '100', '0', '0', '0', '1', '0', '0');
-INSERT INTO `exam` VALUES ('12', '测试成绩试卷成功后自动跳转url2', '1', '60', '2021-01-28 15:10:21', null, '1', null, '1', '50', '0', '0', '1', '1', '1', '0');
-INSERT INTO `exam` VALUES ('13', '点击编辑试卷名称', '1', '60', '2021-03-08 15:29:05', '2021-03-08 15:29:05', null, null, '16', '0', null, '0', '0', '1', '0', '0');
-INSERT INTO `exam` VALUES ('14', '修改试卷名称', '1', '60', '2021-03-08 15:45:56', '2021-03-08 15:45:56', null, null, '2', '110', '0', '1', '0', '1', '1', '0');
-INSERT INTO `exam` VALUES ('15', '不想加班拉', '1', '10', '2021-03-11 10:12:43', '2021-03-11 10:12:43', null, null, '9', '120', '100', '0', '1', '1', '1', '0');
-INSERT INTO `exam` VALUES ('19', '测试试卷', '1', '60', '2021-04-02 09:27:17', '2021-04-02 09:33:20', null, null, '5', '50', '30', '0', '0', '1', '1', '0');
+INSERT INTO `exam` VALUES ('1', 'test', '1', '60', '2021-01-05 21:17:08', null, '1', null, '6', '100', '60', '0', '-1', '1', '3', '1');
+INSERT INTO `exam` VALUES ('4', '填空题与简答题的自动评分', '1', '120', '2021-01-24 21:54:20', null, '1', null, '10', '120', '60', '0', '-1', '0', '1', '1');
+INSERT INTO `exam` VALUES ('7', '新建的试卷', '1', '80', '2021-01-05 21:58:47', null, '1', null, '6', '100', '60', '0', '-1', '0', '1', '0');
+INSERT INTO `exam` VALUES ('10', '验证题目乱序功能', '1', '60', '2021-01-28 16:22:03', null, '1', null, '10', '100', '0', '0', '6', '1', '1', '0');
+INSERT INTO `exam` VALUES ('11', '测试成绩试卷成功后自动跳转url', '1', '60', '2021-01-28 15:05:33', null, '1', null, '1', '100', '0', '0', '-1', '0', '1', '0');
+INSERT INTO `exam` VALUES ('12', '测试成绩试卷成功后自动跳转url2', '1', '60', '2021-01-28 15:10:21', null, '1', null, '1', '50', '0', '0', '-1', '1', '1', '1');
+INSERT INTO `exam` VALUES ('13', '点击编辑试卷名称', '1', '60', '2021-03-08 15:29:05', '2021-03-08 15:29:05', null, null, '16', '0', null, '0', '-1', '0', '1', '0');
+INSERT INTO `exam` VALUES ('14', '修改试卷名称', '1', '60', '2021-03-08 15:45:56', '2021-03-08 15:45:56', null, null, '2', '110', '0', '1', '-1', '0', '1', '1');
+INSERT INTO `exam` VALUES ('15', '不想加班拉', '1', '10', '2021-03-11 10:12:43', '2021-03-11 10:12:43', null, null, '9', '120', '100', '0', '-1', '1', '1', '1');
+INSERT INTO `exam` VALUES ('19', '测试试卷', '1', '60', '2021-04-02 09:27:17', '2021-04-02 09:33:20', null, null, '5', '50', '30', '0', '-1', '0', '1', '1');
+INSERT INTO `exam` VALUES ('20', '试卷发布后不能修改', '1', '60', '2021-04-12 13:01:14', '2021-04-12 15:43:31', null, null, '1', '10', '10', '0', '-1', '0', '1', '1');
+INSERT INTO `exam` VALUES ('21', '这是复制出来的试卷111', '1', '60', '2021-04-12 15:58:31', '2021-04-25 09:07:49', null, null, '6', '60', '30', '1', '1', '0', '1', '1');
+INSERT INTO `exam` VALUES ('22', 'yashin', '1', '120', '2021-04-19 20:40:36', '2021-04-19 20:40:36', null, null, '5', '50', '10', '0', '-1', '0', '1', '0');
+INSERT INTO `exam` VALUES ('23', '视频演示', '1', '120', '2021-04-19 21:04:38', '2021-04-19 21:04:38', null, null, '5', '45', '10', '0', '7', '1', '1', '1');
+INSERT INTO `exam` VALUES ('24', '必填', '1', '60', '2021-04-25 09:12:20', '2021-04-25 10:03:18', null, null, '7', '70', '30', '0', '100', '1', '1', '1');
 
 -- ----------------------------
 -- Table structure for exam_classes
@@ -115,7 +143,7 @@ CREATE TABLE `exam_classes` (
   `publish_score` int(10) unsigned zerofill DEFAULT '0000000000' COMMENT '是否公布分数   0:不公布   1:公布',
   `status` int DEFAULT '0' COMMENT '状态 0:待批改 1:批改完成',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of exam_classes
@@ -128,7 +156,7 @@ INSERT INTO `exam_classes` VALUES ('9', '1', '14', '2021-02-17 19:33:06', '2021-
 INSERT INTO `exam_classes` VALUES ('10', '7', '1', '2021-02-19 21:13:00', '2021-02-02 00:00:00', '2021-02-11 00:00:00', '0000000000', '0000000000', '0');
 INSERT INTO `exam_classes` VALUES ('11', '1', '19', '2021-03-07 23:16:39', '2021-03-16 00:00:00', '2021-03-23 00:00:00', '0000000000', '0000000000', '0');
 INSERT INTO `exam_classes` VALUES ('12', '1', '17', '2021-03-07 23:16:39', '2021-03-16 00:00:00', '2021-03-23 00:00:00', '0000000000', '0000000000', '0');
-INSERT INTO `exam_classes` VALUES ('13', '10', '22', '2021-03-09 20:52:05', '2021-03-02 00:00:00', '2021-03-11 00:00:00', '0000000001', '0000000001', '0');
+INSERT INTO `exam_classes` VALUES ('13', '10', '22', '2021-04-18 20:31:00', '2021-04-07 00:00:00', '2021-04-30 00:00:00', '0000000001', '0000000001', '0');
 INSERT INTO `exam_classes` VALUES ('14', '4', '22', '2021-03-10 08:37:30', '2021-03-03 00:00:00', '2021-03-18 00:00:00', '0000000001', '0000000001', '0');
 INSERT INTO `exam_classes` VALUES ('15', '4', '21', '2021-03-09 15:38:18', '2021-03-03 00:00:00', '2021-04-30 00:00:00', '0000000000', '0000000000', '0');
 INSERT INTO `exam_classes` VALUES ('16', '4', '20', '2021-03-10 13:35:10', '2021-03-03 00:00:00', '2021-03-18 00:00:00', '0000000001', '0000000000', '0');
@@ -137,9 +165,13 @@ INSERT INTO `exam_classes` VALUES ('18', '4', '17', '2021-03-10 08:37:57', '2021
 INSERT INTO `exam_classes` VALUES ('19', '14', '22', '2021-03-10 10:20:56', '2021-03-03 00:00:00', '2021-03-18 00:00:00', '0000000000', '0000000000', '0');
 INSERT INTO `exam_classes` VALUES ('21', '12', '21', '2021-03-10 11:13:15', '2021-03-04 00:00:00', '2021-03-18 00:00:00', '0000000000', '0000000000', '0');
 INSERT INTO `exam_classes` VALUES ('22', '15', '25', '2021-03-20 18:41:16', '2021-03-03 00:00:00', '2021-03-19 00:00:00', '0000000000', '0000000000', '0');
-INSERT INTO `exam_classes` VALUES ('23', '15', '1', '2021-03-18 20:58:26', '2021-03-03 00:00:00', '2021-04-20 00:00:00', '0000000000', '0000000000', '0');
+INSERT INTO `exam_classes` VALUES ('23', '15', '1', '2021-04-03 21:42:51', '2021-03-03 00:00:00', '2021-04-20 00:00:00', '0000000001', '0000000001', '0');
 INSERT INTO `exam_classes` VALUES ('24', '1', '25', '2021-03-20 18:55:53', '2021-03-10 00:00:00', '2021-03-17 00:00:00', '0000000000', '0000000000', '0');
 INSERT INTO `exam_classes` VALUES ('25', '19', '26', '2021-04-02 11:21:27', '2021-04-01 00:00:00', '2021-05-14 00:00:00', '0000000001', '0000000001', '0');
+INSERT INTO `exam_classes` VALUES ('26', '1', '26', '2021-04-10 18:11:12', '2021-05-05 00:00:00', '2021-05-19 00:00:00', '0000000001', '0000000000', '0');
+INSERT INTO `exam_classes` VALUES ('27', '22', '28', '2021-04-19 20:43:12', '2021-04-14 00:00:00', '2021-04-30 00:00:00', '0000000000', '0000000000', '0');
+INSERT INTO `exam_classes` VALUES ('28', '23', '28', '2021-04-19 21:12:45', '2021-04-06 00:00:00', '2021-04-30 00:00:00', '0000000001', '0000000001', '0');
+INSERT INTO `exam_classes` VALUES ('29', '24', '26', '2021-04-25 10:05:53', '2021-04-14 00:00:00', '2021-05-29 00:00:00', '0000000000', '0000000000', '0');
 
 -- ----------------------------
 -- Table structure for exam_topic
@@ -151,7 +183,7 @@ CREATE TABLE `exam_topic` (
   `topic_id` int NOT NULL COMMENT '题目id',
   `topic_type` int NOT NULL COMMENT '题目类型  0:单选题 1:多选题 2:判断题 3:填空题 4:简答题',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=64 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=91 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of exam_topic
@@ -206,6 +238,30 @@ INSERT INTO `exam_topic` VALUES ('58', '19', '58', '1');
 INSERT INTO `exam_topic` VALUES ('59', '19', '59', '2');
 INSERT INTO `exam_topic` VALUES ('60', '19', '60', '3');
 INSERT INTO `exam_topic` VALUES ('61', '19', '61', '4');
+INSERT INTO `exam_topic` VALUES ('64', '20', '64', '0');
+INSERT INTO `exam_topic` VALUES ('65', '21', '65', '0');
+INSERT INTO `exam_topic` VALUES ('67', '21', '67', '2');
+INSERT INTO `exam_topic` VALUES ('68', '21', '68', '3');
+INSERT INTO `exam_topic` VALUES ('69', '21', '69', '4');
+INSERT INTO `exam_topic` VALUES ('70', '22', '70', '0');
+INSERT INTO `exam_topic` VALUES ('71', '22', '71', '0');
+INSERT INTO `exam_topic` VALUES ('72', '22', '72', '1');
+INSERT INTO `exam_topic` VALUES ('73', '22', '73', '3');
+INSERT INTO `exam_topic` VALUES ('74', '22', '74', '4');
+INSERT INTO `exam_topic` VALUES ('75', '23', '75', '0');
+INSERT INTO `exam_topic` VALUES ('76', '23', '76', '0');
+INSERT INTO `exam_topic` VALUES ('77', '23', '77', '0');
+INSERT INTO `exam_topic` VALUES ('78', '23', '78', '3');
+INSERT INTO `exam_topic` VALUES ('79', '23', '79', '4');
+INSERT INTO `exam_topic` VALUES ('80', '21', '80', '0');
+INSERT INTO `exam_topic` VALUES ('81', '21', '81', '1');
+INSERT INTO `exam_topic` VALUES ('82', '24', '82', '0');
+INSERT INTO `exam_topic` VALUES ('83', '24', '83', '0');
+INSERT INTO `exam_topic` VALUES ('84', '24', '84', '0');
+INSERT INTO `exam_topic` VALUES ('85', '24', '85', '1');
+INSERT INTO `exam_topic` VALUES ('86', '24', '86', '2');
+INSERT INTO `exam_topic` VALUES ('87', '24', '87', '3');
+INSERT INTO `exam_topic` VALUES ('88', '24', '88', '4');
 
 -- ----------------------------
 -- Table structure for subjects
@@ -244,74 +300,102 @@ CREATE TABLE `topic` (
   `score` float DEFAULT '0' COMMENT '分数',
   `difficulty` varchar(16) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT '中等' COMMENT '难度  简单,中等(默认),困难',
   `analysis` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '答案分析',
+  `required` int DEFAULT '0' COMMENT '非必填:0   必填:1',
   `create_date` datetime DEFAULT NULL COMMENT '创建时间',
   `update_date` datetime DEFAULT NULL COMMENT '修改时间',
   PRIMARY KEY (`topic_id`),
   KEY `suoyin2` (`creator_id`) USING BTREE,
   CONSTRAINT `FK11` FOREIGN KEY (`creator_id`) REFERENCES `user` (`user_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE=InnoDB AUTO_INCREMENT=64 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=91 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of topic
 -- ----------------------------
-INSERT INTO `topic` VALUES ('1', '1', '1', null, '我的第一个单选题', '选项1\n选项2', '1', '0', '选项1', '20', '中等', '答案分析', null, null);
-INSERT INTO `topic` VALUES ('2', '1', '1', null, '我的第一个多选题', '选项1', '2', '1', '选项1', '10', '中等', '答案分析', null, null);
-INSERT INTO `topic` VALUES ('3', '1', '1', null, '这是我第一次编辑试卷', '选项1\n选项2\n选项3\n选项4', null, '0', '选项1', '20', '中等', '这是答案分析', null, null);
-INSERT INTO `topic` VALUES ('4', '1', '1', null, '这是我新建的题目', '选项1\n选项2\n选项3\n选项4', null, '1', '选项3\n选项4', '10', '中等', '这是答案分析', null, null);
-INSERT INTO `topic` VALUES ('5', '1', '1', null, '这是我新建的题目', '选项1\n选项2\n选项3\n选项4', null, '2', 'true', '10', '中等', '这是答案分析', null, null);
-INSERT INTO `topic` VALUES ('6', '1', '1', null, '这是我___新建的题目___1111', '选项1\n选项2\n选项3\n选项4', null, '3', 'a\nb', '10', '中等', '这是答案分析', null, null);
-INSERT INTO `topic` VALUES ('7', '1', '1', null, '这是我新建的题目', '选项1\n选项2\n选项3\n选项4', null, '4', '无法\n宿舍', '10', '中等', '这是答案分析', null, null);
-INSERT INTO `topic` VALUES ('8', '1', '1', null, '这是我新建的题目', '选项1\n选项2\n选项3\n选项4', null, '0', '选项2', '10', '中等', '这是答案分析', null, null);
-INSERT INTO `topic` VALUES ('9', '1', '1', null, '这是我新建的题目', '选项1\n选项2\n选项3\n选项4', null, '2', '', '10', '中等', '这是答案分析', null, null);
-INSERT INTO `topic` VALUES ('10', '1', '1', null, '这是我新建的题目', '选项1\n选项2\n选项3\n选项4', null, '1', '选项1\n选项2\n选项3\n选项4', '10', '中等', '这是答案分析', null, null);
-INSERT INTO `topic` VALUES ('11', '1', '1', null, '这是我新建的题目`12', '选项1\n选项2\n选项3\n选项4', null, '0', '选项3', '20', '中等', '这是答案分析', null, null);
-INSERT INTO `topic` VALUES ('12', '1', '1', null, '这是我新建的题目123', '选项1\n选项2\n选项3\n选项4', null, '4', '123\n999', '10', '中等', '这是答案分析', null, null);
-INSERT INTO `topic` VALUES ('18', '2', '1', null, '这是我新建的题目', '选项1\n选项2\n选项3\n选项4', null, '1', '选项2\n选项3', '20', '中等', '这是答案分析', null, null);
-INSERT INTO `topic` VALUES ('19', '2', '1', null, '这是我新建的题目', '选项1\n选项2\n选项3\n选项4', null, '2', 'false', '20', '中等', '这是答案分析', null, null);
-INSERT INTO `topic` VALUES ('20', '2', '1', null, '这是我新___建的题目', '选项1\n选项2\n选项3\n选项4', null, '3', '111', '20', '中等', '这是答案分析', null, null);
-INSERT INTO `topic` VALUES ('21', '2', '1', null, '这是我新建的题目', '选项1\n选项2\n选项3\n选项4', null, '4', 'qqq', '20', '中等', '这是答案分析', null, null);
-INSERT INTO `topic` VALUES ('22', '1', '1', null, '单选题11111111', '选项1\n选项2\n选项3\n选项4', null, '0', '选项2', '10', '简单', '这是答案分析', null, null);
-INSERT INTO `topic` VALUES ('23', '1', '1', null, '单选题222222222', '选项1\n选项2\n选项3\n选项4', null, '0', '选项2', '10', '中等', '这是答案分析', null, null);
-INSERT INTO `topic` VALUES ('24', '1', '1', null, '这是我新建的题目', '选项1\n选项2\n选项3\n选项4', null, '1', '', '20', '中等', '这是答案分析', null, null);
-INSERT INTO `topic` VALUES ('25', '1', '1', null, '这是我新建的题目', '选项1\n选项2\n选项3\n选项4', null, '2', '', '20', '中等', '这是答案分析', null, null);
-INSERT INTO `topic` VALUES ('26', '1', '1', null, '这是我___新建的题目___', '选项1\n选项2\n选项3\n选项4', null, '3', '111\n222', '20', '中等', '这是答案分析', null, null);
-INSERT INTO `topic` VALUES ('27', '1', '1', null, '这是我新建的题目', '选项1\n选项2\n选项3\n选项4', null, '4', '关键词1\n关键词2', '20', '困难', '这是答案分析', null, null);
-INSERT INTO `topic` VALUES ('28', '1', '1', null, '这是我新建的题目1', '选项1\n选项2\n选项3\n选项4', null, '0', '选项1', '10', '中等', '这是答案分析', null, null);
-INSERT INTO `topic` VALUES ('29', '1', '1', null, '这是我新建的题目2', '选项1\n选项2\n选项3\n选项4', null, '0', '选项1', '10', '中等', '这是答案分析', null, null);
-INSERT INTO `topic` VALUES ('30', '1', '1', null, '这是我新建的题目3', '选项1\n选项2\n选项3\n选项4', null, '0', '选项1', '10', '中等', '这是答案分析', null, null);
-INSERT INTO `topic` VALUES ('31', '1', '1', null, '这是我新建的题目4', '选项1\n选项2\n选项3\n选项4', null, '0', '选项1', '10', '中等', '这是答案分析', null, null);
-INSERT INTO `topic` VALUES ('32', '1', '1', null, '这是我新建的题目5', '选项1\n选项2\n选项3\n选项4', null, '0', '选项1', '10', '中等', '这是答案分析', null, null);
-INSERT INTO `topic` VALUES ('33', '1', '1', null, '这是我新建的题目6', '选项1\n选项2\n选项3\n选项4', null, '0', '选项1', '10', '中等', '这是答案分析', null, null);
-INSERT INTO `topic` VALUES ('34', '1', '1', null, '这是我新建的题目7', '选项1\n选项2\n选项3\n选项4', null, '0', '选项1', '10', '中等', '这是答案分析', null, null);
-INSERT INTO `topic` VALUES ('35', '1', '1', null, '这是我新建的题目8', '选项1\n选项2\n选项3\n选项4', null, '0', '选项1', '10', '中等', '这是答案分析', null, null);
-INSERT INTO `topic` VALUES ('36', '1', '1', null, '这是我新建的题目9', '选项1\n选项2\n选项3\n选项4', null, '0', '选项1', '10', '中等', '这是答案分析', null, null);
-INSERT INTO `topic` VALUES ('37', '1', '1', null, '这是我新建的题目10', '选项1\n选项2\n选项3\n选项4', null, '0', '选项1', '10', '中等', '这是答案分析', null, null);
-INSERT INTO `topic` VALUES ('38', '1', '1', null, '这是我新建的题目', '选项1\n选项2\n选项3\n选项4', null, '0', '', '100', '中等', '这是答案分析', null, null);
-INSERT INTO `topic` VALUES ('39', '1', '1', null, '这是我新建的题目', '选项1\n选项2\n选项3\n选项4', null, '0', '选项1', '50', '中等', '这是答案分析', null, null);
-INSERT INTO `topic` VALUES ('40', '1', '1', null, '这是我新建的题目', '选项1\n选项2\n选项3\n选项4', null, '0', '选项1', '0', '中等', '这是答案分析', '2021-03-08 15:15:58', '2021-03-08 15:15:58');
-INSERT INTO `topic` VALUES ('41', '1', '1', null, '这是我新建的题目2222222222222', '选项1\n选项2\n选项3\n选项4', null, '0', '选项3', '0', '中等', '这是答案分析', '2021-03-08 15:16:55', '2021-03-08 15:16:55');
-INSERT INTO `topic` VALUES ('42', '1', null, null, '这是我新建的题目啊啊啊啊啊啊啊啊', '选项1\n选项2\n选项3\n选项4', null, '0', '', '100', '中等', '这是答案分析', '2021-03-08 15:45:56', '2021-03-08 15:45:56');
-INSERT INTO `topic` VALUES ('43', '1', '1', null, '这是我新建的题目', '选项1\n选项2\n选项3\n选项4', null, '4', 'a\nb\nc', '10', '中等', '这是答案分析', '2021-03-09 15:34:49', '2021-03-09 15:34:49');
-INSERT INTO `topic` VALUES ('44', '1', '1', null, '这是我新建的题目___2222___', '选项1\n选项2\n选项3\n选项4', null, '3', '对对对\n冲冲冲', '10', '中等', '这是答案分析', '2021-03-09 15:45:03', '2021-03-09 15:45:03');
-INSERT INTO `topic` VALUES ('45', '1', '1', null, '___这是我新建的题目___33333333333', '选项1\n选项2\n选项3\n选项4', null, '3', 'aaa\nbbb', '10', '中等', '这是答案分析', '2021-03-09 15:47:59', '2021-03-09 15:47:59');
-INSERT INTO `topic` VALUES ('46', '1', null, null, '这是我新建的题目', '选项1\n选项2\n选项3\n选项4', null, '1', '', '10', '中等', '这是答案分析', '2021-03-10 10:21:23', '2021-03-10 10:21:23');
-INSERT INTO `topic` VALUES ('47', '1', null, null, '这是我新建的题目阿斯蒂芬1', '选项1 发士大夫\n选项2\n选项3\n选项4', null, '0', '选项1 发士大夫', '20', '困难', '这是答案分析', '2021-03-11 10:12:43', '2021-03-11 10:12:43');
-INSERT INTO `topic` VALUES ('48', '1', null, null, '这是我新建的题目22222222222', '选项1\n选项2\n选项3\n选项4', null, '0', '选项1', '20', '中等', '这是答案分析', '2021-03-11 10:12:43', '2021-03-11 10:12:43');
-INSERT INTO `topic` VALUES ('49', '1', null, null, '这是我新建的题目33333333333', '选项1\n选项2\n选项3\n选项4', null, '0', '选项4', '20', '中等', '这是答案分析', '2021-03-11 10:12:43', '2021-03-11 10:12:43');
-INSERT INTO `topic` VALUES ('50', '1', null, null, '这是我新建的题目444444444444', '选项1\n选项2\n选项3\n选项4', null, '0', '选项3', '20', '中等', '这是答案分析', '2021-03-11 10:12:43', '2021-03-11 10:12:43');
-INSERT INTO `topic` VALUES ('51', '1', null, null, '这是我新建的题目', '选项1\n选项2\n选项3\n选项4', null, '1', '选项1\n选项3', '10', '中等', '这是答案分析', '2021-03-11 10:12:43', '2021-03-11 10:12:43');
-INSERT INTO `topic` VALUES ('52', '1', null, null, '这是我新建的题目', '选项1\n选项2\n选项3\n选项4', null, '1', '选项1\n选项2\n选项3\n选项4', '10', '中等', '这是答案分析', '2021-03-11 10:12:43', '2021-03-11 10:12:43');
-INSERT INTO `topic` VALUES ('53', '1', null, null, '这是我新建的题目', '选项1\n选项2\n选项3\n选项4', null, '2', 'true', '10', '中等', '这是答案分析', '2021-03-11 10:12:43', '2021-03-11 10:12:43');
-INSERT INTO `topic` VALUES ('54', '1', null, null, '这是我___新建的题目___', '选项1\n选项2\n选项3\n选项4', null, '3', '对对对\n冲冲冲', '10', '中等', '这是答案分析', '2021-03-11 10:12:43', '2021-03-11 10:12:43');
-INSERT INTO `topic` VALUES ('55', '1', null, null, '这是我新建的题目', '选项1\n选项2\n选项3\n选项4', null, '4', '123\n456', '10', '中等', '这是答案分析', '2021-03-11 10:12:43', '2021-03-11 10:12:43');
-INSERT INTO `topic` VALUES ('56', '1', null, null, '这是修改试卷的题目', '选项1\n选项2\n选项3\n选项4', null, '1', '', '10', '中等', '这是答案分析', '2021-03-11 10:14:35', '2021-03-11 10:14:35');
-INSERT INTO `topic` VALUES ('57', '1', null, null, '这是我新建的题目', '选项1\n选项2\n选项3\n选项4', null, '0', '选项1', '10', '中等', '这是答案分析', '2021-04-02 09:27:17', '2021-04-02 09:27:17');
-INSERT INTO `topic` VALUES ('58', '1', null, null, '这是我新建的题目', '选项1\n选项2\n选项3\n选项4', null, '1', '选项2\n选项3', '10', '中等', '这是答案分析', '2021-04-02 09:27:17', '2021-04-02 09:27:17');
-INSERT INTO `topic` VALUES ('59', '1', null, null, '这是我新建的题目', '选项1\n选项2\n选项3\n选项4', null, '2', 'true', '10', '中等', '这是答案分析', '2021-04-02 09:27:17', '2021-04-02 09:27:17');
-INSERT INTO `topic` VALUES ('60', '1', null, null, '这是我___新建的题目___', '选项1\n选项2\n选项3\n选项4', null, '3', '111\n222', '10', '中等', '这是答案分析', '2021-04-02 09:27:17', '2021-04-02 09:27:17');
-INSERT INTO `topic` VALUES ('61', '1', null, null, '这是我新建的题目', '选项1\n选项2\n选项3\n选项4', null, '4', '123\n456', '10', '中等', '这是答案分析', '2021-04-02 09:27:17', '2021-04-02 09:27:17');
-INSERT INTO `topic` VALUES ('62', '1', null, null, '这是我新建的题目', '选项1\n选项2\n选项3\n选项4', null, '0', '', '10', '中等', '这是答案分析', '2021-04-02 09:33:04', '2021-04-02 09:33:04');
-INSERT INTO `topic` VALUES ('63', '1', null, null, '这是我新建的题目', '选项1\n选项2\n选项3\n选项4', null, '0', '选项1', '10', '中等', '这是答案分析', '2021-04-02 09:33:09', '2021-04-02 09:33:09');
+INSERT INTO `topic` VALUES ('1', '1', '1', null, '我的第一个单选题', '选项1\n选项2', '1', '0', '选项1', '20', '中等', '答案分析', '0', null, null);
+INSERT INTO `topic` VALUES ('2', '1', '1', null, '我的第一个多选题', '选项1', '2', '1', '选项1', '10', '中等', '答案分析', '0', null, null);
+INSERT INTO `topic` VALUES ('3', '1', '1', null, '这是我第一次编辑试卷', '选项1\n选项2\n选项3\n选项4', null, '0', '选项1', '20', '中等', '这是答案分析', '0', null, null);
+INSERT INTO `topic` VALUES ('4', '1', '1', null, '这是我新建的题目', '选项1\n选项2\n选项3\n选项4', null, '1', '选项3\n选项4', '10', '中等', '这是答案分析', '0', null, null);
+INSERT INTO `topic` VALUES ('5', '1', '1', null, '这是我新建的题目', '选项1\n选项2\n选项3\n选项4', null, '2', 'true', '10', '中等', '这是答案分析', '0', null, null);
+INSERT INTO `topic` VALUES ('6', '1', '1', null, '这是我___新建的题目___1111', '选项1\n选项2\n选项3\n选项4', null, '3', 'a\nb', '10', '中等', '这是答案分析', '0', null, null);
+INSERT INTO `topic` VALUES ('7', '1', '1', null, '这是我新建的题目', '选项1\n选项2\n选项3\n选项4', null, '4', '无法\n宿舍', '10', '中等', '这是答案分析', '0', null, null);
+INSERT INTO `topic` VALUES ('8', '1', '1', null, '这是我新建的题目', '选项1\n选项2\n选项3\n选项4', null, '0', '选项2', '10', '中等', '这是答案分析', '0', null, null);
+INSERT INTO `topic` VALUES ('9', '1', '1', null, '这是我新建的题目', '选项1\n选项2\n选项3\n选项4', null, '2', '', '10', '中等', '这是答案分析', '0', null, null);
+INSERT INTO `topic` VALUES ('10', '1', '1', null, '这是我新建的题目', '选项1\n选项2\n选项3\n选项4', null, '1', '选项1\n选项2\n选项3\n选项4', '10', '中等', '这是答案分析', '0', null, null);
+INSERT INTO `topic` VALUES ('11', '1', '1', null, '这是我新建的题目`12', '选项1\n选项2\n选项3\n选项4', null, '0', '选项3', '20', '中等', '这是答案分析', '0', null, null);
+INSERT INTO `topic` VALUES ('12', '1', '1', null, '这是我新建的题目123', '选项1\n选项2\n选项3\n选项4', null, '4', '123\n999', '10', '中等', '这是答案分析', '0', null, null);
+INSERT INTO `topic` VALUES ('18', '2', '1', null, '这是我新建的题目', '选项1\n选项2\n选项3\n选项4', null, '1', '选项2\n选项3', '20', '中等', '这是答案分析', '0', null, null);
+INSERT INTO `topic` VALUES ('19', '2', '1', null, '这是我新建的题目', '选项1\n选项2\n选项3\n选项4', null, '2', 'false', '20', '中等', '这是答案分析', '0', null, null);
+INSERT INTO `topic` VALUES ('20', '2', '1', null, '这是我新___建的题目', '选项1\n选项2\n选项3\n选项4', null, '3', '111', '20', '中等', '这是答案分析', '0', null, null);
+INSERT INTO `topic` VALUES ('21', '2', '1', null, '这是我新建的题目', '选项1\n选项2\n选项3\n选项4', null, '4', 'qqq', '20', '中等', '这是答案分析', '0', null, null);
+INSERT INTO `topic` VALUES ('22', '1', '1', null, '单选题11111111', '选项1\n选项2\n选项3\n选项4', null, '0', '选项2', '10', '简单', '这是答案分析', '0', null, null);
+INSERT INTO `topic` VALUES ('23', '1', '1', null, '单选题222222222', '选项1\n选项2\n选项3\n选项4', null, '0', '选项2', '10', '中等', '这是答案分析', '0', null, null);
+INSERT INTO `topic` VALUES ('24', '1', '1', null, '这是我新建的题目', '选项1\n选项2\n选项3\n选项4', null, '1', '', '20', '中等', '这是答案分析', '0', null, null);
+INSERT INTO `topic` VALUES ('25', '1', '1', null, '这是我新建的题目', '选项1\n选项2\n选项3\n选项4', null, '2', '', '20', '中等', '这是答案分析', '0', null, null);
+INSERT INTO `topic` VALUES ('26', '1', '1', null, '这是我___新建的题目___', '选项1\n选项2\n选项3\n选项4', null, '3', '111\n222', '20', '中等', '这是答案分析', '0', null, null);
+INSERT INTO `topic` VALUES ('27', '1', '1', null, '这是我新建的题目', '选项1\n选项2\n选项3\n选项4', null, '4', '关键词1\n关键词2', '20', '困难', '这是答案分析', '0', null, null);
+INSERT INTO `topic` VALUES ('28', '1', '1', null, '这是我新建的题目1', '选项1\n选项2\n选项3\n选项4', null, '0', '选项1', '10', '中等', '这是答案分析', '0', null, null);
+INSERT INTO `topic` VALUES ('29', '1', '1', null, '这是我新建的题目2', '选项1\n选项2\n选项3\n选项4', null, '0', '选项1', '10', '中等', '这是答案分析', '0', null, null);
+INSERT INTO `topic` VALUES ('30', '1', '1', null, '这是我新建的题目3', '选项1\n选项2\n选项3\n选项4', null, '0', '选项1', '10', '中等', '这是答案分析', '0', null, null);
+INSERT INTO `topic` VALUES ('31', '1', '1', null, '这是我新建的题目4', '选项1\n选项2\n选项3\n选项4', null, '0', '选项1', '10', '中等', '这是答案分析', '0', null, null);
+INSERT INTO `topic` VALUES ('32', '1', '1', null, '这是我新建的题目5', '选项1\n选项2\n选项3\n选项4', null, '0', '选项1', '10', '中等', '这是答案分析', '0', null, null);
+INSERT INTO `topic` VALUES ('33', '1', '1', null, '这是我新建的题目6', '选项1\n选项2\n选项3\n选项4', null, '0', '选项1', '10', '中等', '这是答案分析', '0', null, null);
+INSERT INTO `topic` VALUES ('34', '1', '1', null, '这是我新建的题目7', '选项1\n选项2\n选项3\n选项4', null, '0', '选项1', '10', '中等', '这是答案分析', '0', null, null);
+INSERT INTO `topic` VALUES ('35', '1', '1', null, '这是我新建的题目8', '选项1\n选项2\n选项3\n选项4', null, '0', '选项1', '10', '中等', '这是答案分析', '0', null, null);
+INSERT INTO `topic` VALUES ('36', '1', '1', null, '这是我新建的题目9', '选项1\n选项2\n选项3\n选项4', null, '0', '选项1', '10', '中等', '这是答案分析', '0', null, null);
+INSERT INTO `topic` VALUES ('37', '1', '1', null, '这是我新建的题目10', '选项1\n选项2\n选项3\n选项4', null, '0', '选项1', '10', '中等', '这是答案分析', '0', null, null);
+INSERT INTO `topic` VALUES ('38', '1', '1', null, '这是我新建的题目', '选项1\n选项2\n选项3\n选项4', null, '0', '', '100', '中等', '这是答案分析', '0', null, null);
+INSERT INTO `topic` VALUES ('39', '1', '1', null, '这是我新建的题目', '选项1\n选项2\n选项3\n选项4', null, '0', '选项1', '50', '中等', '这是答案分析', '0', null, null);
+INSERT INTO `topic` VALUES ('40', '1', '1', null, '这是我新建的题目', '选项1\n选项2\n选项3\n选项4', null, '0', '选项1', '0', '中等', '这是答案分析', '0', '2021-03-08 15:15:58', '2021-03-08 15:15:58');
+INSERT INTO `topic` VALUES ('41', '1', '1', null, '这是我新建的题目2222222222222', '选项1\n选项2\n选项3\n选项4', null, '0', '选项3', '0', '中等', '这是答案分析', '0', '2021-03-08 15:16:55', '2021-03-08 15:16:55');
+INSERT INTO `topic` VALUES ('42', '1', null, null, '这是我新建的题目啊啊啊啊啊啊啊啊', '选项1\n选项2\n选项3\n选项4', null, '0', '', '100', '中等', '这是答案分析', '0', '2021-03-08 15:45:56', '2021-03-08 15:45:56');
+INSERT INTO `topic` VALUES ('43', '1', '1', null, '这是我新建的题目', '选项1\n选项2\n选项3\n选项4', null, '4', 'a\nb\nc', '10', '中等', '这是答案分析', '0', '2021-03-09 15:34:49', '2021-03-09 15:34:49');
+INSERT INTO `topic` VALUES ('44', '1', '1', null, '这是我新建的题目___2222___', '选项1\n选项2\n选项3\n选项4', null, '3', '对对对\n冲冲冲', '10', '中等', '这是答案分析', '0', '2021-03-09 15:45:03', '2021-03-09 15:45:03');
+INSERT INTO `topic` VALUES ('45', '1', '1', null, '___这是我新建的题目___33333333333', '选项1\n选项2\n选项3\n选项4', null, '3', 'aaa\nbbb', '10', '中等', '这是答案分析', '0', '2021-03-09 15:47:59', '2021-03-09 15:47:59');
+INSERT INTO `topic` VALUES ('46', '1', null, null, '这是我新建的题目', '选项1\n选项2\n选项3\n选项4', null, '1', '', '10', '中等', '这是答案分析', '0', '2021-03-10 10:21:23', '2021-03-10 10:21:23');
+INSERT INTO `topic` VALUES ('47', '1', null, null, '这是我新建的题目阿斯蒂芬1', '选项1 发士大夫\n选项2\n选项3\n选项4', null, '0', '选项1 发士大夫', '20', '困难', '这是答案分析', '0', '2021-03-11 10:12:43', '2021-03-11 10:12:43');
+INSERT INTO `topic` VALUES ('48', '1', null, null, '这是我新建的题目22222222222', '选项1\n选项2\n选项3\n选项4', null, '0', '选项1', '20', '中等', '这是答案分析', '0', '2021-03-11 10:12:43', '2021-03-11 10:12:43');
+INSERT INTO `topic` VALUES ('49', '1', null, null, '这是我新建的题目33333333333', '选项1\n选项2\n选项3\n选项4', null, '0', '选项4', '20', '中等', '这是答案分析', '0', '2021-03-11 10:12:43', '2021-03-11 10:12:43');
+INSERT INTO `topic` VALUES ('50', '1', null, null, '这是我新建的题目444444444444', '选项1\n选项2\n选项3\n选项4', null, '0', '选项3', '20', '中等', '这是答案分析', '0', '2021-03-11 10:12:43', '2021-03-11 10:12:43');
+INSERT INTO `topic` VALUES ('51', '1', null, null, '这是我新建的题目', '选项1\n选项2\n选项3\n选项4', null, '1', '选项1\n选项3', '10', '中等', '这是答案分析', '0', '2021-03-11 10:12:43', '2021-03-11 10:12:43');
+INSERT INTO `topic` VALUES ('52', '1', null, null, '这是我新建的题目', '选项1\n选项2\n选项3\n选项4', null, '1', '选项1\n选项2\n选项3\n选项4', '10', '中等', '这是答案分析', '0', '2021-03-11 10:12:43', '2021-03-11 10:12:43');
+INSERT INTO `topic` VALUES ('53', '1', null, null, '这是我新建的题目', '选项1\n选项2\n选项3\n选项4', null, '2', 'true', '10', '中等', '这是答案分析', '0', '2021-03-11 10:12:43', '2021-03-11 10:12:43');
+INSERT INTO `topic` VALUES ('54', '1', null, null, '这是我___新建的题目___', '选项1\n选项2\n选项3\n选项4', null, '3', '对对对\n冲冲冲', '10', '中等', '这是答案分析', '0', '2021-03-11 10:12:43', '2021-03-11 10:12:43');
+INSERT INTO `topic` VALUES ('55', '1', null, null, '这是我新建的题目', '选项1\n选项2\n选项3\n选项4', null, '4', '123\n456', '10', '中等', '这是答案分析', '0', '2021-03-11 10:12:43', '2021-03-11 10:12:43');
+INSERT INTO `topic` VALUES ('56', '1', null, null, '这是修改试卷的题目', '选项1\n选项2\n选项3\n选项4', null, '1', '', '10', '中等', '这是答案分析', '0', '2021-03-11 10:14:35', '2021-03-11 10:14:35');
+INSERT INTO `topic` VALUES ('57', '1', null, null, '这是我新建的题目', '选项1\n选项2\n选项3\n选项4', null, '0', '选项1', '10', '中等', '这是答案分析', '0', '2021-04-02 09:27:17', '2021-04-02 09:27:17');
+INSERT INTO `topic` VALUES ('58', '1', null, null, '这是我新建的题目', '选项1\n选项2\n选项3\n选项4', null, '1', '选项2\n选项3', '10', '中等', '这是答案分析', '0', '2021-04-02 09:27:17', '2021-04-02 09:27:17');
+INSERT INTO `topic` VALUES ('59', '1', null, null, '这是我新建的题目', '选项1\n选项2\n选项3\n选项4', null, '2', 'true', '10', '中等', '这是答案分析', '0', '2021-04-02 09:27:17', '2021-04-02 09:27:17');
+INSERT INTO `topic` VALUES ('60', '1', null, null, '这是我___新建的题目___', '选项1\n选项2\n选项3\n选项4', null, '3', '111\n222', '10', '中等', '这是答案分析', '0', '2021-04-02 09:27:17', '2021-04-02 09:27:17');
+INSERT INTO `topic` VALUES ('61', '1', null, null, '这是我新建的题目', '选项1\n选项2\n选项3\n选项4', null, '4', '123\n456', '10', '中等', '这是答案分析', '0', '2021-04-02 09:27:17', '2021-04-02 09:27:17');
+INSERT INTO `topic` VALUES ('62', '1', null, null, '这是我新建的题目', '选项1\n选项2\n选项3\n选项4', null, '0', '', '10', '中等', '这是答案分析', '0', '2021-04-02 09:33:04', '2021-04-02 09:33:04');
+INSERT INTO `topic` VALUES ('63', '1', null, null, '这是我新建的题目', '选项1\n选项2\n选项3\n选项4', null, '0', '选项1', '10', '中等', '这是答案分析', '0', '2021-04-02 09:33:09', '2021-04-02 09:33:09');
+INSERT INTO `topic` VALUES ('64', '1', null, null, '这是我新建的题目', '选项1\n选项2\n选项3\n选项4', null, '0', '选项1', '10', '中等', '这是答案分析', '0', '2021-04-12 13:01:14', '2021-04-12 13:01:14');
+INSERT INTO `topic` VALUES ('65', '1', null, null, '这是我新建的题目', '选项1\n选项2\n选项3\n选项4', null, '0', '选项1', '10', '中等', '这是答案分析', '0', '2021-04-12 15:58:31', '2021-04-12 15:58:31');
+INSERT INTO `topic` VALUES ('66', '1', null, null, '这是我新建的题目', '选项1\n选项2\n选项3\n选项4', null, '1', '选项2\n选项3', '10', '中等', '这是答案分析', '0', '2021-04-12 15:58:31', '2021-04-12 15:58:31');
+INSERT INTO `topic` VALUES ('67', '1', null, null, '这是我新建的题目', '选项1\n选项2\n选项3\n选项4', null, '2', 'true', '10', '中等', '这是答案分析', '0', '2021-04-12 15:58:31', '2021-04-12 15:58:31');
+INSERT INTO `topic` VALUES ('68', '1', null, null, '这是我___新建的题目___', '选项1\n选项2\n选项3\n选项4', null, '3', '111\n222', '10', '中等', '这是答案分析', '0', '2021-04-12 15:58:31', '2021-04-12 15:58:31');
+INSERT INTO `topic` VALUES ('69', '1', null, null, '这是我新建的题目', '选项1\n选项2\n选项3\n选项4', null, '4', '123\n456', '10', '中等', '这是答案分析', '0', '2021-04-12 15:58:31', '2021-04-12 15:58:31');
+INSERT INTO `topic` VALUES ('70', '1', null, null, '这是我新建的题目22222', '选项1\n选项2\n选项3\n选项4', null, '0', '选项1', '10', '中等', '这是答案分析', null, '2021-04-19 20:40:36', '2021-04-19 20:40:36');
+INSERT INTO `topic` VALUES ('71', '1', null, null, '这是我新建的题目11111111111111111', '选项1\n选项2\n选项3\n选项4', null, '0', '选项2', '10', '中等', '这是答案分析', null, '2021-04-19 20:40:36', '2021-04-19 20:40:36');
+INSERT INTO `topic` VALUES ('72', '1', null, null, '这是我新建的题目', '选项1\n选项2\n选项3\n选项4', null, '1', '选项2\n选项3', '10', '中等', '这是答案分析', null, '2021-04-19 20:40:36', '2021-04-19 20:40:36');
+INSERT INTO `topic` VALUES ('73', '1', null, null, '这是我新建的题目______', '选项1\n选项2\n选项3\n选项4', null, '3', '123\n1111', '10', '中等', '这是答案分析', null, '2021-04-19 20:40:36', '2021-04-19 20:40:36');
+INSERT INTO `topic` VALUES ('74', '1', null, null, '这是我新建的题目', '选项1\n选项2\n选项3\n选项4', null, '4', '123\n456', '10', '中等', '这是答案分析', null, '2021-04-19 20:40:36', '2021-04-19 20:40:36');
+INSERT INTO `topic` VALUES ('75', '1', null, null, '这是我新建的2222222222222', '选项1\n选项2\n选项3\n选项4', null, '0', '选项2', '5', '中等', '这是答案分析', null, '2021-04-19 21:04:38', '2021-04-19 21:04:38');
+INSERT INTO `topic` VALUES ('76', '1', null, null, '这是我新建的题目', '选项1\n选项2\n选项3\n选项4', null, '0', '选项3', '10', '中等', '这是答案分析', null, '2021-04-19 21:04:38', '2021-04-19 21:04:38');
+INSERT INTO `topic` VALUES ('77', '1', null, null, '这是我新建的题目', '选项1\n选项2\n选项3\n选项4', null, '0', '选项2', '10', '中等', '这是答案分析', null, '2021-04-19 21:04:38', '2021-04-19 21:04:38');
+INSERT INTO `topic` VALUES ('78', '1', null, null, '这是我___新建的题目___', '选项1\n选项2\n选项3\n选项4', null, '3', '1111\n2222', '10', '中等', '这是答案分析', null, '2021-04-19 21:04:38', '2021-04-19 21:04:38');
+INSERT INTO `topic` VALUES ('79', '1', null, null, '这是我新建的题目', '选项1\n选项2\n选项3\n选项4', null, '4', '123\n456', '10', '中等', '这是答案分析', null, '2021-04-19 21:04:38', '2021-04-19 21:04:38');
+INSERT INTO `topic` VALUES ('80', '1', null, null, '这是我新建的题目', '选项1\n选项2\n选项3\n选项4', null, '0', '选项2', '10', '中等', '这是答案分析', '0', '2021-04-19 21:07:02', '2021-04-19 21:07:02');
+INSERT INTO `topic` VALUES ('81', '1', null, null, '这是我新建的题目', '选项1\n选项2\n选项3\n选项4', null, '1', '选项3\n选项4', '10', '中等', '这是答案分析', '0', '2021-04-25 09:07:49', '2021-04-25 09:07:49');
+INSERT INTO `topic` VALUES ('82', '1', null, null, '这是我新建的题目1', '选项1\n选项2\n选项3\n选项4', null, '0', '选项1', '10', '中等', '这是答案分析', '1', '2021-04-25 09:12:20', '2021-04-25 09:12:20');
+INSERT INTO `topic` VALUES ('83', '1', null, null, '这是我新建的题目2', '选项1\n选项2\n选项3\n选项4', null, '0', '选项2', '10', '中等', '这是答案分析', '0', '2021-04-25 09:12:20', '2021-04-25 09:12:20');
+INSERT INTO `topic` VALUES ('84', '1', null, null, '这是我新建的题目3', '选项1\n选项2\n选项3\n选项4', null, '0', '选项3', '10', '中等', '这是答案分析', '0', '2021-04-25 09:12:20', '2021-04-25 09:12:20');
+INSERT INTO `topic` VALUES ('85', '1', null, null, '这是我新建的题目', '选项1\n选项2\n选项3\n选项4', null, '1', '选项1\n选项3', '10', '中等', '这是答案分析', '1', '2021-04-25 09:12:20', '2021-04-25 09:12:20');
+INSERT INTO `topic` VALUES ('86', '1', null, null, '这是我新建的题目', '选项1\n选项2\n选项3\n选项4', null, '2', 'true', '10', '中等', '这是答案分析', '1', '2021-04-25 09:12:20', '2021-04-25 09:12:20');
+INSERT INTO `topic` VALUES ('87', '1', null, null, '这是我新建的题目______', '选项1\n选项2\n选项3\n选项4', null, '3', '111\n222', '10', '中等', '这是答案分析', '0', '2021-04-25 09:12:20', '2021-04-25 09:12:20');
+INSERT INTO `topic` VALUES ('88', '1', null, null, '这是我新建的题目', '选项1\n选项2\n选项3\n选项4', null, '4', '123\n456', '10', '中等', '这是答案分析', '0', '2021-04-25 09:12:20', '2021-04-25 09:12:20');
+INSERT INTO `topic` VALUES ('89', '1', null, null, '这是我新建的题目空', '选项1\n选项2\n选项3\n选项4', null, '0', '', '10', '中等', '这是答案分析', '0', '2021-04-25 09:55:56', '2021-04-25 09:55:56');
+INSERT INTO `topic` VALUES ('90', '1', null, null, '这是我新建的题目', '选项1\n选项2\n选项3\n选项4', null, '1', '', '10', '中等', '这是答案分析', '0', '2021-04-25 10:00:43', '2021-04-25 10:00:43');
 
 -- ----------------------------
 -- Table structure for user
@@ -336,9 +420,9 @@ CREATE TABLE `user` (
 -- ----------------------------
 -- Records of user
 -- ----------------------------
-INSERT INTO `user` VALUES ('1', 'admin', '男', '13000000000', '762489117@qq.com', 'teacher', '教师', '2021-03-31 11:13:33', '2020-11-16 15:51:00', 'ce192d33d67149c1967658eb94778e64.jpg', 'fbab4835a816e500f49fda12633f9873.jpg');
-INSERT INTO `user` VALUES ('2', '李子建abc', '男', '13000000002', '1@qq.com', 'student', null, null, '2020-11-16 15:51:00', null, null);
-INSERT INTO `user` VALUES ('3', '1111', '女', '13000000001', '2@qq.com', 'student', '', null, '2020-11-16 15:51:00', null, null);
+INSERT INTO `user` VALUES ('1', 'admin', '男', '13000000000', '762489117@qq.com', 'teacher', '教师', '2021-04-10 15:36:15', '2020-11-16 15:51:00', '26651ce8c393400898d71a64da22d92a.jpg', 'fbab4835a816e500f49fda12633f9873.jpg');
+INSERT INTO `user` VALUES ('2', '李子建abc', '男', '13000000002', '1@qq.com', 'student', null, '2021-04-10 22:12:56', '2020-11-16 15:51:00', '0ecc355b9e6e49cf9732273b1f79a6ed.jpg', 'fbab4835a816e500f49fda12633f9873.jpg');
+INSERT INTO `user` VALUES ('3', '1111', '女', '13000000001', '2@qq.com', 'student', '', '2021-04-19 21:14:38', '2020-11-16 15:51:00', '76c2e46f1b3c4120afe3e0d103507531.png', 'snipaste20210321_172951.png');
 INSERT INTO `user` VALUES ('5', 'aaa1', '男', null, '11@qq.com', 'student', '', null, '2020-11-27 13:11:49', null, null);
 INSERT INTO `user` VALUES ('7', 'tatata', '男', '', '3@qq.com', 'student', '', null, '2020-12-02 18:57:33', null, null);
 INSERT INTO `user` VALUES ('11', '李子健11', '男', '13000000009', '123@qq.com', 'student', '', null, '2021-01-05 20:20:24', null, null);
@@ -356,33 +440,19 @@ CREATE TABLE `user_classes` (
   `position` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '身份   creator:创建者  student:学生  admin:管理员',
   `enter_date` datetime DEFAULT NULL COMMENT '加入时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=58 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=66 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of user_classes
 -- ----------------------------
-INSERT INTO `user_classes` VALUES ('1', '1', '1', 'creator', '2020-11-16 15:51:00');
-INSERT INTO `user_classes` VALUES ('2', '1', '2', 'creator', '2020-11-16 15:51:00');
-INSERT INTO `user_classes` VALUES ('3', '1', '3', 'creator', '2020-11-16 15:51:00');
-INSERT INTO `user_classes` VALUES ('4', '1', '9', 'student', '2020-11-19 20:03:21');
-INSERT INTO `user_classes` VALUES ('5', '1', '11', 'creator', '2020-11-17 19:28:23');
-INSERT INTO `user_classes` VALUES ('6', '1', '12', 'creator', '2020-11-18 17:33:00');
 INSERT INTO `user_classes` VALUES ('7', '2', '2', 'admin', '2020-11-16 15:51:00');
 INSERT INTO `user_classes` VALUES ('8', '2', '11', 'student', '2020-11-19 16:30:28');
 INSERT INTO `user_classes` VALUES ('9', '2', '12', 'student', '2020-11-19 17:15:59');
 INSERT INTO `user_classes` VALUES ('10', '3', '2', 'student', '2020-11-17 20:19:58');
 INSERT INTO `user_classes` VALUES ('11', '3', '6', 'student', '2020-11-17 20:33:33');
 INSERT INTO `user_classes` VALUES ('12', '3', '11', 'student', '2020-11-17 20:23:30');
-INSERT INTO `user_classes` VALUES ('14', '1', '13', 'creator', '2020-12-02 14:07:54');
 INSERT INTO `user_classes` VALUES ('16', '2', '13', 'student', '2020-12-02 19:22:46');
-INSERT INTO `user_classes` VALUES ('19', '1', '14', 'creator', '2021-01-04 22:51:03');
-INSERT INTO `user_classes` VALUES ('22', '1', '15', 'creator', '2021-01-05 21:53:16');
 INSERT INTO `user_classes` VALUES ('23', '12', '15', 'student', '2021-01-05 22:01:01');
-INSERT INTO `user_classes` VALUES ('27', '1', '17', 'creator', '2021-03-07 18:10:29');
-INSERT INTO `user_classes` VALUES ('30', '1', '19', 'creator', '2021-03-07 19:20:07');
-INSERT INTO `user_classes` VALUES ('31', '1', '20', 'creator', '2021-03-07 23:17:25');
-INSERT INTO `user_classes` VALUES ('32', '1', '21', 'creator', '2021-03-07 23:41:15');
-INSERT INTO `user_classes` VALUES ('33', '1', '22', 'creator', '2021-03-07 23:42:52');
 INSERT INTO `user_classes` VALUES ('34', '2', '1', 'student', '2021-03-08 21:05:10');
 INSERT INTO `user_classes` VALUES ('35', '5', '1', 'student', '2021-03-08 23:44:27');
 INSERT INTO `user_classes` VALUES ('37', '5', '22', 'student', '2021-03-09 14:15:33');
@@ -393,14 +463,14 @@ INSERT INTO `user_classes` VALUES ('44', '5', '20', 'student', '2021-03-09 19:36
 INSERT INTO `user_classes` VALUES ('45', '5', '21', 'student', '2021-03-09 19:39:12');
 INSERT INTO `user_classes` VALUES ('46', '2', '21', 'student', '2021-03-10 08:36:19');
 INSERT INTO `user_classes` VALUES ('47', '2', '20', 'student', '2021-03-10 10:49:35');
-INSERT INTO `user_classes` VALUES ('48', '1', '23', 'creator', '2021-03-10 16:20:10');
-INSERT INTO `user_classes` VALUES ('49', '1', '24', 'creator', '2021-03-10 16:22:12');
-INSERT INTO `user_classes` VALUES ('50', '1', '25', 'creator', '2021-03-11 10:04:56');
 INSERT INTO `user_classes` VALUES ('52', '14', '25', 'student', '2021-03-11 10:27:12');
-INSERT INTO `user_classes` VALUES ('53', '1', '26', 'creator', '2021-04-02 09:16:32');
 INSERT INTO `user_classes` VALUES ('55', '2', '26', 'student', '2021-04-02 09:35:06');
 INSERT INTO `user_classes` VALUES ('56', '5', '26', 'student', '2021-04-02 10:38:49');
 INSERT INTO `user_classes` VALUES ('57', '3', '26', 'student', '2021-04-02 11:44:10');
+INSERT INTO `user_classes` VALUES ('59', '7', '26', 'student', '2021-04-14 17:54:50');
+INSERT INTO `user_classes` VALUES ('60', '3', '24', 'student', '2021-04-18 20:29:28');
+INSERT INTO `user_classes` VALUES ('61', '3', '22', 'student', '2021-04-18 20:29:39');
+INSERT INTO `user_classes` VALUES ('63', '3', '28', 'student', '2021-04-19 21:07:48');
 
 -- ----------------------------
 -- Table structure for user_grade
@@ -411,15 +481,15 @@ CREATE TABLE `user_grade` (
   `user_id` int NOT NULL COMMENT '用户id',
   `classes_id` int NOT NULL COMMENT '班级id',
   `exam_id` int NOT NULL COMMENT '考试id',
-  `grade` double DEFAULT NULL COMMENT '得分',
-  `grade_auto` double DEFAULT NULL COMMENT '得分(自动评分)',
+  `grade` double DEFAULT '0' COMMENT '得分',
+  `grade_auto` double DEFAULT '0' COMMENT '得分(自动评分)',
   `answer_date` datetime DEFAULT NULL COMMENT '答题日期',
   `answer_time` int DEFAULT NULL COMMENT '答题时长',
   `mark_status` int DEFAULT '0' COMMENT '批改状态 0:待批改 1:批改完成',
   `exam_status` int DEFAULT '0' COMMENT '试卷状态 0:未完成  1:已完成',
   `mark_date` datetime DEFAULT NULL COMMENT '批改日期',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of user_grade
@@ -442,8 +512,10 @@ INSERT INTO `user_grade` VALUES ('15', '14', '25', '15', '57', '50', '2021-03-11
 INSERT INTO `user_grade` VALUES ('16', '1', '25', '15', '50', '50', '2021-03-11 10:39:42', '601', '0', '1', null);
 INSERT INTO `user_grade` VALUES ('17', '2', '1', '15', '40', '40', '2021-03-18 20:59:15', '18', '0', '1', null);
 INSERT INTO `user_grade` VALUES ('18', '2', '26', '19', '25', '25', '2021-04-02 10:32:48', '74', '0', '1', null);
-INSERT INTO `user_grade` VALUES ('19', '5', '26', '19', '13', '20', '2021-04-02 10:42:19', '71', '1', '1', '2021-04-02 11:20:26');
+INSERT INTO `user_grade` VALUES ('19', '5', '26', '19', '18.6666', '20', '2021-04-02 10:42:19', '71', '1', '1', '2021-04-11 15:29:15');
 INSERT INTO `user_grade` VALUES ('20', '3', '26', '19', '35', '35', '2021-04-02 11:47:28', '54', '0', '1', null);
+INSERT INTO `user_grade` VALUES ('21', '3', '28', '22', null, '30', '2021-04-19 20:44:36', '82', '0', '1', null);
+INSERT INTO `user_grade` VALUES ('22', '3', '28', '23', '30.5', '25', '2021-04-19 21:09:45', '154', '1', '1', '2021-04-19 21:11:44');
 
 -- ----------------------------
 -- Table structure for user_password
@@ -462,7 +534,7 @@ INSERT INTO `user_password` VALUES ('1', 'admin');
 INSERT INTO `user_password` VALUES ('2', 'admin');
 INSERT INTO `user_password` VALUES ('3', 'admin');
 INSERT INTO `user_password` VALUES ('5', 'admin');
-INSERT INTO `user_password` VALUES ('7', 'qweqwe');
+INSERT INTO `user_password` VALUES ('7', 'admin');
 INSERT INTO `user_password` VALUES ('8', '123456');
 INSERT INTO `user_password` VALUES ('9', '123456');
 INSERT INTO `user_password` VALUES ('10', '123456');
@@ -484,7 +556,7 @@ CREATE TABLE `user_topic` (
   `user_score` double DEFAULT NULL COMMENT '用户得分',
   `topic_status` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '0:待批改 1:批改完成',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=310 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=320 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of user_topic
@@ -648,10 +720,20 @@ INSERT INTO `user_topic` VALUES ('299', '2', '26', '19', '61', 'asd123aif', '5',
 INSERT INTO `user_topic` VALUES ('300', '5', '26', '19', '57', '选项1', '10', '1');
 INSERT INTO `user_topic` VALUES ('301', '5', '26', '19', '58', '选项1\n选项2', '0', '1');
 INSERT INTO `user_topic` VALUES ('302', '5', '26', '19', '59', 'false', '0', '1');
-INSERT INTO `user_topic` VALUES ('303', '5', '26', '19', '60', 'qwe\n222', '1', '1');
+INSERT INTO `user_topic` VALUES ('303', '5', '26', '19', '60', 'qwe\n222', '6.6666', '1');
 INSERT INTO `user_topic` VALUES ('304', '5', '26', '19', '61', 'asdf456fdg', '2', '1');
 INSERT INTO `user_topic` VALUES ('305', '3', '26', '19', '57', '选项1', '10', '0');
 INSERT INTO `user_topic` VALUES ('306', '3', '26', '19', '58', '选项1\n选项4', '0', '0');
 INSERT INTO `user_topic` VALUES ('307', '3', '26', '19', '59', 'true', '10', '0');
 INSERT INTO `user_topic` VALUES ('308', '3', '26', '19', '60', '123\n222', '5', '0');
 INSERT INTO `user_topic` VALUES ('309', '3', '26', '19', '61', 'asdif123456fdasdf', '10', '0');
+INSERT INTO `user_topic` VALUES ('310', '3', '28', '22', '70', '选项1', '10', '0');
+INSERT INTO `user_topic` VALUES ('311', '3', '28', '22', '71', '选项2', '10', '0');
+INSERT INTO `user_topic` VALUES ('312', '3', '28', '22', '72', '选项3\n选项2', '0', '0');
+INSERT INTO `user_topic` VALUES ('313', '3', '28', '22', '73', '123\n111', '5', '0');
+INSERT INTO `user_topic` VALUES ('314', '3', '28', '22', '74', '123', '5', '0');
+INSERT INTO `user_topic` VALUES ('315', '3', '28', '23', '78', '111\n2222', '5.5', '1');
+INSERT INTO `user_topic` VALUES ('316', '3', '28', '23', '79', '坳隧道回复吧123阿斯蒂芬', '10', '1');
+INSERT INTO `user_topic` VALUES ('317', '3', '28', '23', '77', '选项2', '10', '1');
+INSERT INTO `user_topic` VALUES ('318', '3', '28', '23', '75', '选项2', '5', '1');
+INSERT INTO `user_topic` VALUES ('319', '3', '28', '23', '76', '选项2', '0', '1');
