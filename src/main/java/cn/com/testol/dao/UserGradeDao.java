@@ -22,4 +22,6 @@ public interface UserGradeDao {
     int updateByPrimaryKey(UserGrade record);
 
     List<UserGrade> selectByClassesId(Integer classesId, Integer examId);
+
+    List<UserGrade> selectByUserId(Integer userId);
 }

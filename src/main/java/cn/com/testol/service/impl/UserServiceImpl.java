@@ -1,12 +1,14 @@
 package cn.com.testol.service.impl;
 
 import cn.com.testol.DTO.UserClassesDTO;
+import cn.com.testol.dao.ClassesDao;
 import cn.com.testol.dao.UserDao;
 import cn.com.testol.dao.UserPasswordDao;
+import cn.com.testol.entity.Classes;
 import cn.com.testol.entity.User;
-import cn.com.testol.entity.UserClasses;
 import cn.com.testol.entity.UserPassword;
 import cn.com.testol.service.UserService;
+import cn.com.testol.utils.JwtUtil;
 import cn.com.testol.utils.Msg;
 import cn.com.testol.utils.ResultUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 @Service
@@ -23,6 +26,8 @@ public class UserServiceImpl implements UserService{
 
     @Autowired
     private UserDao userDao;
+    @Autowired
+    private ClassesDao classesDao;
     @Autowired
     private UserPasswordDao userPasswordDao;
 
@@ -63,17 +68,22 @@ public class UserServiceImpl implements UserService{
 
 
     @Override
-    public List<UserClassesDTO> queryUserByC_id(int c_id) {
+    public Msg queryUserByC_id(int c_id, int userId) {
+        Classes classes = classesDao.selectByPrimaryKey(c_id);
         List<UserClassesDTO> userList=userDao.selectByC_id(c_id);
         for(UserClassesDTO u_c:userList){
-
             switch (u_c.getPosition()){
                 case "creator": u_c.setPosition("创建者");break;
                 case "admin": u_c.setPosition("管理员");break;
                 case "student": u_c.setPosition("学生");break;
             }
         }
-        return userList;
+
+        if(userList.size() >= 0){
+            return ResultUtil.success(userList);
+        }else{
+            return ResultUtil.error(100,"请求失败");
+        }
     }
 
     @Override
@@ -122,7 +132,15 @@ public class UserServiceImpl implements UserService{
             }else {
                 user.setRole("student");
             }
-            userDao.updateByPrimaryKeySelective(user); 
+            userDao.updateByPrimaryKeySelective(user);
+            String token= JwtUtil.sign(user.getUserName(),user.getUserId()+"",user.getRole());
+            if(token!=null){
+                HashMap<String,Object> hm = new HashMap<String,Object>();
+                hm.put("token",token);
+                hm.put("status",user.getRole());
+                hm.put("name",user.getUserName());
+                return ResultUtil.success(hm);
+            }
             return ResultUtil.success();
         }catch (Exception e){
             System.out.println(e);

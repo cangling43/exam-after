@@ -14,6 +14,7 @@
     <result column="total_score" jdbcType="FLOAT" property="totalScore" />
     <result column="pass_mark" jdbcType="FLOAT" property="passMark" />
     <result column="permit_copy" jdbcType="INTEGER" property="permitCopy" />
+    <result column="switch_page" jdbcType="INTEGER" property="switchPage" />
     <result column="disrupt_order" jdbcType="INTEGER" property="disruptOrder" />
     <result column="repeat_test" jdbcType="INTEGER" property="repeatTest" />
     <result column="auto_mack" jdbcType="INTEGER" property="autoMack" />
@@ -33,6 +34,7 @@
     <result column="total_score" jdbcType="FLOAT" property="totalScore" />
     <result column="pass_mark" jdbcType="FLOAT" property="passMark" />
     <result column="permit_copy" jdbcType="INTEGER" property="permitCopy" />
+    <result column="switch_page" jdbcType="INTEGER" property="switchPage" />
     <result column="disrupt_order" jdbcType="INTEGER" property="disruptOrder" />
     <result column="repeat_test" jdbcType="INTEGER" property="repeatTest" />
     <result column="auto_mack" jdbcType="INTEGER" property="autoMack" />
@@ -46,6 +48,7 @@
       <result column="score" jdbcType="FLOAT" property="score" />
       <result column="difficulty" jdbcType="VARCHAR" property="difficulty" />
       <result column="analysis" jdbcType="VARCHAR" property="analysis" />
+      <result column="required" jdbcType="INTEGER" property="required" />
     </collection>
   </resultMap>
 
@@ -63,6 +66,7 @@
     <result column="total_score" jdbcType="FLOAT" property="totalScore" />
     <result column="pass_mark" jdbcType="FLOAT" property="passMark" />
     <result column="permit_copy" jdbcType="INTEGER" property="permitCopy" />
+    <result column="switch_page" jdbcType="INTEGER" property="switchPage" />
     <result column="disrupt_order" jdbcType="INTEGER" property="disruptOrder" />
     <result column="repeat_test" jdbcType="INTEGER" property="repeatTest" />
     <result column="auto_mack" jdbcType="INTEGER" property="autoMack" />
@@ -111,6 +115,7 @@
       <result column="score" jdbcType="FLOAT" property="score" />
       <result column="difficulty" jdbcType="VARCHAR" property="difficulty" />
       <result column="analysis" jdbcType="VARCHAR" property="analysis" />
+      <result column="required" jdbcType="INTEGER" property="required" />
     </collection>
   </resultMap>
 
@@ -203,13 +208,14 @@
       <result column="score" jdbcType="FLOAT" property="score" />
       <result column="difficulty" jdbcType="VARCHAR" property="difficulty" />
       <result column="analysis" jdbcType="VARCHAR" property="analysis" />
+      <result column="required" jdbcType="INTEGER" property="required" />
     </collection>
   </resultMap>
 
   <sql id="Base_Column_List">
     exam_id, exam_name, creator_id, `time`, create_date, update_date, subject_id,
     subject_name, topic_num, total_score, pass_mark, permit_copy, disrupt_order, repeat_test, 
-    auto_mack
+    auto_mack,switch_page
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -241,7 +247,7 @@
   </select>
   <select id="selectByCreatorId" resultMap="BaseResultMap">
     select
-    <include refid="Base_Column_List" />
+     *
     from exam
     where creator_id = #{userId,jdbcType=INTEGER} and (exam_id like concat('%',#{keyword},'%') or exam_name like concat('%',#{keyword},'%'))
     order by update_date desc
@@ -274,13 +280,14 @@
       `time`, create_date, update_date, 
       subject_id, subject_name, topic_num, 
       total_score, pass_mark, permit_copy, 
-      disrupt_order, repeat_test, auto_mack
+      disrupt_order, repeat_test, auto_mack, switch_page
       )
     values (#{examName,jdbcType=VARCHAR}, #{creatorId,jdbcType=INTEGER},
       #{time,jdbcType=INTEGER}, #{createDate,jdbcType=TIMESTAMP}, #{updateDate,jdbcType=TIMESTAMP}, 
       #{subjectId,jdbcType=INTEGER}, #{subjectName,jdbcType=VARCHAR}, #{topicNum,jdbcType=INTEGER}, 
       #{totalScore,jdbcType=FLOAT}, #{passMark,jdbcType=FLOAT}, #{permitCopy,jdbcType=INTEGER}, 
-      #{disruptOrder,jdbcType=INTEGER}, #{repeatTest,jdbcType=INTEGER}, #{autoMack,jdbcType=INTEGER}
+      #{disruptOrder,jdbcType=INTEGER}, #{repeatTest,jdbcType=INTEGER}, #{autoMack,jdbcType=INTEGER},
+      #{switchPage,jdbcType=INTEGER}
       )
   </insert>
   <insert id="insertSelective" keyColumn="exam_id" keyProperty="examId" parameterType="cn.com.testol.entity.Exam" useGeneratedKeys="true">
@@ -318,6 +325,9 @@
       </if>
       <if test="permitCopy != null">
         permit_copy,
+      </if>
+      <if test="switchPage != null">
+        switch_page,
       </if>
       <if test="disruptOrder != null">
         disrupt_order,
@@ -362,6 +372,9 @@
       </if>
       <if test="permitCopy != null">
         #{permitCopy,jdbcType=INTEGER},
+      </if>
+      <if test="switchPage != null">
+        #{switch_page,jdbcType=INTEGER},
       </if>
       <if test="disruptOrder != null">
         #{disruptOrder,jdbcType=INTEGER},
@@ -410,6 +423,9 @@
       <if test="permitCopy != null">
         permit_copy = #{permitCopy,jdbcType=INTEGER},
       </if>
+      <if test="switchPage != null">
+        switch_page = #{switchPage,jdbcType=INTEGER},
+      </if>
       <if test="disruptOrder != null">
         disrupt_order = #{disruptOrder,jdbcType=INTEGER},
       </if>
@@ -435,6 +451,7 @@
       total_score = #{totalScore,jdbcType=FLOAT},
       pass_mark = #{passMark,jdbcType=FLOAT},
       permit_copy = #{permitCopy,jdbcType=INTEGER},
+      switch_page = #{switchPage,jdbcType=INTEGER},
       disrupt_order = #{disruptOrder,jdbcType=INTEGER},
       repeat_test = #{repeatTest,jdbcType=INTEGER},
       auto_mack = #{autoMack,jdbcType=INTEGER}

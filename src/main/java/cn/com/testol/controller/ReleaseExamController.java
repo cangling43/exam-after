@@ -1,6 +1,6 @@
 package cn.com.testol.controller;
 
-import cn.com.testol.DTO.ReleasExamDTO;
+import cn.com.testol.DTO.ReleasExamVO;
 import cn.com.testol.dao.ExamClassesDao;
 import cn.com.testol.entity.ExamClasses;
 import cn.com.testol.utils.JwtUtil;
@@ -31,8 +31,8 @@ public class ReleaseExamController {
 
     @ApiOperation(value = "发布考试")
     @PostMapping(value = "/releaseTest")
-    public Msg releaseTest(HttpServletRequest request, @RequestBody ReleasExamDTO releasExamDTO){
-        System.out.println(releasExamDTO);
+    public Msg releaseTest(HttpServletRequest request, @RequestBody ReleasExamVO releasExamVO){
+        System.out.println(releasExamVO);
         String token =  request.getHeader("token");
 
         if(!JwtUtil.getUserStatus(token).equals("teacher")){
@@ -40,7 +40,7 @@ public class ReleaseExamController {
         }
 
 
-        return releaseExamService.releaseTest(releasExamDTO);
+        return releaseExamService.releaseTest(releasExamVO);
     }
 
     @ApiOperation(value = "修改试卷发布信息")

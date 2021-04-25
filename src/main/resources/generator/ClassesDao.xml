@@ -75,7 +75,15 @@
         join user u on u.user_id = c.creator_id
         where classes_id like concat('%',#{keyword},'%') or classes_name like concat('%',#{keyword},'%')
     </select>
-    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+  <select id="selectByCreatorId" resultMap="BaseResultMap">
+    select
+    c.*, u.user_name as creator_name
+    from  classes c
+    join user u on u.user_id = c.creator_id
+    where  c.creator_id=#{userId} and (c.classes_id like concat('%',#{keyword},'%') or c.classes_name like concat('%',#{keyword},'%'))
+    order by c.create_date desc
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from classes
     where classes_id = #{classesId,jdbcType=INTEGER}
   </delete>

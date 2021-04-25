@@ -1,14 +1,12 @@
 package cn.com.testol.enums;
 
-public enum  Classesjoinway {
-    NO("不允许加入","no"),
-    ALL("允许任何人加入","all"),
-    APPLY("需要管理员同意申请","apply")
-    ;
+public enum ApiMessage {
+    error("请求失败",100),
+    success("请求成功",200);
 
     private String name;
-    private String value;
-    Classesjoinway(String name, String value) {
+    private int value;
+    ApiMessage(String name, int value) {
         this.name = name;
         this.value = value;
     }
@@ -21,11 +19,11 @@ public enum  Classesjoinway {
         this.name = name;
     }
 
-    public String getValue() {
+    public int getValue() {
         return value;
     }
 
-    public void setValue(String value) {
+    public void setValue(int value) {
         this.value = value;
     }
 }

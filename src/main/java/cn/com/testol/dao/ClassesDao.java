@@ -27,6 +27,8 @@ public interface ClassesDao {
 
     List<ClassesUserDTO> selectByUserId(Integer userId,String keyword);
 
+    List<ClassesUserDTO> selectByCreatorId(Integer userId,String keyword);
+
     List<ClassesExamDTO> selectByExamId(Integer examId);
 
 

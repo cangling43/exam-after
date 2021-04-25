@@ -41,16 +41,6 @@ public class ExamController {
         return ResultUtil.success(page);
     }
 
-//    @ApiOperation(value = "获取用户创建的试卷")
-//    @GetMapping("/getTestPaperByU_id")
-//    public Msg getTestPaperByExamId(HttpServletRequest request,Integer examId){
-//        String token =  request.getHeader("token");
-//
-//        //获取token中的id
-//        int u_id=Integer.parseInt(JwtUtil.getUserId(token));
-//        return examService.selectByCreatorId(u_id);
-//    }
-
     @ApiOperation(value = "获取班级下的试卷列表")
     @GetMapping("/getExamByClasses")
     public Msg getExamByClassesId(HttpServletRequest request,@RequestParam Integer classesId,@RequestParam int pageSize,@RequestParam int currentPage){
@@ -63,6 +53,17 @@ public class ExamController {
         Page page = new Page(pageSize,currentPage);
         page.build((List) result.getData());
         return ResultUtil.success(page);
+    }
+
+    @ApiOperation(value = "获取学生已完成的试卷列表")
+    @GetMapping("/getFinishExam")
+    public Msg getFinishExam(HttpServletRequest request,@RequestParam int pageSize,@RequestParam int currentPage){
+        String token =  request.getHeader("token");
+
+        //获取token中的id
+        int u_id=Integer.parseInt(JwtUtil.getUserId(token));
+
+        return examService.selectFinishExamList(u_id, pageSize,currentPage);
     }
 
     //通过试卷id获取试卷信息(教师角色)

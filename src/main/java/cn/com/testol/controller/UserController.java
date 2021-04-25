@@ -2,24 +2,20 @@ package cn.com.testol.controller;
 
 import cn.com.testol.DTO.LoginDTO;
 import cn.com.testol.DTO.RegisterDTO;
-import cn.com.testol.DTO.UserClassesDTO;
 import cn.com.testol.dao.UserDao;
 import cn.com.testol.utils.JwtUtil;
 import cn.com.testol.utils.Page;
 import cn.com.testol.utils.ResultUtil;
 import cn.com.testol.utils.Msg;
 import cn.com.testol.entity.User;
-import cn.com.testol.entity.UserClasses;
 import cn.com.testol.service.UserService;
 import io.swagger.annotations.ApiOperation;
-import lombok.Data;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 
@@ -78,33 +74,17 @@ public class UserController {
 
 
 
-    @ApiOperation(value = "获取用户列表")
+    @ApiOperation(value = "获取班级下的用户列表")
     @GetMapping("/queryUserByC_id")
     public Msg queryUserByC_id(HttpServletRequest request,@RequestParam int c_id,@RequestParam int pageSize,@RequestParam int currentPage){
         String token =  request.getHeader("token");
         //获取token中的id
         int u_id=Integer.parseInt(JwtUtil.getUserId(token));
 
-        List<UserClassesDTO> userList=userService.queryUserByC_id(c_id);
-        Boolean inClasses=false;
-        for(UserClassesDTO u_c:userList){
-            if(u_c.getUserId()==u_id){
-                inClasses=true;
-                break;
-            }
-        }
-        if (!inClasses) {
-            return ResultUtil.error(2004,"您不是该班级的学生");
-        }
-
-        Page page = new Page(pageSize,currentPage);
-        page.build(userList);
-
-        if(userList.size() >= 0){
-            return ResultUtil.success(page);
-        }else{
-            return ResultUtil.error(100,"请求失败");
-        }
+        Msg result=userService.queryUserByC_id(c_id, u_id);
+        Page<List> page = new Page(pageSize,currentPage);
+        page.build((List) result.getData());
+        return ResultUtil.success(page);
     }
 
 

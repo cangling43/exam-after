@@ -50,6 +50,11 @@ public class TopicTchDTO {
      * 答案分析
      */
     private String analysis;
+
+    /**
+     * 非必填:0   必填:1
+     */
+    private Integer required;
     
 
 }

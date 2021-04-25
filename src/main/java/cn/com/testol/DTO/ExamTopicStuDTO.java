@@ -77,6 +77,10 @@ public class ExamTopicStuDTO {
      * 是否允许复制  0:不允许  1:允许(默认)
      */
     private Integer permitCopy;
+    /**
+     * 允许页面切换次数  -1: 允许多次切换 (默认)
+     */
+    private Integer switchPage;
 
     /**
      * 是否打乱题目顺序 0:不打乱(默认) 1:打乱顺序

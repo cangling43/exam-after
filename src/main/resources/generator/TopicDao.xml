@@ -5,7 +5,6 @@
     <id column="topic_id" jdbcType="INTEGER" property="topicId" />
     <result column="creator_id" jdbcType="INTEGER" property="creatorId" />
     <result column="subject_id" jdbcType="INTEGER" property="subjectId" />
-    <result column="creator_name" jdbcType="VARCHAR" property="creatorName" />
     <result column="subject_name" jdbcType="VARCHAR" property="subjectName" />
     <result column="question" jdbcType="VARCHAR" property="question" />
     <result column="choice" jdbcType="VARCHAR" property="choice" />
@@ -15,12 +14,13 @@
     <result column="score" jdbcType="FLOAT" property="score" />
     <result column="difficulty" jdbcType="VARCHAR" property="difficulty" />
     <result column="analysis" jdbcType="VARCHAR" property="analysis" />
+    <result column="required" jdbcType="INTEGER" property="required" />
     <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
     <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
   </resultMap>
   <sql id="Base_Column_List">
-    topic_id, creator_id, subject_id, subject_name, question, choice, photo,
-    topic_type, correct_answer, score, difficulty, analysis, create_date, update_date
+    topic_id, creator_id, subject_id, subject_name, question, choice, photo, topic_type, 
+    correct_answer, score, difficulty, analysis, required, create_date, update_date
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -33,15 +33,15 @@
     where topic_id = #{topicId,jdbcType=INTEGER}
   </delete>
   <insert id="insert" keyColumn="topic_id" keyProperty="topicId" parameterType="cn.com.testol.entity.Topic" useGeneratedKeys="true">
-    insert into topic (creator_id, subject_id,
-      subject_name, question, choice, 
-      photo, topic_type, correct_answer, 
-      score, difficulty, analysis, 
+    insert into topic (creator_id, subject_id, subject_name, 
+      question, choice, photo, 
+      topic_type, correct_answer, score, 
+      difficulty, analysis, required, 
       create_date, update_date)
-    values (#{creatorId,jdbcType=INTEGER}, #{subjectId,jdbcType=INTEGER},
-      #{subjectName,jdbcType=VARCHAR}, #{question,jdbcType=VARCHAR}, #{choice,jdbcType=VARCHAR}, 
-      #{photo,jdbcType=VARCHAR}, #{topicType,jdbcType=INTEGER}, #{correctAnswer,jdbcType=VARCHAR}, 
-      #{score,jdbcType=FLOAT}, #{difficulty,jdbcType=VARCHAR}, #{analysis,jdbcType=VARCHAR}, 
+    values (#{creatorId,jdbcType=INTEGER}, #{subjectId,jdbcType=INTEGER}, #{subjectName,jdbcType=VARCHAR}, 
+      #{question,jdbcType=VARCHAR}, #{choice,jdbcType=VARCHAR}, #{photo,jdbcType=VARCHAR}, 
+      #{topicType,jdbcType=INTEGER}, #{correctAnswer,jdbcType=VARCHAR}, #{score,jdbcType=FLOAT}, 
+      #{difficulty,jdbcType=VARCHAR}, #{analysis,jdbcType=VARCHAR}, #{required,jdbcType=INTEGER}, 
       #{createDate,jdbcType=TIMESTAMP}, #{updateDate,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" keyColumn="topic_id" keyProperty="topicId" parameterType="cn.com.testol.entity.Topic" useGeneratedKeys="true">
@@ -79,6 +79,9 @@
       </if>
       <if test="analysis != null">
         analysis,
+      </if>
+      <if test="required != null">
+        required,
       </if>
       <if test="createDate != null">
         create_date,
@@ -120,6 +123,9 @@
       </if>
       <if test="analysis != null">
         #{analysis,jdbcType=VARCHAR},
+      </if>
+      <if test="required != null">
+        #{required,jdbcType=INTEGER},
       </if>
       <if test="createDate != null">
         #{createDate,jdbcType=TIMESTAMP},
@@ -165,6 +171,9 @@
       <if test="analysis != null">
         analysis = #{analysis,jdbcType=VARCHAR},
       </if>
+      <if test="required != null">
+        required = #{required,jdbcType=INTEGER},
+      </if>
       <if test="createDate != null">
         create_date = #{createDate,jdbcType=TIMESTAMP},
       </if>
@@ -187,6 +196,7 @@
       score = #{score,jdbcType=FLOAT},
       difficulty = #{difficulty,jdbcType=VARCHAR},
       analysis = #{analysis,jdbcType=VARCHAR},
+      required = #{required,jdbcType=INTEGER},
       create_date = #{createDate,jdbcType=TIMESTAMP},
       update_date = #{updateDate,jdbcType=TIMESTAMP}
     where topic_id = #{topicId,jdbcType=INTEGER}

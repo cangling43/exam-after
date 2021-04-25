@@ -81,6 +81,11 @@ public class ExamTopicTchDTO {
     private Integer disruptOrder;
 
     /**
+     * 允许页面切换次数  -1: 允许多次切换 (默认)
+     */
+    private Integer switchPage;
+
+    /**
      * 允许考生考试次数 默认1
      */
     private Integer repeatTest;
@@ -89,6 +94,11 @@ public class ExamTopicTchDTO {
      * 是否自动评分 0:否   1:是(默认)
      */
     private Integer autoMack;
+
+    /**
+     * 是否发布中 0:否   1:是
+     */
+    private Integer releasing;
 
     /**
      * 题目信息(教师)

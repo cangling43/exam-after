@@ -7,7 +7,7 @@ import lombok.Data;
 import java.util.Date;
 
 @Data
-public class ReleasExamDTO {
+public class ReleasExamVO {
     /**
      * 考试id
      */

@@ -2,8 +2,6 @@ package cn.com.testol.entity;
 
 import java.io.Serializable;
 import java.util.Date;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 /**
@@ -26,11 +24,6 @@ public class Topic implements Serializable {
      * 科目类型id
      */
     private Integer subjectId;
-
-    /**
-     * 创建者id
-     */
-    private String creatorName;
 
     /**
      * 科目类型名称
@@ -78,15 +71,18 @@ public class Topic implements Serializable {
     private String analysis;
 
     /**
+     * 非必填:0   必填:1
+     */
+    private Integer required;
+
+    /**
      * 创建时间
      */
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date createDate;
 
     /**
      * 修改时间
      */
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date updateDate;
 
     private static final long serialVersionUID = 1L;

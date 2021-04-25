@@ -5,6 +5,7 @@ import cn.com.testol.dao.*;
 import cn.com.testol.entity.*;
 import cn.com.testol.service.ExamService;
 import cn.com.testol.utils.Msg;
+import cn.com.testol.utils.Page;
 import cn.com.testol.utils.ResultUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,8 @@ public class ExamServiceImpl implements ExamService {
     private ExamTopicDao examTopicDao;
     @Autowired
     private ExamClassesDao examClassesDao;
+    @Autowired
+    private UserGradeDao userGradeDao;
 
     @Override
     public Msg deleteByPrimaryKey(Integer examId) {
@@ -52,7 +55,6 @@ public class ExamServiceImpl implements ExamService {
                 t.setCreatorId(userId);
                 t.setCreateDate(new Date());
                 t.setUpdateDate(new Date());
-                t.setCreatorName(exam.getCreatorName());
                 t.setSubjectId(exam.getSubjectId());
                 t.setSubjectName(exam.getSubjectName());
 
@@ -106,7 +108,6 @@ public class ExamServiceImpl implements ExamService {
                 //不存在则添加
                 if(isHas == false){
                     topic.setCreatorId(examTopicTchDTO.getCreatorId());
-                    topic.setCreatorName(examTopicTchDTO.getCreatorName());
                     topic.setSubjectId(examTopicTchDTO.getSubjectId());
                     topic.setSubjectName(examTopicTchDTO.getSubjectName());
                     topic.setUpdateDate(new Date());
@@ -137,6 +138,13 @@ public class ExamServiceImpl implements ExamService {
     @Override
     public Msg selectByCreatorId(Integer userId, String keyword) {
         List<Exam> examList = examDao.selectByCreatorId(userId,keyword);
+        for (Exam e:examList){
+            e.setReleasing(0);
+            List<ExamClasses> examClassesList = examClassesDao.selectByExamId(e.getExamId());
+            if(examClassesList.size() > 0){
+                e.setReleasing(1);
+            }
+        }
         if(examList != null){
             return ResultUtil.success(examList);
         }else{
@@ -150,9 +158,15 @@ public class ExamServiceImpl implements ExamService {
         if(examTopicTchDTO == null) {
             return ResultUtil.error(100, "请求失败");
         }
+        examTopicTchDTO.setReleasing(0);
+        List<ExamClasses> examClassesList = examClassesDao.selectByExamId(examId);
+        if(examClassesList.size() > 0){
+            examTopicTchDTO.setReleasing(1);
+        }
         if(examTopicTchDTO.getCreatorId() != userId) {
             return ResultUtil.error(3001,"您没有权利查看该试卷");
         }
+        System.out.println(examTopicTchDTO);
         return ResultUtil.success(examTopicTchDTO);
 
     }
@@ -168,7 +182,7 @@ public class ExamServiceImpl implements ExamService {
         if(examTopicStuDTO == null) {
             return ResultUtil.error(100, "请求失败");
         }
-        ExamClasses examClasses = examClassesDao.selectRecord(classesId,examId);
+        ReleaseExamDTO examClasses = examClassesDao.selectRecord(classesId,examId);
         //不公布答案
         if(examClasses.getPublishAnswer() != 1 || examTopicStuDTO.getUserGrade().getExamStatus() == null){
             for(TopicTchDTO t:examTopicStuDTO.getTopicTchDTOList()){
@@ -207,6 +221,20 @@ public class ExamServiceImpl implements ExamService {
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return ResultUtil.error(100,"请求失败",e.toString());
         }
+    }
+
+    @Override
+    public Msg selectFinishExamList(Integer userId, int pageSize, int currentPage) {
+        List<UserGrade> userGradeDTOList = userGradeDao.selectByUserId(userId);
+        for(UserGrade ug:userGradeDTOList){
+            ReleaseExamDTO examClasses = examClassesDao.selectRecord(ug.getClassesId(),ug.getExamId());
+            if(examClasses != null &&examClasses.getPublishScore() != 1){
+                ug.setGrade(null);
+            }
+        }
+        Page<UserGrade> page = new Page<UserGrade>(pageSize,currentPage);
+        page.build(userGradeDTOList);
+        return ResultUtil.success(page);
     }
 
 

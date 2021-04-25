@@ -24,5 +24,5 @@ public interface ExamService {
 
     Msg selectByClassesId(Integer classesId ,Integer userId);
 
-
+    Msg selectFinishExamList(Integer userId,int pageSize,int currentPage);
 }

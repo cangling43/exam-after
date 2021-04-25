@@ -1,18 +1,15 @@
 package cn.com.testol.enums;
 
-public enum  Classesjoinway {
-    NO("不允许加入","no"),
-    ALL("允许任何人加入","all"),
-    APPLY("需要管理员同意申请","apply")
-    ;
+public enum Role {
+    student("学生","student"),
+    teacher("教师","teacher");
 
     private String name;
     private String value;
-    Classesjoinway(String name, String value) {
+    Role(String name, String value) {
         this.name = name;
         this.value = value;
     }
-
     public String getName() {
         return name;
     }

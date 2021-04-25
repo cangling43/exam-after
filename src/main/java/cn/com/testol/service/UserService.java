@@ -1,12 +1,8 @@
 package cn.com.testol.service;
 
 
-import cn.com.testol.DTO.UserClassesDTO;
 import cn.com.testol.entity.User;
-import cn.com.testol.entity.UserClasses;
 import cn.com.testol.utils.Msg;
-
-import java.util.List;
 
 public interface UserService {
     //登陆
@@ -16,7 +12,7 @@ public interface UserService {
     public User getUserById(int u_id);
 //    public User getUserByEmail(String email);
 //    public User getUserByPhone(String phone);
-    public List<UserClassesDTO> queryUserByC_id(int c_id);
+    public Msg queryUserByC_id(int c_id, int userId);
 
     //注册
     public Msg addUser(User user,String password);

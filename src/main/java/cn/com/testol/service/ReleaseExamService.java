@@ -1,6 +1,6 @@
 package cn.com.testol.service;
 
-import cn.com.testol.DTO.ReleasExamDTO;
+import cn.com.testol.DTO.ReleasExamVO;
 import cn.com.testol.utils.Msg;
 
 public interface ReleaseExamService {
@@ -10,7 +10,7 @@ public interface ReleaseExamService {
 //    public List<TestPaper_classes> getTestpapertByC_id(int c_id,int u_id);
 
     //发布考试
-    public Msg releaseTest(ReleasExamDTO releasExamDTO);
+    public Msg releaseTest(ReleasExamVO releasExamVO);
 
 //    public int updateRecord(int tp_id,int c_id,String release_time,String start_date,String deadline);
 //

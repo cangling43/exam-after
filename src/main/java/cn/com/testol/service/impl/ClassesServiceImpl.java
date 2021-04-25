@@ -2,10 +2,13 @@ package cn.com.testol.service.impl;
 
 import cn.com.testol.DTO.ClassesExamDTO;
 import cn.com.testol.DTO.ClassesUserDTO;
+import cn.com.testol.dao.ApprovalDao;
 import cn.com.testol.dao.ClassesDao;
 import cn.com.testol.dao.UserClassesDao;
+import cn.com.testol.entity.Approval;
 import cn.com.testol.entity.Classes;
 import cn.com.testol.entity.UserClasses;
+import cn.com.testol.enums.Role;
 import cn.com.testol.service.ClassesService;
 import cn.com.testol.utils.Msg;
 import cn.com.testol.utils.ResultUtil;
@@ -25,37 +28,22 @@ public class ClassesServiceImpl implements ClassesService {
     private UserClassesDao userClassesDao;
     @Autowired
     private ClassesDao classesDao;
+    @Autowired
+    private ApprovalDao approvalDao;
 
     //根据用户ID查找班级
     @Override
-    public Msg queryClassesByU_id(Integer u_id, String keyword) {
+    public Msg queryClassesByU_id(Integer u_id, String role, String keyword) {
         try {
-            List<ClassesUserDTO> userClassesList = classesDao.selectByUserId(u_id,keyword);
-
-            for(ClassesUserDTO u_c : userClassesList){
-//            处理班级时间
-//            u_c.getUser_classes().setEnter_date(u_c.getUser_classes().getEnter_date().substring(0,10));
-                //处理班级加入方式
-                switch (u_c.getJoinway()){
-                    case "all": u_c.setJoinway("允许任何人加入");break;
-                    case "apply": u_c.setJoinway("需要管理员同意申请");break;
-                    case "no": u_c.setJoinway("不允许任何人加入");break;
-                }
-
-                //处理班级身份
-                switch (u_c.getPosition()){
-                    case "creator": u_c.setPosition("创建者");break;
-                    case "admin": u_c.setPosition("管理员");break;
-                    case "student": u_c.setPosition("学生");break;
-                }
-
-                //处理创建者
-                if(u_id == u_c.getCreatorId()){
-                    u_c.setCreatorName("[我自己]");
-                }
-
+            System.out.println(role);
+            List<ClassesUserDTO> userClassesList = null;
+            if(role.equals(Role.student.getValue())){
+                userClassesList = classesDao.selectByUserId(u_id,keyword);
             }
-            System.out.println(userClassesList);
+            if(role.equals(Role.teacher.getValue())){
+                userClassesList = classesDao.selectByCreatorId(u_id,keyword);
+            }
+            
             return ResultUtil.success(userClassesList);
         }catch (Exception e){
             System.out.println(e);
@@ -80,6 +68,27 @@ public class ClassesServiceImpl implements ClassesService {
             if(record!=null){
                 return ResultUtil.error(2002,"已加入该班级");
             }
+            if(classes.getJoinway().equals("apply")){
+                Approval recovrd = approvalDao.selectByRecord(u_id,c_id);
+                if(recovrd == null){
+                    Approval approval = new Approval();
+                    approval.setStudentId(u_id);
+                    approval.setTeacherId(classes.getCreatorId());
+                    approval.setClassesId(c_id);
+                    approval.setApplyDate(new Date());
+                    approval.setStatus(0);
+                    approvalDao.insert(approval);
+                }else if(recovrd.getStatus() == 2 || recovrd.getStatus() == 1){
+                    recovrd.setStatus(0);
+                    recovrd.setApplyDate(new Date());
+                    approvalDao.updateByPrimaryKeySelective(recovrd);
+                }else if(recovrd.getStatus() == 0){
+                    recovrd.setApplyDate(new Date());
+                    approvalDao.updateByPrimaryKeySelective(recovrd);
+                }
+
+                return ResultUtil.success();
+            }
 
             classes.setPeopleNum(classes.getPeopleNum()+1);
             classesDao.updateByPrimaryKeySelective(classes);
@@ -99,9 +108,7 @@ public class ClassesServiceImpl implements ClassesService {
         try {
             Classes classes= classesDao.selectByPrimaryKey(c_id);
             int people_num = classes.getPeopleNum();
-            if(people_num > 0){
-                people_num--;
-            }
+            classes.setPeopleNum(people_num-1);
             classesDao.updateByPrimaryKeySelective(classes);
             userClassesDao.deleteRecord(u_id,c_id);
             return ResultUtil.success();
@@ -153,10 +160,10 @@ public class ClassesServiceImpl implements ClassesService {
         try{
             classes.setUpdateDate(new Date());
             classes.setCreateDate(new Date());
-            classes.setPeopleNum(1);
+            classes.setPeopleNum(0);
             classes.setCreatorId(userId);
             classesDao.insert(classes);
-            userClassesDao.insert(new UserClasses(null,userId,classes.getClassesId(),"creator",new Date()));
+//            userClassesDao.insert(new UserClasses(null,userId,classes.getClassesId(),"creator",new Date()));
             return ResultUtil.success();
         }catch (Exception e){
             System.out.println(e);

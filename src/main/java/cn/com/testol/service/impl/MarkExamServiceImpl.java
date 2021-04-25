@@ -31,8 +31,6 @@ public class MarkExamServiceImpl implements MarkExamService {
     private ExamDao examDao;
     @Autowired
     private ClassesDao classesDao;
-    @Autowired
-    private UserDao userDao;
 
     @Override
     public Msg submitTestPaper(StuSubmitExamDTO stuSubmitExamDTO,Integer userId) {

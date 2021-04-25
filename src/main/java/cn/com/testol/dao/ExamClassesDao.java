@@ -1,5 +1,6 @@
 package cn.com.testol.dao;
 
+import cn.com.testol.DTO.ReleaseExamDTO;
 import cn.com.testol.entity.ExamClasses;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
@@ -27,7 +28,7 @@ public interface ExamClassesDao {
 
     int updateRecord(ExamClasses record);
 
-    ExamClasses selectRecord(Integer classesId,Integer examId);
+    ReleaseExamDTO selectRecord(Integer classesId, Integer examId);
 
 
 }

@@ -14,6 +14,19 @@
     <result column="publish_score" jdbcType="INTEGER" property="publishScore" />
     <result column="status" jdbcType="INTEGER" property="status" />
   </resultMap>
+  <resultMap id="releaseExamDTO" type="cn.com.testol.DTO.ReleaseExamDTO">
+    <result column="exam_id" jdbcType="INTEGER" property="examId" />
+    <result column="classes_id" jdbcType="INTEGER" property="classesId" />
+    <result column="exam_name" jdbcType="VARCHAR" property="examName" />
+    <result column="classes_name" jdbcType="VARCHAR" property="classesName" />
+    <result column="release_time" jdbcType="TIMESTAMP" property="releaseTime" />
+    <result column="start_date" jdbcType="TIMESTAMP" property="startDate" />
+    <result column="deadline" jdbcType="TIMESTAMP" property="deadline" />
+    <result column="publish_answer" jdbcType="INTEGER" property="publishAnswer" />
+    <result column="publish_score" jdbcType="INTEGER" property="publishScore" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="pass_mark" jdbcType="FLOAT" property="passMark" />
+  </resultMap>
   <sql id="Base_Column_List">
     id, exam_id, classes_id, release_time, start_date, deadline,
     publish_answer, publish_score, `status`
@@ -32,9 +45,9 @@
     join exam e on e.exam_id = ec.exam_id
     where ec.exam_id = #{examId,jdbcType=INTEGER}
   </select>
-    <select id="selectRecord" resultMap="BaseResultMap">
+    <select id="selectRecord" resultMap="releaseExamDTO">
       select
-      ec.* ,c.classes_name ,e.exam_id, e.exam_name
+      ec.* ,c.classes_name ,e.exam_id, e.exam_name, e.pass_mark
       from exam_classes ec
       join classes c on c.classes_id = ec.classes_id
       join exam e on e.exam_id = ec.exam_id

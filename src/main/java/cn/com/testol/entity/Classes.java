@@ -64,7 +64,7 @@ public class Classes implements Serializable {
     private Integer creatorId;
 
     /**
-     * 班级加入方式  0:不允许加入 1:允许任何人加入  2:需要管理员同意
+     * 班级加入方式  no:不允许加入 all:允许任何人加入  apply:需要管理员同意
      */
     private String joinway;
 

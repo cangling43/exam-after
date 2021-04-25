@@ -52,9 +52,9 @@ public class ClassesController {
         if(keyword == null){
             keyword = "";
         }
-
-        Msg result = classesService.queryClassesByU_id(u_id,keyword);
-        Page page = new Page(pageSize,currentPage);
+        String role = JwtUtil.getUserStatus(token);
+        Msg result = classesService.queryClassesByU_id(u_id,role,keyword);
+        Page<List> page = new Page(pageSize,currentPage);
         page.build((List) result.getData());
         return ResultUtil.success(page);
 }

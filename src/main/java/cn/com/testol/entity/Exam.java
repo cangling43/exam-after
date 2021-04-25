@@ -80,6 +80,11 @@ public class Exam implements Serializable {
     private Integer permitCopy;
 
     /**
+     * 允许页面切换次数  -1: 允许多次切换 (默认)
+     */
+    private Integer switchPage;
+
+    /**
      * 是否打乱题目顺序 0:不打乱(默认) 1:打乱顺序
      */
     private Integer disruptOrder;
@@ -93,6 +98,11 @@ public class Exam implements Serializable {
      * 是否自动评分 0:否   1:是(默认)
      */
     private Integer autoMack;
+
+    /**
+     * 是否发布中 0:否   1:是
+     */
+    private Integer releasing;
 
     private static final long serialVersionUID = 1L;
 }

@@ -8,7 +8,7 @@ import java.util.Date;
 public interface ClassesService  {
 
     //根据教师查找班级
-    public Msg queryClassesByU_id(Integer u_id,String keyword);
+    public Msg queryClassesByU_id(Integer u_id, String role, String keyword);
 
     //用户加入班级
     public Msg joinClasses(int u_id, int c_id, String status, Date date);
