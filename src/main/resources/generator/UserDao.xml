@@ -70,14 +70,14 @@
     where user_id = #{userId,jdbcType=INTEGER}
   </delete>
   <insert id="insert" keyColumn="user_id" keyProperty="userId" parameterType="cn.com.testol.entity.User" useGeneratedKeys="true">
-    insert into user (user_name, sex, phone, 
-      email, `role`, `work`, 
-      update_date, create_date, photo, photo_name
-      )
-    values (#{userName,jdbcType=VARCHAR}, #{sex,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, 
-      #{email,jdbcType=VARCHAR}, #{role,jdbcType=VARCHAR}, #{work,jdbcType=VARCHAR}, 
-      #{updateDate,jdbcType=TIMESTAMP}, #{createDate,jdbcType=TIMESTAMP}, #{photo,jdbcType=VARCHAR},#{photoName,jdbcType=VARCHAR}
-      )
+    insert into user (user_name, sex, phone,
+                      email, `role`, `work`,
+                      update_date, create_date, photo, photo_name
+    )
+    values (#{userName,jdbcType=VARCHAR}, '女', #{phone,jdbcType=VARCHAR},
+            #{email,jdbcType=VARCHAR}, #{role,jdbcType=VARCHAR}, '学生',
+            #{updateDate,jdbcType=TIMESTAMP}, #{createDate,jdbcType=TIMESTAMP}, 'https://pic3.zhimg.com/80/v2-9b2d20718004af6e984e746a63ae5596_720w.webp',#{photoName,jdbcType=VARCHAR}
+           )
   </insert>
   <insert id="insertSelective" keyColumn="user_id" keyProperty="userId" parameterType="cn.com.testol.entity.User" useGeneratedKeys="true">
     insert into user
@@ -85,7 +85,8 @@
       <if test="userName != null">
         user_name,
       </if>
-      <if test="sex != null">
+      <!-- 设置默认性别为女 -->
+      <if test="sex == null">
         sex,
       </if>
       <if test="phone != null">
@@ -97,7 +98,7 @@
       <if test="role != null">
         `role`,
       </if>
-      <if test="work != null">
+      <if test="work == null">
         `work`,
       </if>
       <if test="updateDate != null">
@@ -106,7 +107,8 @@
       <if test="createDate != null">
         create_date,
       </if>
-      <if test="photo != null">
+      <!-- 设置默认photo -->
+      <if test="photo == null">
         photo,
       </if>
       <if test="photoName != null">
@@ -117,8 +119,9 @@
       <if test="userName != null">
         #{userName,jdbcType=VARCHAR},
       </if>
-      <if test="sex != null">
-        #{sex,jdbcType=VARCHAR},
+      <!-- 设置默认性别为女 -->
+      <if test="sex == null">
+        '女',
       </if>
       <if test="phone != null">
         #{phone,jdbcType=VARCHAR},
@@ -138,14 +141,16 @@
       <if test="createDate != null">
         #{createDate,jdbcType=TIMESTAMP},
       </if>
-      <if test="photo != null">
-        #{photo,jdbcType=VARCHAR},
+      <!-- 设置默认photo -->
+      <if test="photo == null">
+        'https://pic3.zhimg.com/80/v2-9b2d20718004af6e984e746a63ae5596_720w.webp',
       </if>
       <if test="photoName != null">
         #{photoName,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
+
   <update id="updateByPrimaryKeySelective" parameterType="cn.com.testol.entity.User">
     update user
     <set>
@@ -164,8 +169,9 @@
       <if test="role != null">
         `role` = #{role,jdbcType=VARCHAR},
       </if>
-      <if test="work != null">
-        `work` = #{work,jdbcType=VARCHAR},
+      <!-- 设置默认work -->
+      <if test="work == null">
+        '学生',
       </if>
       <if test="updateDate != null">
         update_date = #{updateDate,jdbcType=TIMESTAMP},

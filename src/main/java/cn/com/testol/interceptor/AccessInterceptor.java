@@ -18,7 +18,6 @@ public class AccessInterceptor implements HandlerInterceptor {
         //response.setContentType("application/json; charset=utf-8");
         response.setHeader("Access-Control-Allow-Credentials","true");
 //        response.setHeader("Access-Control-Allow-Origin", "http://60.205.137.48");
-
         response.setHeader("Access-Control-Allow-Origin", "http://localhost:8080");
         response.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept,token");
         response.setHeader("Access-Control-Allow-Methods", "GET, HEAD, POST, PUT, DELETE, TRACE, OPTIONS, PATCH");
